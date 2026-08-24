@@ -92,7 +92,7 @@ export const CommandKSearch: React.FC<CommandKSearchProps> = ({ isOpen, onClose,
             type="text"
             value={query}
             onChange={(e) => { setQuery(e.target.value); setSelectedIndex(0); }}
-            placeholder="Search 495 tools (e.g., ATS check, AI detector, PDF merge, fake data, EMI)..."
+            placeholder="Search 521 tools (e.g., ATS check, AI detector, PDF merge, fake data, EMI)..."
             className="w-full bg-transparent text-sm sm:text-base font-medium text-slate-900 placeholder:text-slate-400 outline-none"
           />
           <kbd className="hidden sm:inline-flex items-center gap-0.5 px-2 py-1 text-[11px] font-mono font-semibold text-slate-500 bg-white border border-slate-200 rounded-md shadow-xs">
@@ -161,7 +161,7 @@ export const CommandKSearch: React.FC<CommandKSearchProps> = ({ isOpen, onClose,
             <span>↵ Select</span>
             <span>Esc Close</span>
           </div>
-          <span>495 Tools • No Signup</span>
+          <span>521 Tools • No Signup</span>
         </div>
 
       </div>

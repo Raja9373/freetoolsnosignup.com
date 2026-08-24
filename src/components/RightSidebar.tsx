@@ -6,13 +6,16 @@ import {
 import { NewsItem } from '../types';
 import { NEWS_DATABASE } from '../data/newsData';
 import { AdSenseBanner } from './AdSenseBanner';
+import { AdUnitSidebarSticky } from './AdUnits';
 import confetti from 'canvas-confetti';
+import { useTranslation } from '../i18n/I18nContext';
 
 interface RightSidebarProps {
   className?: string;
 }
 
 export const RightSidebar: React.FC<RightSidebarProps> = ({ className = '' }) => {
+  const { t } = useTranslation();
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
   const [emailInput, setEmailInput] = useState('');
   const [subscribed, setSubscribed] = useState(false);
@@ -37,12 +40,12 @@ export const RightSidebar: React.FC<RightSidebarProps> = ({ className = '' }) =>
           </div>
           <div>
             <div className="font-extrabold text-sm text-slate-900 flex items-center gap-1.5">
-              <span>AI News</span>
+              <span>{t('liveNews', 'AI News')}</span>
               <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-700 animate-pulse">
-                LIVE
+                {t('liveBadge', 'LIVE')}
               </span>
             </div>
-            <p className="text-[10px] text-slate-400">12 fresh industry updates</p>
+            <p className="text-[10px] text-slate-400">{t('newsSubtitle', '12 fresh industry updates')}</p>
           </div>
         </div>
       </div>
@@ -87,9 +90,9 @@ export const RightSidebar: React.FC<RightSidebarProps> = ({ className = '' }) =>
         ))}
       </div>
 
-      {/* AdSense 300x250 */}
-      <div>
-        <AdSenseBanner format="300x250" />
+      {/* AdSense 300x250 Sticky Unit */}
+      <div className="sticky top-20">
+        <AdUnitSidebarSticky />
       </div>
 
       {/* Newsletter Box: Get Weekly AI Tools */}
@@ -106,7 +109,7 @@ export const RightSidebar: React.FC<RightSidebarProps> = ({ className = '' }) =>
         {subscribed ? (
           <div className="p-3 bg-emerald-500/20 border border-emerald-500/40 rounded-xl text-xs text-emerald-300 flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
-            <span>You're in! Check your inbox for this week's 495 tools cheat sheet.</span>
+            <span>You're in! Check your inbox for this week's 521 tools cheat sheet.</span>
           </div>
         ) : (
           <form onSubmit={handleSubscribe} className="space-y-2">

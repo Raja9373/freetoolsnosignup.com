@@ -1,6 +1,6 @@
 {
   "name": "FreeToolsNoSignup",
-  "description": "World's largest 100% free working tools platform with 495+ client-side tools, ATS checker, AI detector, PDF suite, fake data generator, and calculators. No signup ever.",
+  "description": "World's largest 100% free working tools platform with 521 client-side tools across 7 categories: Custom Notion Template & Database Builder with 25 readymade presets, ATS checker, AI detector, PDF suite, fake data generator, and calculators. No signup ever.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

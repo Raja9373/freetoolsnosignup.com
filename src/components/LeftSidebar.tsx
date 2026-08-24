@@ -7,6 +7,7 @@ import {
 import { ToolItem, RecentTool } from '../types';
 import { TOOLS_DATABASE } from '../data/toolsData';
 import { AdSenseBanner } from './AdSenseBanner';
+import { useTranslation } from '../i18n/I18nContext';
 
 interface LeftSidebarProps {
   recentTools: RecentTool[];
@@ -25,6 +26,8 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
   onClearRecent,
   className = ''
 }) => {
+  const { t } = useTranslation();
+
   // Top 15 Popular tools sorted by run count
   const popularTools = [...TOOLS_DATABASE]
     .sort((a, b) => b.runsCount - a.runsCount)
@@ -40,6 +43,7 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
       case 'pdf': return <FileText className="w-3.5 h-3.5 text-blue-600" />;
       case 'image': return <ImageIcon className="w-3.5 h-3.5 text-emerald-600" />;
       case 'calculator': return <Calculator className="w-3.5 h-3.5 text-purple-600" />;
+      case 'notion': return <Database className="w-3.5 h-3.5 text-amber-500" />;
       default: return <Database className="w-3.5 h-3.5 text-slate-600" />;
     }
   };
@@ -66,8 +70,8 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
             <div className="font-extrabold text-sm text-slate-900 tracking-tight leading-none">
               FreeToolsNoSignup<span className="text-amber-500">.com</span>
             </div>
-            <div className="text-[10px] font-semibold text-slate-400 mt-0.5">
-              495 WORKING TOOLS
+            <div className="text-[10px] font-semibold text-slate-400 mt-0.5 uppercase tracking-wider">
+              {t('workingTools', '521 WORKING TOOLS')}
             </div>
           </div>
         </div>
@@ -79,7 +83,7 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            <span>No Signup Ever</span>
+            <span>{t('noSignupEver', 'No Signup Ever')}</span>
           </div>
           <span className="text-[10px] font-mono font-bold text-emerald-700">100% FREE</span>
         </div>
@@ -90,22 +94,22 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
         <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-500">
           <span className="flex items-center gap-1.5">
             <History className="w-3.5 h-3.5 text-slate-400" />
-            Recently Used
+            {t('recentlyUsed', 'Recently Used')}
           </span>
           {recentTools.length > 0 && (
             <button
               onClick={onClearRecent}
               className="text-[10px] font-medium text-slate-400 hover:text-slate-700 flex items-center gap-0.5"
-              title="Clear History"
+              title={t('clearRecent', 'Clear recent')}
             >
-              <Trash2 className="w-2.5 h-2.5" /> Clear
+              <Trash2 className="w-2.5 h-2.5" /> {t('clearRecent', 'Clear')}
             </button>
           )}
         </div>
 
         {recentTools.length === 0 ? (
           <div className="p-3 bg-white/70 border border-dashed border-slate-200 rounded-xl text-[11px] text-slate-400 text-center">
-            Click any tool to launch and auto-save here
+            {t('noRecent', 'No recently run tools yet')}
           </div>
         ) : (
           <div className="space-y-1">
@@ -137,9 +141,9 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
         <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-500">
           <span className="flex items-center gap-1.5">
             <Flame className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
-            Top 15 Popular Tools
+            {t('top15Popular', 'Top 15 Popular')}
           </span>
-          <span className="text-[10px] font-mono text-slate-400">HOT</span>
+          <span className="text-[10px] font-mono text-slate-400 font-bold">HOT</span>
         </div>
 
         <div className="space-y-1 max-h-[290px] overflow-y-auto pr-1">
@@ -188,13 +192,13 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
         <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-500">
           <span className="flex items-center gap-1.5">
             <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
-            Favorites ({favorites.length})
+            {t('favorites', 'Favorites')} ({favorites.length})
           </span>
         </div>
 
         {favoriteToolObjects.length === 0 ? (
           <div className="p-3 bg-white/70 border border-dashed border-slate-200 rounded-xl text-[11px] text-slate-400 text-center">
-            Click the heart icon on any tool to pin here
+            {t('noFavorites', 'No starred favorites yet. Click the heart on any tool.')}
           </div>
         ) : (
           <div className="space-y-1 max-h-[160px] overflow-y-auto">

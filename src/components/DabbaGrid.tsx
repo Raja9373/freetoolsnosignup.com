@@ -490,6 +490,96 @@ export const DabbaGrid: React.FC<DabbaGridProps> = ({ onOpenCategory, onOpenTool
           </button>
         </div>
 
+        {/* ROW 3 / DABBA 7: NOTION TEMPLATE BUILDER & PRESETS */}
+        <div 
+          id="dabba-notion"
+          className="md:col-span-2 lg:col-span-3 bg-gradient-to-br from-[#1c1c1c] via-[#222222] to-[#181818] border-2 border-amber-500/40 hover:border-amber-400 rounded-3xl p-6 sm:p-7 shadow-xl hover:shadow-2xl transition-all duration-200 text-white relative overflow-hidden group"
+        >
+          <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+          
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+            
+            {/* Left side: Info & Badge */}
+            <div className="space-y-3 max-w-2xl">
+              <div className="flex flex-wrap items-center gap-2.5">
+                <div className="w-12 h-12 rounded-2xl bg-white text-black font-black text-2xl flex items-center justify-center shadow-lg shadow-black/40 group-hover:scale-105 transition-transform">
+                  N
+                </div>
+                <span className="bg-amber-400 text-slate-950 text-xs font-black px-3 py-1 rounded-full shadow-sm flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  DABBA #7 • BUILD YOUR OWN + 25 PRESETS
+                </span>
+                <span className="bg-[#2f2f2f] text-slate-300 text-xs font-mono font-bold px-2.5 py-1 rounded-full border border-[#444444]">
+                  18 Properties • 100% Free
+                </span>
+              </div>
+
+              <div>
+                <h3 className="text-xl sm:text-2xl font-black text-white group-hover:text-amber-400 transition-colors flex items-center gap-2">
+                  <span>Custom Notion Template & Database Builder</span>
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-300 mt-1.5 leading-relaxed">
+                  Design custom Notion databases with Title, Multi-select, Status, Date, Rating, Progress & 18 column types. Interactive live table preview, instant dummy data, and 1-click CSV download ready to import into Notion.
+                </p>
+              </div>
+
+              {/* Popular Presets Pills */}
+              <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
+                <span className="text-slate-400 font-bold">25 Presets:</span>
+                <button 
+                  onClick={() => onOpenTool('preset-content-calendar')}
+                  className="px-2.5 py-1 rounded-lg bg-[#2b2b2b] hover:bg-amber-400 hover:text-black font-bold text-slate-200 transition-colors"
+                >
+                  📅 Content Calendar
+                </button>
+                <button 
+                  onClick={() => onOpenTool('preset-product-roadmap')}
+                  className="px-2.5 py-1 rounded-lg bg-[#2b2b2b] hover:bg-amber-400 hover:text-black font-bold text-slate-200 transition-colors"
+                >
+                  🚀 Product Roadmap
+                </button>
+                <button 
+                  onClick={() => onOpenTool('preset-habit-tracker')}
+                  className="px-2.5 py-1 rounded-lg bg-[#2b2b2b] hover:bg-amber-400 hover:text-black font-bold text-slate-200 transition-colors"
+                >
+                  ⚡ Habit Tracker
+                </button>
+                <button 
+                  onClick={() => onOpenTool('preset-job-crm')}
+                  className="px-2.5 py-1 rounded-lg bg-[#2b2b2b] hover:bg-amber-400 hover:text-black font-bold text-slate-200 transition-colors"
+                >
+                  💼 Job CRM
+                </button>
+                <button 
+                  onClick={() => onOpenTool('preset-finance-budget')}
+                  className="px-2.5 py-1 rounded-lg bg-[#2b2b2b] hover:bg-amber-400 hover:text-black font-bold text-slate-200 transition-colors"
+                >
+                  💰 Budget Log
+                </button>
+              </div>
+            </div>
+
+            {/* Right side: Action Buttons */}
+            <div className="flex flex-col sm:flex-row lg:flex-col gap-3 w-full lg:w-64 shrink-0">
+              <button
+                onClick={() => onOpenTool('notion-template-builder')}
+                className="w-full py-3.5 px-4 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black rounded-2xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 hover:scale-105 transition-all"
+              >
+                <span>Launch Custom Builder</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+
+              <button
+                onClick={() => onOpenCategory('notion')}
+                className="w-full py-2.5 px-4 bg-[#2e2e2e] hover:bg-[#3d3d3d] text-slate-200 hover:text-white font-bold rounded-2xl text-xs flex items-center justify-center gap-2 border border-[#444444] transition-colors"
+              >
+                <span>View All 25 Presets</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
       </div>
     </div>
   );

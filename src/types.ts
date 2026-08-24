@@ -4,7 +4,57 @@ export type ToolCategory =
   | 'calculator' 
   | 'ai-study' 
   | 'job-ats' 
-  | 'dev-pro';
+  | 'dev-pro'
+  | 'notion';
+
+export type NotionPropertyType = 
+  | 'title'
+  | 'select'
+  | 'multi_select'
+  | 'status'
+  | 'date'
+  | 'person'
+  | 'number'
+  | 'checkbox'
+  | 'url'
+  | 'email'
+  | 'phone'
+  | 'text'
+  | 'files'
+  | 'rating'
+  | 'progress'
+  | 'created_time'
+  | 'last_edited_time'
+  | 'formula';
+
+export interface NotionSelectOption {
+  id: string;
+  name: string;
+  color: 'default' | 'gray' | 'brown' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'pink' | 'red';
+}
+
+export interface NotionColumnConfig {
+  id: string;
+  name: string;
+  type: NotionPropertyType;
+  required?: boolean;
+  options?: NotionSelectOption[]; // For select, multi_select, status
+  numberFormat?: 'number' | 'currency_usd' | 'currency_inr' | 'currency_eur' | 'percent';
+  formulaExpression?: string;
+  defaultValue?: string | number | boolean | string[];
+}
+
+export interface NotionPresetTemplate {
+  id: string;
+  name: string;
+  category: string;
+  typeTag?: 'Tracker' | 'Planner' | 'Logbook' | 'Database';
+  icon: string;
+  description: string;
+  columns: NotionColumnConfig[];
+  initialRows: Record<string, any>[];
+  tags: string[];
+}
 
 export interface ToolItem {
   id: string;
