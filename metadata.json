@@ -1,0 +1,6 @@
+{
+  "name": "FreeToolsNoSignup",
+  "description": "World's largest 100% free working tools platform with 495+ client-side tools, ATS checker, AI detector, PDF suite, fake data generator, and calculators. No signup ever.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
