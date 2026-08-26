@@ -24,6 +24,7 @@ import { TermsPage } from './pages/TermsPage';
 import { DisclaimerPage } from './pages/DisclaimerPage';
 import { CategoryPage } from './pages/CategoryPage';
 import { NotionBuilderPage } from './pages/NotionBuilderPage';
+import { QRCodeGeneratorPage } from './pages/QRCodeGeneratorPage';
 
 // Interactive Tool Modals
 import { NotionTemplateBuilder } from './components/tools/NotionTemplateBuilder';
@@ -219,6 +220,10 @@ export default function App() {
 
   if (normalizedPath === '/notion-template-builder' || normalizedPath === '/notion-builder' || normalizedPath === '/notion') {
     return <NotionBuilderPage onNavigateHome={() => navigateTo('/')} />;
+  }
+
+  if (normalizedPath === '/qr-code-generator' || normalizedPath === '/qr-generator' || normalizedPath === '/tools/qr-generator') {
+    return <QRCodeGeneratorPage onNavigateHome={() => navigateTo('/')} />;
   }
 
   // Filtered tools for direct center search

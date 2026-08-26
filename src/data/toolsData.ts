@@ -165,15 +165,16 @@ export const TOOLS_DATABASE: ToolItem[] = [
   },
   {
     id: 'qr-generator',
-    name: 'Custom QR Code Generator',
+    name: 'Free QR Code Generator Pro',
     category: 'dev-pro',
     categoryName: 'Dev Pro Tools',
-    description: 'Generate high-res SVG & PNG QR codes for URLs, WiFi, vCards, WhatsApp with custom colors.',
+    description: 'Generate custom high-resolution QR codes for URLs, Wi-Fi, vCard, WhatsApp, SMS, and text with vector SVG and HD PNG download.',
     icon: 'QrCode',
     isPopular: true,
-    workingBadge: 'SVG & PNG Export',
-    runsCount: 165300,
-    tags: ['qr code', 'generator', 'wifi', 'svg', 'barcode']
+    isHot: true,
+    workingBadge: 'SVG & HD PNG',
+    runsCount: 214500,
+    tags: ['qr code', 'qr code generator', 'wifi qr', 'vcard', 'whatsapp', 'svg', 'barcode', 'free qr', 'no signup']
   },
   {
     id: 'regex-tester',

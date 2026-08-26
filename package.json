@@ -4,8 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --port=3000 --host=0.0.0.0",
-    "build": "vite build",
+    "dev": "tsx server.ts",
+    "build": "vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
+    "start": "node dist/server.cjs",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit"
@@ -20,7 +21,9 @@
     "@types/crypto-js": "^4.2.2",
     "@types/downloadjs": "^1.4.6",
     "@types/js-yaml": "^4.0.9",
+    "@types/nodemailer": "^8.0.1",
     "@types/papaparse": "^5.5.2",
+    "@types/qrcode": "^1.5.6",
     "@vitejs/plugin-react": "^5.0.4",
     "browser-image-compression": "^2.0.2",
     "canvas-confetti": "^1.9.4",
@@ -35,9 +38,11 @@
     "lucide-react": "^0.546.0",
     "mammoth": "^1.12.1",
     "motion": "^12.23.24",
+    "nodemailer": "^9.0.5",
     "papaparse": "^5.7.0",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^6.2.108",
+    "qrcode": "^1.5.4",
     "react": "^19.0.1",
     "react-dom": "^19.0.1",
     "vite": "^6.2.3"
