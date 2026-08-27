@@ -8,6 +8,7 @@ import { ToolItem, RecentTool } from '../types';
 import { TOOLS_DATABASE } from '../data/toolsData';
 import { AdSenseBanner } from './AdSenseBanner';
 import { useTranslation } from '../i18n/I18nContext';
+import { BrandLogo } from './BrandLogo';
 
 interface LeftSidebarProps {
   recentTools: RecentTool[];
@@ -62,19 +63,9 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
     >
       {/* Brand Header */}
       <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-slate-900 text-white font-black text-sm flex items-center justify-center shadow-sm tracking-tighter">
-            FTNS
-          </div>
-          <div>
-            <div className="font-extrabold text-sm text-slate-900 tracking-tight leading-none">
-              FreeToolsNoSignup<span className="text-amber-500">.com</span>
-            </div>
-            <div className="text-[10px] font-semibold text-slate-400 mt-0.5 uppercase tracking-wider">
-              {t('workingTools', '521 WORKING TOOLS')}
-            </div>
-          </div>
-        </div>
+        <a href="/" className="block">
+          <BrandLogo variant="full" showTagline={true} />
+        </a>
 
         {/* Green Badge: No Signup Ever */}
         <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200/90 px-2.5 py-1.5 rounded-xl text-emerald-900 shadow-xs">

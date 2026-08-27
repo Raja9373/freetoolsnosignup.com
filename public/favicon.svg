@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="favBg" x1="4" y1="4" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#0f172a" />
+      <stop offset="50%" stopColor="#1e1b4b" />
+      <stop offset="100%" stopColor="#09090b" />
+    </linearGradient>
+    <linearGradient id="favGold" x1="12" y1="10" x2="52" y2="54" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#fef08a" />
+      <stop offset="25%" stopColor="#f59e0b" />
+      <stop offset="70%" stopColor="#d97706" />
+      <stop offset="100%" stopColor="#b45309" />
+    </linearGradient>
+    <linearGradient id="favSapphire" x1="20" y1="16" x2="44" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#38bdf8" />
+      <stop offset="100%" stopColor="#6366f1" />
+    </linearGradient>
+    <linearGradient id="favBorder" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#fde047" stopOpacity="0.9" />
+      <stop offset="50%" stopColor="#d97706" stopOpacity="0.5" />
+      <stop offset="100%" stopColor="#fef08a" stopOpacity="0.9" />
+    </linearGradient>
+  </defs>
+
+  <!-- Shield Outer Facet -->
+  <path d="M32 4L56 15.5V35C56 47.5 46 56.5 32 60.5C18 56.5 8 47.5 8 35V15.5L32 4Z" fill="url(#favBg)" stroke="url(#favBorder)" stroke-width="2" stroke-linejoin="round" />
+
+  <!-- Royal Crown Geometry -->
+  <path d="M17 33L23 21L28 28L17 33Z" fill="url(#favGold)" opacity="0.9" />
+  <path d="M47 33L41 21L36 28L47 33Z" fill="url(#favGold)" opacity="0.9" />
+  <path d="M32 16L37 27L32 31L27 27L32 16Z" fill="url(#favGold)" />
+
+  <!-- Center Diamond Jewel -->
+  <polygon points="32,32 39,40 32,48 25,40" fill="url(#favSapphire)" stroke="#fef08a" stroke-width="1.2" />
+
+  <!-- Crown Jewels -->
+  <circle cx="32" cy="15" r="2" fill="#fef08a" />
+  <circle cx="22" cy="20.5" r="1.5" fill="#fef08a" />
+  <circle cx="42" cy="20.5" r="1.5" fill="#fef08a" />
+</svg>

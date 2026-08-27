@@ -3,13 +3,13 @@
 export interface CalculatorDefinition {
   id: string;
   name: string;
-  category: 'finance' | 'health' | 'math' | 'construction';
+  category: 'finance' | 'health' | 'math' | 'construction' | 'everyday';
   subCategory?: string;
   description: string;
   formula: string;
-  formulaExplanation: string;
-  defaultInputs: Record<string, any>;
-  fields: {
+  formulaExplanation?: string;
+  defaultInputs?: Record<string, any>;
+  fields?: {
     id: string;
     label: string;
     type: 'number' | 'select' | 'text' | 'date' | 'radio';
@@ -19,6 +19,19 @@ export interface CalculatorDefinition {
     options?: { label: string; value: any }[];
     unit?: string;
     help?: string;
+    defaultValue?: any;
+  }[];
+  inputs?: {
+    id: string;
+    label: string;
+    type: 'number' | 'select' | 'text' | 'date' | 'radio' | string;
+    min?: number;
+    max?: number;
+    step?: number;
+    options?: { label: string; value: any }[];
+    unit?: string;
+    help?: string;
+    defaultValue?: any;
   }[];
   calculate: (inputs: Record<string, any>) => CalculatorResult;
 }

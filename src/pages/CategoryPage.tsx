@@ -5,6 +5,7 @@ import { ALL_521_DIRECTORY_TOOLS } from '../data/allToolsDirectory';
 import { AdSenseBanner } from '../components/AdSenseBanner';
 import { AdUnitTopBanner, AdUnitInFeed } from '../components/AdUnits';
 import { ToolCategory } from '../types';
+import { BrandLogo } from '../components/BrandLogo';
 
 interface CategoryPageProps {
   categoryKey: ToolCategory;
@@ -35,18 +36,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({ categoryKey, onNavig
               <ArrowLeft className="w-4 h-4" />
               <span>All Categories</span>
             </button>
-            <a 
-              href="/" 
-              onClick={(e) => { e.preventDefault(); onNavigateHome(); }}
-              className="flex items-center gap-2"
-            >
-              <span className="w-7 h-7 rounded-lg bg-slate-900 text-white font-black text-xs flex items-center justify-center">
-                FTNS
-              </span>
-              <span className="font-extrabold text-sm text-slate-900">
-                FreeToolsNoSignup<span className="text-amber-500">.com</span>
-              </span>
-            </a>
+            <BrandLogo variant="header" onClick={onNavigateHome} />
           </div>
 
           <div className="flex items-center gap-2">

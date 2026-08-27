@@ -41,6 +41,7 @@ import { QRGeneratorModal } from './components/tools/QRGeneratorModal';
 import { DevToolsSuite } from './components/tools/DevToolsSuite';
 import { ALL_DEV_PRO_TOOLS } from './components/tools/devToolsCatalog';
 import { TOOLS_DATABASE } from './data/toolsData';
+import { BrandLogo } from './components/BrandLogo';
 
 export default function App() {
   const { t, locale, setLocale } = useTranslation();
@@ -248,14 +249,7 @@ export default function App() {
           >
             {isMobileSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
-          <a href="/" onClick={(e) => { e.preventDefault(); navigateTo('/'); }} className="flex items-center gap-1.5">
-            <span className="w-7 h-7 rounded-lg bg-slate-900 text-white font-black text-xs flex items-center justify-center">
-              FTNS
-            </span>
-            <span className="font-extrabold text-xs sm:text-sm text-slate-900">
-              FreeTools<span className="text-amber-500">.com</span>
-            </span>
-          </a>
+          <BrandLogo variant="header" onClick={() => navigateTo('/')} />
         </div>
 
         <div className="flex items-center gap-1.5">

@@ -1254,10 +1254,10 @@ export const CATEGORY_METADATA = {
   },
   'calculator': {
     title: 'Calculators',
-    count: 201,
+    count: 262,
     color: 'purple',
     icon: 'Calculator',
-    badge: '201 WORKING',
+    badge: '262 WORKING',
     desc: 'Financial EMI, mortgages, salary tax, compound SIP, fitness BMI, and engineering formulas.',
     featured: ['Loan EMI & Payoff', 'BMI & Fitness', 'Compound SIP Growth', 'Salary Take-Home']
   },

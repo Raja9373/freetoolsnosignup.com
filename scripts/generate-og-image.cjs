@@ -1,0 +1,186 @@
+const fs = require('fs');
+const zlib = require('zlib');
+
+function createPng(width, height, drawFn) {
+  const buffer = Buffer.alloc(width * height * 4);
+
+  function setPixel(x, y, r, g, b, a = 255) {
+    if (x < 0 || x >= width || y < 0 || y >= height) return;
+    const idx = (Math.floor(y) * width + Math.floor(x)) * 4;
+    buffer[idx] = r;
+    buffer[idx + 1] = g;
+    buffer[idx + 2] = b;
+    buffer[idx + 3] = a;
+  }
+
+  drawFn(setPixel, width, height);
+
+  const rowSize = width * 4 + 1;
+  const rawData = Buffer.alloc(rowSize * height);
+  for (let y = 0; y < height; y++) {
+    rawData[y * rowSize] = 0; // Filter None
+    buffer.copy(rawData, y * rowSize + 1, y * width * 4, (y + 1) * width * 4);
+  }
+
+  const compressed = zlib.deflateSync(rawData, { level: 9 });
+
+  const signature = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
+
+  const crcTable = [];
+  for (let n = 0; n < 256; n++) {
+    let c = n;
+    for (let k = 0; k < 8; k++) {
+      if (c & 1) c = 0xedb88320 ^ (c >>> 1);
+      else c = c >>> 1;
+    }
+    crcTable[n] = c >>> 0;
+  }
+  function crc32(buf) {
+    let crc = 0xffffffff;
+    for (let i = 0; i < buf.length; i++) {
+      crc = (crcTable[(crc ^ buf[i]) & 0xff] ^ (crc >>> 8)) >>> 0;
+    }
+    return (crc ^ 0xffffffff) >>> 0;
+  }
+
+  function makeChunk(type, data) {
+    const len = Buffer.alloc(4);
+    len.writeUInt32BE(data.length, 0);
+    const typeBuf = Buffer.from(type, 'ascii');
+    const crcBuf = Buffer.alloc(4);
+    const crc = crc32(Buffer.concat([typeBuf, data]));
+    crcBuf.writeUInt32BE(crc, 0);
+    return Buffer.concat([len, typeBuf, data, crcBuf]);
+  }
+
+  const ihdr = Buffer.alloc(13);
+  ihdr.writeUInt32BE(width, 0);
+  ihdr.writeUInt32BE(height, 4);
+  ihdr[8] = 8;
+  ihdr[9] = 6;
+  ihdr[10] = 0;
+  ihdr[11] = 0;
+  ihdr[12] = 0;
+
+  return Buffer.concat([
+    signature,
+    makeChunk('IHDR', ihdr),
+    makeChunk('IDAT', compressed),
+    makeChunk('IEND', Buffer.alloc(0))
+  ]);
+}
+
+const fontData = {
+  'A': [0x3C, 0x42, 0x81, 0x81, 0xFF, 0x81, 0x81, 0x00],
+  'B': [0xFE, 0x82, 0x82, 0xFC, 0x82, 0x82, 0xFE, 0x00],
+  'C': [0x7C, 0x82, 0x80, 0x80, 0x80, 0x82, 0x7C, 0x00],
+  'D': [0xFC, 0x82, 0x82, 0x82, 0x82, 0x82, 0xFC, 0x00],
+  'E': [0xFE, 0x80, 0x80, 0xFC, 0x80, 0x80, 0xFE, 0x00],
+  'F': [0xFE, 0x80, 0x80, 0xFC, 0x80, 0x80, 0x80, 0x00],
+  'G': [0x7C, 0x82, 0x80, 0x9E, 0x82, 0x82, 0x7C, 0x00],
+  'H': [0x82, 0x82, 0x82, 0xFE, 0x82, 0x82, 0x82, 0x00],
+  'I': [0x7C, 0x10, 0x10, 0x10, 0x10, 0x10, 0x7C, 0x00],
+  'J': [0x1E, 0x02, 0x02, 0x02, 0x82, 0x82, 0x7C, 0x00],
+  'K': [0x84, 0x88, 0x90, 0xE0, 0x90, 0x88, 0x84, 0x00],
+  'L': [0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0xFE, 0x00],
+  'M': [0x82, 0xC6, 0xAA, 0x92, 0x82, 0x82, 0x82, 0x00],
+  'N': [0x82, 0xC2, 0xA2, 0x92, 0x8A, 0x86, 0x82, 0x00],
+  'O': [0x7C, 0x82, 0x82, 0x82, 0x82, 0x82, 0x7C, 0x00],
+  'P': [0xFC, 0x82, 0x82, 0xFC, 0x80, 0x80, 0x80, 0x00],
+  'Q': [0x7C, 0x82, 0x82, 0x82, 0x92, 0x8A, 0x7C, 0x02],
+  'R': [0xFC, 0x82, 0x82, 0xFC, 0x90, 0x88, 0x84, 0x00],
+  'S': [0x7E, 0x80, 0x80, 0x7C, 0x02, 0x02, 0xFC, 0x00],
+  'T': [0xFE, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x00],
+  'U': [0x82, 0x82, 0x82, 0x82, 0x82, 0x82, 0x7C, 0x00],
+  'V': [0x82, 0x82, 0x82, 0x82, 0x44, 0x28, 0x10, 0x00],
+  'W': [0x82, 0x82, 0x82, 0x92, 0xAA, 0xC6, 0x82, 0x00],
+  'X': [0x82, 0x44, 0x28, 0x10, 0x28, 0x44, 0x82, 0x00],
+  'Y': [0x82, 0x44, 0x28, 0x10, 0x10, 0x10, 0x10, 0x00],
+  'Z': [0xFE, 0x04, 0x08, 0x10, 0x20, 0x40, 0xFE, 0x00],
+  '0': [0x7C, 0x86, 0x8A, 0x92, 0xA2, 0xC2, 0x7C, 0x00],
+  '1': [0x10, 0x30, 0x10, 0x10, 0x10, 0x10, 0x38, 0x00],
+  '2': [0x7C, 0x82, 0x04, 0x18, 0x60, 0x80, 0xFE, 0x00],
+  '3': [0xFC, 0x04, 0x08, 0x3C, 0x04, 0x02, 0xFC, 0x00],
+  '4': [0x88, 0x98, 0xA8, 0xC8, 0xFE, 0x08, 0x08, 0x00],
+  '5': [0xFE, 0x80, 0xFC, 0x02, 0x02, 0x84, 0x78, 0x00],
+  '6': [0x7C, 0x80, 0x80, 0xFC, 0x82, 0x82, 0x7C, 0x00],
+  '7': [0xFE, 0x04, 0x08, 0x10, 0x20, 0x20, 0x20, 0x00],
+  '8': [0x7C, 0x82, 0x82, 0x7C, 0x82, 0x82, 0x7C, 0x00],
+  '9': [0x7C, 0x82, 0x82, 0x7E, 0x02, 0x02, 0x7C, 0x00],
+  '.': [0x00, 0x00, 0x00, 0x00, 0x00, 0x18, 0x18, 0x00],
+  '+': [0x00, 0x10, 0x10, 0x7C, 0x10, 0x10, 0x00, 0x00],
+  '-': [0x00, 0x00, 0x00, 0x7C, 0x00, 0x00, 0x00, 0x00],
+  '/': [0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x00],
+  '%': [0xC4, 0xC8, 0x10, 0x20, 0x40, 0x98, 0x88, 0x00],
+  ' ': [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
+};
+
+function drawChar(setPixel, char, startX, startY, scale, r, g, b) {
+  const c = char.toUpperCase();
+  const rows = fontData[c] || fontData[' '];
+  for (let y = 0; y < 8; y++) {
+    const row = rows[y];
+    for (let x = 0; x < 8; x++) {
+      if ((row & (0x80 >> x)) !== 0) {
+        for (let dy = 0; dy < scale; dy++) {
+          for (let dx = 0; dx < scale; dx++) {
+            setPixel(startX + x * scale + dx, startY + y * scale + dy, r, g, b, 255);
+          }
+        }
+      }
+    }
+  }
+}
+
+function drawString(setPixel, text, startX, startY, scale, r, g, b) {
+  let curX = startX;
+  for (let i = 0; i < text.length; i++) {
+    drawChar(setPixel, text[i], curX, startY, scale, r, g, b);
+    curX += 9 * scale;
+  }
+}
+
+const png = createPng(1200, 630, (setPixel, w, h) => {
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const grad = y / h;
+      let pr = Math.round(15 + 15 * grad);
+      let pg = Math.round(23 + 18 * grad);
+      let pb = Math.round(42 + 20 * grad);
+
+      if (y < 10) {
+        setPixel(x, y, 245, 158, 11, 255);
+      } else if (y >= h - 10) {
+        setPixel(x, y, 59, 130, 246, 255);
+      } else {
+        if (x >= 60 && x <= w - 60 && y >= 50 && y <= h - 50) {
+          if (x === 60 || x === w - 60 || y === 50 || y === h - 50) {
+            setPixel(x, y, 51, 65, 85, 255);
+            continue;
+          }
+          pr = Math.round(28 + 12 * grad);
+          pg = Math.round(38 + 14 * grad);
+          pb = Math.round(56 + 18 * grad);
+        }
+        setPixel(x, y, pr, pg, pb, 255);
+      }
+    }
+  }
+
+  // Draw Header Badge: "521+ FREE WORKING TOOLS"
+  drawString(setPixel, '521+ FREE WORKING TOOLS', 110, 95, 3, 245, 158, 11);
+
+  // Draw Brand Title: "FREETOOLSNOSIGNUP.COM"
+  drawString(setPixel, 'FREETOOLSNOSIGNUP.COM', 110, 155, 5, 255, 255, 255);
+
+  // Draw Features
+  drawString(setPixel, 'PDF STUDIO - IMAGE TOOLS - 250+ CALCULATORS', 110, 260, 3, 147, 197, 253);
+  drawString(setPixel, 'ATS RESUME - NOTION BUILDER - QR GENERATOR', 110, 320, 3, 147, 197, 253);
+  drawString(setPixel, 'DEVELOPER CRYPTO & NLP AI STUDY TOOLS', 110, 380, 3, 147, 197, 253);
+
+  // Draw Guarantee
+  drawString(setPixel, '100% FREE - NO SIGNUP - 100% IN-BROWSER PRIVACY', 110, 480, 3, 52, 211, 153);
+});
+
+fs.writeFileSync('./public/og-image.png', png);
+console.log('Successfully wrote ./public/og-image.png. Size:', png.length, 'bytes');

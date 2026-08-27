@@ -13,6 +13,7 @@ import {
   buildQRPayload, validateQRInput, renderQRToCanvas, 
   generateQRSVG, downloadFile 
 } from './qrCodeEngine';
+import { BrandLogo } from '../BrandLogo';
 
 interface QRGeneratorProps {
   onClose?: () => void;
@@ -1039,23 +1040,7 @@ export const QRGeneratorModal: React.FC<QRGeneratorProps> = ({
                   <span>All Tools</span>
                 </button>
               )}
-              <a 
-                href="/" 
-                onClick={(e) => { 
-                  if (onNavigateHome) {
-                    e.preventDefault(); 
-                    onNavigateHome(); 
-                  }
-                }}
-                className="flex items-center gap-2"
-              >
-                <span className="w-7 h-7 rounded-lg bg-slate-900 text-white font-black text-xs flex items-center justify-center">
-                  FTNS
-                </span>
-                <span className="font-extrabold text-sm text-slate-900">
-                  FreeToolsNoSignup<span className="text-amber-500">.com</span>
-                </span>
-              </a>
+              <BrandLogo variant="header" onClick={onNavigateHome} />
             </div>
 
             <div className="flex items-center gap-3">

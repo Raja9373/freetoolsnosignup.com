@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { ShieldCheck, Lock, ArrowLeft, EyeOff, Cookie, Server, Scale, UserCheck, AlertCircle, CheckCircle2, ExternalLink } from 'lucide-react';
 import { AdSenseBanner } from '../components/AdSenseBanner';
+import { BrandLogo } from '../components/BrandLogo';
 
 export const PrivacyPolicyPage: React.FC<{ onNavigateHome: () => void }> = ({ onNavigateHome }) => {
   useEffect(() => {
@@ -21,18 +22,7 @@ export const PrivacyPolicyPage: React.FC<{ onNavigateHome: () => void }> = ({ on
               <ArrowLeft className="w-4 h-4" />
               <span>Back to Tools</span>
             </button>
-            <a 
-              href="/" 
-              onClick={(e) => { e.preventDefault(); onNavigateHome(); }}
-              className="flex items-center gap-2"
-            >
-              <span className="w-7 h-7 rounded-lg bg-slate-900 text-white font-black text-xs flex items-center justify-center">
-                FTNS
-              </span>
-              <span className="font-extrabold text-sm text-slate-900">
-                FreeToolsNoSignup<span className="text-amber-500">.com</span>
-              </span>
-            </a>
+            <BrandLogo variant="header" onClick={onNavigateHome} />
           </div>
 
           <div className="flex items-center gap-2">

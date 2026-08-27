@@ -47,15 +47,41 @@ export const CalculatorModal: React.FC<CalculatorModalProps> = ({ initialToolId,
     return COMPLETE_CALCULATOR_SUITE.find(c => c.id === selectedCalcId) || COMPLETE_CALCULATOR_SUITE[0];
   }, [selectedCalcId]);
 
+  // Helper to normalize fields from activeCalc
+  const calcFields = useMemo(() => {
+    return activeCalc.fields || (activeCalc as any).inputs || [];
+  }, [activeCalc]);
+
   // Form State initialized from default inputs
   const [inputs, setInputs] = useState<Record<string, any>>(() => {
-    return activeCalc.defaultInputs || {};
+    if (activeCalc.defaultInputs) return { ...activeCalc.defaultInputs };
+    const defaults: Record<string, any> = {};
+    const fieldsList = activeCalc.fields || (activeCalc as any).inputs || [];
+    fieldsList.forEach((f: any) => {
+      if (f.defaultValue !== undefined) defaults[f.id] = f.defaultValue;
+      else if (f.type === 'number') defaults[f.id] = f.min ?? 0;
+      else if (f.options && f.options.length > 0) defaults[f.id] = f.options[0].value;
+      else defaults[f.id] = '';
+    });
+    return defaults;
   });
 
   // When active calc changes, reset inputs
   const handleSelectCalc = (calc: CalculatorDefinition) => {
     setSelectedCalcId(calc.id);
-    setInputs(calc.defaultInputs || {});
+    if (calc.defaultInputs) {
+      setInputs({ ...calc.defaultInputs });
+    } else {
+      const defaults: Record<string, any> = {};
+      const fieldsList = calc.fields || (calc as any).inputs || [];
+      fieldsList.forEach((f: any) => {
+        if (f.defaultValue !== undefined) defaults[f.id] = f.defaultValue;
+        else if (f.type === 'number') defaults[f.id] = f.min ?? 0;
+        else if (f.options && f.options.length > 0) defaults[f.id] = f.options[0].value;
+        else defaults[f.id] = '';
+      });
+      setInputs(defaults);
+    }
     onRecordUse(calc.id);
   };
 
@@ -106,20 +132,20 @@ ${activeCalc.name.toUpperCase()} REPORT
 =========================================
 Date: ${new Date().toLocaleString()}
 Formula: ${activeCalc.formula}
-Explanation: ${activeCalc.formulaExplanation}
+Explanation: ${activeCalc.formulaExplanation || activeCalc.description}
 
 INPUTS:
-${activeCalc.fields.map(f => `- ${f.label}: ${inputs[f.id] ?? 'Default'} ${f.unit || ''}`).join('\n')}
+${calcFields.map((f: any) => `- ${f.label}: ${inputs[f.id] ?? 'Default'} ${f.unit || ''}`).join('\n')}
 
 RESULT:
 ${result.primaryLabel}: ${result.primaryValue} ${result.primaryUnit || ''}
 
 METRICS:
-${result.secondaryMetrics?.map(m => `- ${m.label}: ${m.value}`).join('\n') || 'None'}
+${result.secondaryMetrics?.map((m: any) => `- ${m.label}: ${m.value}`).join('\n') || 'None'}
 
 ${result.advice ? `\nADVICE:\n${result.advice}` : ''}
 =========================================
-Generated via ToolsDabba 201-in-1 Accurate Calculator Engine
+Generated via FreeToolsNoSignup 250+ Accurate Calculator Suite
 =========================================`;
 
     const blob = new Blob([reportText], { type: 'text/plain;charset=utf-8' });
@@ -143,7 +169,7 @@ Generated via ToolsDabba 201-in-1 Accurate Calculator Engine
             </div>
             <div>
               <div className="flex items-center gap-2.5">
-                <h2 className="text-lg sm:text-xl font-black tracking-tight text-white">201 Real Working Calculators</h2>
+                <h2 className="text-lg sm:text-xl font-black tracking-tight text-white">250+ Real Working Calculators</h2>
                 <span className="bg-emerald-400 text-slate-950 text-xs font-black px-2.5 py-0.5 rounded-full shadow-sm">
                   100% EXACT FORMULAS
                 </span>
@@ -286,8 +312,8 @@ Generated via ToolsDabba 201-in-1 Accurate Calculator Engine
                 </div>
 
                 <div className="space-y-4">
-                  {activeCalc.fields.map(field => {
-                    const val = inputs[field.id] ?? activeCalc.defaultInputs[field.id] ?? '';
+                  {calcFields.map((field: any) => {
+                    const val = inputs[field.id] ?? (activeCalc.defaultInputs ? activeCalc.defaultInputs[field.id] : field.defaultValue) ?? '';
 
                     return (
                       <div key={field.id} className="space-y-1.5">
