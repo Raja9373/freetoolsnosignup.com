@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Mail, Clock, MapPin, Send, ArrowLeft, CheckCircle2, MessageSquare, Shield, HelpCircle, AlertCircle, Loader2, RefreshCw } from 'lucide-react';
 import { AdSenseBanner } from '../components/AdSenseBanner';
 import { BrandLogo } from '../components/BrandLogo';
+import { TOTAL_TOOLS_COUNT } from '../data/toolCounts';
 
 export const ContactPage: React.FC<{ onNavigateHome: () => void }> = ({ onNavigateHome }) => {
   const [formData, setFormData] = useState({
@@ -142,7 +143,7 @@ export const ContactPage: React.FC<{ onNavigateHome: () => void }> = ({ onNaviga
                 Get in Touch
               </h2>
               <p className="text-[#64748B] text-xs leading-relaxed">
-                Have an inquiry about a tool, want to report a bug, or propose a new browser utility for our 521-tool catalog? We respond to every email.
+                Have an inquiry about a tool, want to report a bug, or propose a new browser utility for our {TOTAL_TOOLS_COUNT}-tool catalog? We respond to every email.
               </p>
 
               <div className="space-y-4 pt-2 border-t border-[#F1F5F9] text-xs">

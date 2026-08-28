@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Scale, FileText, ArrowLeft, ShieldCheck, CheckCircle2, AlertTriangle, Cpu } from 'lucide-react';
 import { AdSenseBanner } from '../components/AdSenseBanner';
 import { BrandLogo } from '../components/BrandLogo';
+import { TOTAL_TOOLS_COUNT } from '../data/toolCounts';
 
 export const TermsPage: React.FC<{ onNavigateHome: () => void }> = ({ onNavigateHome }) => {
   useEffect(() => {
@@ -66,7 +67,7 @@ export const TermsPage: React.FC<{ onNavigateHome: () => void }> = ({ onNavigate
           <section className="space-y-3">
             <h2 className="text-lg font-bold text-slate-900">1. Acceptance of Terms</h2>
             <p className="text-slate-600 text-sm leading-relaxed">
-              By accessing, browsing, or utilizing any of the 521 online tools and services available on FreeToolsNoSignup.com (the "Site", "Service", or "Platform"), you agree to be bound by these Terms of Service, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws. If you do not agree with any of these terms, you are prohibited from using or accessing this site.
+              By accessing, browsing, or utilizing any of the {TOTAL_TOOLS_COUNT} online tools and services available on FreeToolsNoSignup.com (the "Site", "Service", or "Platform"), you agree to be bound by these Terms of Service, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws. If you do not agree with any of these terms, you are prohibited from using or accessing this site.
             </p>
           </section>
 

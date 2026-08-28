@@ -42,6 +42,19 @@ import { DevToolsSuite } from './components/tools/DevToolsSuite';
 import { ALL_DEV_PRO_TOOLS } from './components/tools/devToolsCatalog';
 import { TOOLS_DATABASE } from './data/toolsData';
 import { BrandLogo } from './components/BrandLogo';
+import { 
+  TOTAL_TOOLS_COUNT, 
+  PDF_TOOLS_COUNT, 
+  IMAGE_TOOLS_COUNT, 
+  CALCULATOR_TOOLS_COUNT, 
+  JOB_ATS_TOOLS_COUNT, 
+  AI_STUDY_TOOLS_COUNT, 
+  DEV_PRO_TOOLS_COUNT, 
+  NOTION_TOOLS_COUNT,
+  SITE_HERO_TITLE,
+  SITE_HERO_SUBTITLE,
+  SITE_SEARCH_PLACEHOLDER
+} from './data/toolCounts';
 
 export default function App() {
   const { t, locale, setLocale } = useTranslation();
@@ -351,14 +364,14 @@ export default function App() {
             {/* Quick Filter Category Pills */}
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
               {[
-                { id: 'all', label: t('filterAll', 'All (521)'), path: '/' },
-                { id: 'notion', label: '📓 Notion Builder (26)', path: '/notion-template-builder' },
-                { id: 'job-ats', label: t('filterJob', '💼 Job / ATS (50)'), path: '/job-ats' },
-                { id: 'ai-study', label: t('filterAi', '🎓 AI Study (50)'), path: '/ai-study' },
-                { id: 'dev-pro', label: t('filterDev', '💻 Dev Pro (100)'), path: '/dev-tools' },
-                { id: 'pdf', label: t('filterPdf', '📄 PDF (54)'), path: '/pdf-tools' },
-                { id: 'image', label: t('filterImage', '🖼️ Image (40)'), path: '/image-tools' },
-                { id: 'calculator', label: t('filterCalc', '🧮 Calculators (201)'), path: '/calculators' },
+                { id: 'all', label: `${t('filterAll', 'All')} (${TOTAL_TOOLS_COUNT})`, path: '/' },
+                { id: 'notion', label: `📓 Notion Builder (${NOTION_TOOLS_COUNT})`, path: '/notion-template-builder' },
+                { id: 'job-ats', label: `${t('filterJob', '💼 Job / ATS')} (${JOB_ATS_TOOLS_COUNT})`, path: '/job-ats' },
+                { id: 'ai-study', label: `${t('filterAi', '🎓 AI Study')} (${AI_STUDY_TOOLS_COUNT})`, path: '/ai-study' },
+                { id: 'dev-pro', label: `${t('filterDev', '💻 Dev Pro')} (${DEV_PRO_TOOLS_COUNT})`, path: '/dev-tools' },
+                { id: 'pdf', label: `${t('filterPdf', '📄 PDF')} (${PDF_TOOLS_COUNT})`, path: '/pdf-tools' },
+                { id: 'image', label: `${t('filterImage', '🖼️ Image')} (${IMAGE_TOOLS_COUNT})`, path: '/image-tools' },
+                { id: 'calculator', label: `${t('filterCalc', '🧮 Calculators')} (${CALCULATOR_TOOLS_COUNT})`, path: '/calculators' },
               ].map(tab => (
                 <button
                   key={tab.id}

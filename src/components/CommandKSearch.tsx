@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Search, Sparkles, ArrowRight, CornerDownLeft, Flame, Briefcase, FileText, Image as ImageIcon, Calculator, Code2, Database } from 'lucide-react';
 import { TOOLS_DATABASE } from '../data/toolsData';
 import { ToolItem } from '../types';
+import { TOTAL_TOOLS_COUNT } from '../data/toolCounts';
 
 interface CommandKSearchProps {
   isOpen: boolean;
@@ -92,7 +93,7 @@ export const CommandKSearch: React.FC<CommandKSearchProps> = ({ isOpen, onClose,
             type="text"
             value={query}
             onChange={(e) => { setQuery(e.target.value); setSelectedIndex(0); }}
-            placeholder="Search 521 tools (e.g., ATS check, AI detector, PDF merge, fake data, EMI)..."
+            placeholder={`Search ${TOTAL_TOOLS_COUNT} tools (e.g., ATS check, AI detector, PDF merge, fake data, EMI)...`}
             className="w-full bg-transparent text-sm sm:text-base font-medium text-[#0B1F3A] placeholder:text-[#64748B] outline-none"
           />
           <kbd className="hidden sm:inline-flex items-center gap-0.5 px-2 py-1 text-[11px] font-mono font-semibold text-[#64748B] bg-white border border-[#E2E8F0] rounded-md shadow-2xs">
@@ -155,7 +156,7 @@ export const CommandKSearch: React.FC<CommandKSearchProps> = ({ isOpen, onClose,
               <kbd className="px-1.5 py-0.5 bg-white border border-[#E2E8F0] rounded text-[10px]">↵</kbd> Select
             </span>
           </div>
-          <span className="font-semibold text-[#071A3D]">521 Working Browser Tools</span>
+          <span className="font-semibold text-[#071A3D]">{TOTAL_TOOLS_COUNT} Working Browser Tools</span>
         </div>
 
       </div>

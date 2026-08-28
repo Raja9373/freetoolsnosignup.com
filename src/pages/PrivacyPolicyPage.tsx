@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { ShieldCheck, Lock, ArrowLeft, EyeOff, Cookie, Server, Scale, UserCheck, AlertCircle, CheckCircle2, ExternalLink } from 'lucide-react';
 import { AdSenseBanner } from '../components/AdSenseBanner';
 import { BrandLogo } from '../components/BrandLogo';
+import { TOTAL_TOOLS_COUNT } from '../data/toolCounts';
 
 export const PrivacyPolicyPage: React.FC<{ onNavigateHome: () => void }> = ({ onNavigateHome }) => {
   useEffect(() => {
@@ -69,7 +70,7 @@ export const PrivacyPolicyPage: React.FC<{ onNavigateHome: () => void }> = ({ on
               Plain-English Privacy Guarantee
             </div>
             <p className="text-xs sm:text-sm text-emerald-800 leading-relaxed">
-              We do not ask for your name, email, or password. We never upload your confidential PDF contracts, resumes, images, source code, or financial inputs to remote servers. All 521 utilities execute 100% locally inside your client-side browser sandbox.
+              We do not ask for your name, email, or password. We never upload your confidential PDF contracts, resumes, images, source code, or financial inputs to remote servers. All {TOTAL_TOOLS_COUNT} utilities execute 100% locally inside your client-side browser sandbox.
             </p>
           </div>
 
@@ -207,7 +208,7 @@ export const PrivacyPolicyPage: React.FC<{ onNavigateHome: () => void }> = ({ on
             <ul className="list-disc pl-5 space-y-1.5 text-slate-600 text-sm">
               <li><strong>Zero Sale of Personal Information:</strong> FreeToolsNoSignup.com does not sell, rent, or trade your personal data to data brokers or commercial marketers.</li>
               <li><strong>Right to Opt Out:</strong> You have the right to direct businesses not to sell your personal information.</li>
-              <li><strong>Non-Discrimination:</strong> We provide full, unthrottled access to all 521 tools regardless of whether you opt out of third-party advertising cookies.</li>
+              <li><strong>Non-Discrimination:</strong> We provide full, unthrottled access to all {TOTAL_TOOLS_COUNT} tools regardless of whether you opt out of third-party advertising cookies.</li>
             </ul>
           </section>
 

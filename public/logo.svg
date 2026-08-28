@@ -1,69 +1,93 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 300" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 310" fill="none">
   <defs>
-    <!-- Gear Blue Gradient -->
-    <linearGradient id="gearGrad" x1="40" y1="20" x2="240" y2="240" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stopColor="#0075FF" />
-      <stop offset="50%" stopColor="#0052CC" />
-      <stop offset="100%" stopColor="#003580" />
+    <!-- Gear Blue 3D Gradient -->
+    <linearGradient id="gearGrad" x1="50" y1="20" x2="250" y2="240" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#0099FF" />
+      <stop offset="45%" stopColor="#005BFF" />
+      <stop offset="100%" stopColor="#003399" />
     </linearGradient>
 
-    <!-- Wrench Orange/Amber Gradient -->
-    <linearGradient id="wrenchGrad" x1="60" y1="40" x2="200" y2="200" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stopColor="#FFAE00" />
-      <stop offset="45%" stopColor="#FF7A00" />
-      <stop offset="100%" stopColor="#E64A00" />
+    <!-- Gear 3D Inner Highlight -->
+    <linearGradient id="gearHighlight" x1="100" y1="30" x2="200" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#66C2FF" stopOpacity="0.8" />
+      <stop offset="100%" stopColor="#005BFF" stopOpacity="0" />
     </linearGradient>
 
-    <!-- Tools Orange-to-Red Gradient -->
-    <linearGradient id="toolsGrad" x1="560" y1="50" x2="880" y2="160" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stopColor="#FF8500" />
-      <stop offset="40%" stopColor="#FF5500" />
-      <stop offset="100%" stopColor="#E62E00" />
+    <!-- Wrench Gold to Fire-Orange Gradient -->
+    <linearGradient id="wrenchGrad" x1="70" y1="40" x2="210" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#FFC800" />
+      <stop offset="40%" stopColor="#FF7A00" />
+      <stop offset="100%" stopColor="#E63900" />
     </linearGradient>
 
-    <!-- Bottom Pill Dark Navy Gradient -->
-    <linearGradient id="pillGrad" x1="300" y1="220" x2="850" y2="270" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stopColor="#07192F" />
-      <stop offset="50%" stopColor="#0D2C52" />
-      <stop offset="100%" stopColor="#143E73" />
+    <!-- "Free" Deep Navy Gradient -->
+    <linearGradient id="freeNavyGrad" x1="300" y1="60" x2="300" y2="155" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#0F2B48" />
+      <stop offset="100%" stopColor="#041426" />
+    </linearGradient>
+
+    <!-- "Tools" Vibrant 3D Orange-to-Red Gradient -->
+    <linearGradient id="toolsGrad" x1="550" y1="50" x2="880" y2="160" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#FFA000" />
+      <stop offset="45%" stopColor="#FF5500" />
+      <stop offset="100%" stopColor="#E62200" />
+    </linearGradient>
+
+    <!-- Bottom Pill Dark Navy / Sapphire Gradient -->
+    <linearGradient id="pillGrad" x1="300" y1="215" x2="880" y2="275" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#061836" />
+      <stop offset="50%" stopColor="#0A2A5E" />
+      <stop offset="100%" stopColor="#0D3B82" />
     </linearGradient>
 
     <!-- Speed Streaks Gradients -->
-    <linearGradient id="streakOrange" x1="10" y1="0" x2="120" y2="0" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stopColor="#FFA000" />
+    <linearGradient id="streakOrange" x1="10" y1="0" x2="130" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#FFB300" />
       <stop offset="100%" stopColor="#FF5500" />
     </linearGradient>
 
     <!-- Shield Check Icon Gradient -->
-    <linearGradient id="shieldGrad" x1="500" y1="230" x2="530" y2="260" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stopColor="#00A2FF" />
+    <linearGradient id="shieldGrad" x1="505" y1="228" x2="535" y2="262" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#00C0FF" />
       <stop offset="100%" stopColor="#005BFF" />
     </linearGradient>
 
-    <!-- Soft Drop Shadow -->
-    <filter id="logoShadow" x="-5%" y="-5%" width="110%" height="115%">
-      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#000000" flood-opacity="0.16" />
+    <!-- Soft Drop Shadow Filter for Entire Logo -->
+    <filter id="logoShadow" x="-5%" y="-5%" width="110%" height="115%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#000000" flood-opacity="0.14" />
     </filter>
+
+    <!-- Arrow Cursor Gradient -->
+    <linearGradient id="cursorBevel" x1="160" y1="120" x2="220" y2="210" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#FFFFFF" />
+      <stop offset="65%" stopColor="#FFFFFF" />
+      <stop offset="100%" stopColor="#E0EEFF" />
+    </linearGradient>
   </defs>
 
   <g filter="url(#logoShadow)">
     
     <!-- ==================== LEFT ICON EMBLEM ==================== -->
     <g id="logo-emblem" transform="translate(10, 10)">
-      <!-- Speed Motion Trails -->
-      <circle cx="28" cy="115" r="7" fill="#0052CC" />
-      <rect x="42" y="108" width="80" height="14" rx="7" fill="url(#streakOrange)" />
       
-      <circle cx="20" cy="144" r="6" fill="#0075FF" />
-      <rect x="36" y="136" width="105" height="16" rx="8" fill="#0A2540" />
+      <!-- Speed Motion Trails on the Left -->
+      <!-- Top streak -->
+      <circle cx="28" cy="115" r="7" fill="#005BFF" />
+      <rect x="42" y="108" width="82" height="14" rx="7" fill="url(#streakOrange)" />
       
-      <circle cx="32" cy="172" r="7" fill="#FFA000" />
-      <rect x="52" y="165" width="70" height="14" rx="7" fill="url(#streakOrange)" />
+      <!-- Middle streak -->
+      <circle cx="20" cy="144" r="6" fill="#0099FF" />
+      <rect x="36" y="136" width="108" height="16" rx="8" fill="#0A2540" />
       
-      <circle cx="60" cy="192" r="8" fill="#FF5500" />
-      <circle cx="78" cy="204" r="5" fill="#0052CC" />
+      <!-- Bottom streak -->
+      <circle cx="32" cy="172" r="7" fill="#FFB300" />
+      <rect x="52" y="165" width="74" height="14" rx="7" fill="url(#streakOrange)" />
+      
+      <!-- Accompanying speed dots -->
+      <circle cx="62" cy="193" r="8" fill="#FF5500" />
+      <circle cx="80" cy="205" r="5" fill="#005BFF" />
 
-      <!-- Thick White Die-Cut Contour Behind Gear -->
+      <!-- Thick White Die-Cut Silhouette Behind Gear & Icon -->
       <path
         d="M175 30 L195 30 L200 52 L222 62 L240 46 L256 62 L240 80 L250 102 L272 107 L272 129 L250 134 L240 156 L256 174 L240 190 L222 174 L200 184 L195 206 L175 206 L170 184 L148 174 L130 190 L114 174 L130 156 L120 134 L98 129 L98 107 L120 102 L130 80 L114 62 L130 46 L148 62 L170 52 Z"
         fill="#FFFFFF"
@@ -73,21 +97,28 @@
         stroke-linecap="round"
       />
 
-      <!-- Mechanical Gear Cog -->
+      <!-- Mechanical Gear Cog Wheel -->
       <path
         d="M175 35 L195 35 L200 55 L220 64 L238 50 L252 64 L238 82 L247 102 L267 107 L267 127 L247 132 L238 152 L252 170 L238 184 L220 170 L200 179 L195 199 L175 199 L170 179 L150 170 L132 184 L118 170 L132 152 L123 132 L103 127 L103 107 L123 102 L132 82 L118 64 L132 50 L150 64 L170 55 Z"
         fill="url(#gearGrad)"
-        stroke="#003580"
+        stroke="#003399"
         stroke-width="3"
         stroke-linejoin="round"
       />
 
-      <!-- Gear Center Dark Cavity -->
-      <circle cx="185" cy="117" r="48" fill="#081A30" />
+      <!-- Gear 3D Curved Light Reflection -->
+      <path
+        d="M170 55 L195 35 L220 64 L238 50 L252 64 L238 82 C220 60 175 60 150 64 Z"
+        fill="url(#gearHighlight)"
+        opacity="0.6"
+      />
 
-      <!-- Wrench Tool In Cavity -->
+      <!-- Gear Center Dark Cavity -->
+      <circle cx="185" cy="117" r="48" fill="#061830" stroke="#002266" stroke-width="2" />
+
+      <!-- Wrench Tool Graphic in Center Cavity -->
       <g transform="rotate(-38 185 117)">
-        <!-- Wrench Handle -->
+        <!-- Wrench Handle with 3D gradient -->
         <path
           d="M173 95 L197 95 L193 170 C193 176 177 176 177 170 Z"
           fill="url(#wrenchGrad)"
@@ -104,21 +135,27 @@
         />
       </g>
 
-      <!-- White Computer Cursor Arrow -->
+      <!-- White Clicking Computer Cursor Arrow -->
       <g transform="translate(162, 114)">
-        <!-- Cursor White Body & Thick Navy Border -->
+        <!-- Outer Dark Navy Stroke for Cursor -->
         <path
           d="M0 0 L58 58 L34 62 L52 102 L36 109 L18 69 L-4 90 Z"
           fill="#FFFFFF"
           stroke="#071E36"
-          stroke-width="7"
+          stroke-width="8"
           stroke-linejoin="round"
           stroke-linecap="round"
         />
-        <!-- Inner Subtle White Fill / Crisp Edge -->
+        <!-- White Crisp Cursor Body with Gradient Tint -->
         <path
           d="M4 8 L50 54 L30 57 L44 91 L36 95 L20 61 L2 78 Z"
-          fill="#FFFFFF"
+          fill="url(#cursorBevel)"
+        />
+        <!-- Cyan/Sky-Blue Light Edge on Left -->
+        <path
+          d="M4 8 L2 78 L12 68 L2 8 Z"
+          fill="#00B0FF"
+          opacity="0.35"
         />
       </g>
     </g>
@@ -128,9 +165,9 @@
     <!-- TOP LINE: FreeTools -->
     <!-- White Outline Behind Main Text for Die-Cut Sticker Effect -->
     <text
-      x="298"
+      x="300"
       y="152"
-      font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif"
+      font-family="'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
       font-size="112"
       font-weight="900"
       letter-spacing="-2px"
@@ -143,24 +180,24 @@
     </text>
 
     <g id="text-freetools">
-      <!-- "Free" in Dark Navy -->
+      <!-- "Free" in Deep Navy Gradient -->
       <text
-        x="298"
+        x="300"
         y="152"
-        font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif"
+        font-family="'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
         font-size="112"
         font-weight="900"
         letter-spacing="-2px"
-        fill="#0A2540"
+        fill="url(#freeNavyGrad)"
       >
         Free
       </text>
 
       <!-- "Tools" in Bright Orange Gradient -->
       <text
-        x="556"
+        x="558"
         y="152"
-        font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif"
+        font-family="'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
         font-size="112"
         font-weight="900"
         letter-spacing="-2px"
@@ -173,14 +210,14 @@
     <!-- MIDDLE LINE: NoSignup flanked with orange bars -->
     <g id="text-nosignup" transform="translate(0, -6)">
       <!-- Left Orange Accent Line -->
-      <rect x="298" y="174" width="105" height="9" rx="4.5" fill="#FF6A00" />
+      <rect x="300" y="174" width="105" height="9" rx="4.5" fill="#FF6A00" />
 
       <!-- White Die-Cut Behind NoSignup -->
       <text
-        x="585"
+        x="588"
         y="186"
         text-anchor="middle"
-        font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif"
+        font-family="'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
         font-size="46"
         font-weight="900"
         letter-spacing="0.5px"
@@ -194,20 +231,20 @@
 
       <!-- NoSignup Main Text -->
       <text
-        x="585"
+        x="588"
         y="186"
         text-anchor="middle"
-        font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif"
+        font-family="'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
         font-size="46"
         font-weight="900"
         letter-spacing="0.5px"
-        fill="#0A2540"
+        fill="#081E38"
       >
         NoSignup
       </text>
 
       <!-- Right Orange Accent Line -->
-      <rect x="748" y="174" width="138" height="9" rx="4.5" fill="#FF6A00" />
+      <rect x="752" y="174" width="140" height="9" rx="4.5" fill="#FF6A00" />
     </g>
 
     <!-- BOTTOM PILL BADGE: ⚡ FAST | 🛡️ FREE | 👆 EASY -->
@@ -216,7 +253,7 @@
       <rect
         x="302"
         y="210"
-        width="580"
+        width="588"
         height="56"
         rx="28"
         fill="#FFFFFF"
@@ -229,16 +266,16 @@
       <rect
         x="306"
         y="214"
-        width="572"
+        width="580"
         height="48"
         rx="24"
         fill="url(#pillGrad)"
         stroke="#0080FF"
-        stroke-width="1.5"
+        stroke-width="2"
       />
 
       <!-- Feature 1: FAST -->
-      <g transform="translate(340, 226)">
+      <g transform="translate(342, 226)">
         <!-- Lightning Bolt Icon -->
         <path
           d="M14 2 L4 14 L12 14 L10 24 L20 12 L12 12 Z"
@@ -251,7 +288,7 @@
         <text
           x="30"
           y="18"
-          font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif"
+          font-family="'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
           font-size="21"
           font-weight="800"
           letter-spacing="1.5px"
@@ -262,10 +299,10 @@
       </g>
 
       <!-- Separator 1 -->
-      <rect x="478" y="228" width="3.5" height="20" rx="1.75" fill="#FF7700" />
+      <rect x="482" y="228" width="3.5" height="20" rx="1.75" fill="#FF7700" />
 
       <!-- Feature 2: FREE -->
-      <g transform="translate(508, 226)">
+      <g transform="translate(512, 226)">
         <!-- Shield Icon with Checkmark -->
         <path
           d="M16 2 L28 6 L28 14 C28 20 22 24 16 26 C10 24 4 20 4 14 L4 6 Z"
@@ -286,7 +323,7 @@
         <text
           x="38"
           y="18"
-          font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif"
+          font-family="'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
           font-size="21"
           font-weight="800"
           letter-spacing="1.5px"
@@ -297,10 +334,10 @@
       </g>
 
       <!-- Separator 2 -->
-      <rect x="654" y="228" width="3.5" height="20" rx="1.75" fill="#FF7700" />
+      <rect x="660" y="228" width="3.5" height="20" rx="1.75" fill="#FF7700" />
 
       <!-- Feature 3: EASY -->
-      <g transform="translate(684, 226)">
+      <g transform="translate(690, 226)">
         <!-- Click Pointer Cursor / Sparkle Icon -->
         <g transform="translate(0, 1)">
           <path
@@ -319,7 +356,7 @@
         <text
           x="38"
           y="18"
-          font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif"
+          font-family="'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
           font-size="21"
           font-weight="800"
           letter-spacing="1.5px"

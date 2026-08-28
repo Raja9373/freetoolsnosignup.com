@@ -1,6 +1,17 @@
 import React from 'react';
 import { ShieldCheck, Zap, Lock, Cpu, Globe, CheckCircle2, Heart } from 'lucide-react';
 import { BrandLogo } from './BrandLogo';
+import { 
+  TOTAL_TOOLS_COUNT, 
+  INTERACTIVE_CALCULATORS_COUNT,
+  PDF_TOOLS_COUNT,
+  IMAGE_TOOLS_COUNT,
+  CALCULATOR_TOOLS_COUNT,
+  JOB_ATS_TOOLS_COUNT,
+  AI_STUDY_TOOLS_COUNT,
+  DEV_PRO_TOOLS_COUNT,
+  NOTION_TOOLS_COUNT
+} from '../data/toolCounts';
 
 interface FooterProps {
   onNavigate?: (route: string) => void;
@@ -26,7 +37,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <span>The Modern Standard for Free Online Utilities</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-black text-white leading-snug">
-              FreeToolsNoSignup.com — 580+ Browser-Native Utilities &amp; 260+ Accurate Calculators
+              FreeToolsNoSignup.com — {TOTAL_TOOLS_COUNT} Browser-Native Tools, including {CALCULATOR_TOOLS_COUNT} Calculators
             </h2>
           </div>
           <BrandLogo variant="footer" onClick={() => onNavigate?.('/')} />
@@ -49,7 +60,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               Zero Watermarks &amp; No Fake Limits
             </h4>
             <p className="text-slate-400 text-xs leading-relaxed">
-              Traditional freemium websites lure users with "free tools" only to demand credit cards, email addresses, or apply intrusive logos and watermarks at the moment of download. At FTNS, all 580+ tools—including our flagship Notion Template Builder, ATS Resume Scorer, AI Content Detector, PDF Merger, and 260+ Loan &amp; Science Calculators—are genuinely free with zero usage gates.
+              Traditional freemium websites lure users with "free tools" only to demand credit cards, email addresses, or apply intrusive logos and watermarks at the moment of download. At FTNS, all {TOTAL_TOOLS_COUNT} tools—including our flagship Notion Template Builder, ATS Resume Scorer, AI Content Detector, PDF Merger, and {CALCULATOR_TOOLS_COUNT} Loan &amp; Science Calculator Tools ({INTERACTIVE_CALCULATORS_COUNT} Calculator Functions)—are genuinely free with zero usage gates.
             </p>
           </div>
 
@@ -67,10 +78,10 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         {/* Structured SEO Guide Details */}
         <div className="bg-[#040E24] border border-[#126BFF]/20 rounded-2xl p-5 text-xs text-slate-400 space-y-3">
           <h3 className="font-bold text-white text-sm">
-            Comprehensive Directory of 580+ Working Tools Across 7 Categories:
+            Comprehensive Directory of {TOTAL_TOOLS_COUNT} Working Tools Across 7 Categories:
           </h3>
           <p className="leading-relaxed">
-            Our platform categorizes 580+ verified browser tools across seven core productivity domains: <strong>1. Job &amp; ATS Tools</strong> (featuring the real-time keyword matcher, CV score diagnostic, tailored cover letter writer, and salary counter-offer scripts); <strong>2. AI Study Tools</strong> (featuring the multi-layered burstiness AI content detector, 1-click humanizer, and APA/MLA citation generators); <strong>3. Dev Pro Tools</strong> (synthetic QA data generators, valid test credit cards, QR code studios, and JSON tree formatters); <strong>4. PDF Tools</strong> (client-side PDF merging, splitting, lossless compression, and text extraction); <strong>5. Image Tools</strong> (lossless WebP/PNG/JPG compressors, aspect ratio resizers, and transparent cutout tools); <strong>6. Calculators (260+ Suite)</strong> (mortgage EMI, compound SIP growth models, net salary take-home estimators, WHO-compliant BMI, scientific, and physics engineering engines); and <strong>7. Notion Templates &amp; Custom Builder</strong> (featuring our custom column database builder with 18 property types, CSV/JSON export, and 25 instant readymade templates).
+            Our platform categorizes {TOTAL_TOOLS_COUNT} verified browser tools across seven core productivity domains: <strong>1. Job &amp; ATS Tools ({JOB_ATS_TOOLS_COUNT} Tools)</strong> (featuring the real-time keyword matcher, CV score diagnostic, tailored cover letter writer, and salary counter-offer scripts); <strong>2. AI Study Tools ({AI_STUDY_TOOLS_COUNT} Tools)</strong> (featuring the multi-layered burstiness AI content detector, 1-click humanizer, and APA/MLA citation generators); <strong>3. Dev Pro Tools ({DEV_PRO_TOOLS_COUNT} Tools)</strong> (synthetic QA data generators, valid test credit cards, QR code studios, and JSON tree formatters); <strong>4. PDF Tools ({PDF_TOOLS_COUNT} Tools)</strong> (client-side PDF merging, splitting, lossless compression, and text extraction); <strong>5. Image Tools ({IMAGE_TOOLS_COUNT} Tools)</strong> (lossless WebP/PNG/JPG compressors, aspect ratio resizers, and transparent cutout tools); <strong>6. Calculators ({CALCULATOR_TOOLS_COUNT} Tools • {INTERACTIVE_CALCULATORS_COUNT} Calculator Functions)</strong> (mortgage EMI, compound SIP growth models, net salary take-home estimators, WHO-compliant BMI, scientific, and physics engineering engines); and <strong>7. Notion Templates &amp; Custom Builder ({NOTION_TOOLS_COUNT} Tools)</strong> (featuring our custom column database builder with 18 property types, CSV/JSON export, and 25 instant readymade templates).
           </p>
         </div>
       </div>

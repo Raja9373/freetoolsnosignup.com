@@ -2,6 +2,16 @@ import React, { useEffect } from 'react';
 import { ShieldCheck, Cpu, ArrowLeft, Heart, Zap, Globe, Sparkles, CheckCircle2, Lock, FileText, Code2, Users } from 'lucide-react';
 import { AdSenseBanner } from '../components/AdSenseBanner';
 import { BrandLogo } from '../components/BrandLogo';
+import { 
+  TOTAL_TOOLS_COUNT, 
+  PDF_TOOLS_COUNT, 
+  IMAGE_TOOLS_COUNT, 
+  CALCULATOR_TOOLS_COUNT, 
+  JOB_ATS_TOOLS_COUNT, 
+  AI_STUDY_TOOLS_COUNT, 
+  DEV_PRO_TOOLS_COUNT, 
+  NOTION_TOOLS_COUNT 
+} from '../data/toolCounts';
 
 export const AboutPage: React.FC<{ onNavigateHome: () => void }> = ({ onNavigateHome }) => {
   useEffect(() => {
@@ -112,38 +122,38 @@ export const AboutPage: React.FC<{ onNavigateHome: () => void }> = ({ onNavigate
           <section className="space-y-4">
             <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
               <Zap className="w-5 h-5 text-amber-500" />
-              The 521-Tool Unified Ecosystem
+              The {TOTAL_TOOLS_COUNT}-Tool Unified Ecosystem
             </h2>
             <p className="text-slate-600 text-base leading-relaxed">
-              Instead of forcing users to bookmark dozens of ad-cluttered single-purpose websites, FreeToolsNoSignup has organized 521 specialized utility modules into 7 core functional clusters:
+              Instead of forcing users to bookmark dozens of ad-cluttered single-purpose websites, FreeToolsNoSignup has organized {TOTAL_TOOLS_COUNT} specialized utility modules into 7 core functional clusters:
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
               <div className="p-4 rounded-xl bg-blue-50/60 border border-blue-100">
-                <h3 className="font-bold text-blue-950 text-sm">1. PDF Utilities (54 Tools)</h3>
+                <h3 className="font-bold text-blue-950 text-sm">1. PDF Utilities ({PDF_TOOLS_COUNT} Tools)</h3>
                 <p className="text-xs text-blue-800/80 mt-1">High-performance document merging, page extraction, watermarking, password encryption, and formatting using memory-safe WASM streams.</p>
               </div>
               <div className="p-4 rounded-xl bg-emerald-50/60 border border-emerald-100">
-                <h3 className="font-bold text-emerald-950 text-sm">2. Image & Media Studio (40 Tools)</h3>
+                <h3 className="font-bold text-emerald-950 text-sm">2. Image & Media Studio ({IMAGE_TOOLS_COUNT} Tools)</h3>
                 <p className="text-xs text-emerald-800/80 mt-1">Client-side lossless WebP/JPEG compression, background segmentation, bulk resizing, color palette extraction, and SVG minifiers.</p>
               </div>
               <div className="p-4 rounded-xl bg-purple-50/60 border border-purple-100">
-                <h3 className="font-bold text-purple-950 text-sm">3. Financial & Math Calculators (201 Tools)</h3>
+                <h3 className="font-bold text-purple-950 text-sm">3. Financial & Math Calculators ({CALCULATOR_TOOLS_COUNT} Tools)</h3>
                 <p className="text-xs text-purple-800/80 mt-1">Banking standard loan EMI formulas, SIP compound wealth growth charts, WHO BMI tables, VAT/GST calculators, and mortgage models.</p>
               </div>
               <div className="p-4 rounded-xl bg-amber-50/60 border border-amber-100">
-                <h3 className="font-bold text-amber-950 text-sm">4. Career & ATS Resume Suite (50 Tools)</h3>
+                <h3 className="font-bold text-amber-950 text-sm">4. Career & ATS Resume Suite ({JOB_ATS_TOOLS_COUNT} Tools)</h3>
                 <p className="text-xs text-amber-800/80 mt-1">Algorithmic applicant tracking system (ATS) match scoring, action-verb density scorers, and interview readiness coaches.</p>
               </div>
               <div className="p-4 rounded-xl bg-yellow-50/60 border border-yellow-100">
-                <h3 className="font-bold text-yellow-950 text-sm">5. AI Study & Research Suite (50 Tools)</h3>
+                <h3 className="font-bold text-yellow-950 text-sm">5. AI Study & Research Suite ({AI_STUDY_TOOLS_COUNT} Tools)</h3>
                 <p className="text-xs text-yellow-800/80 mt-1">Sentence burstiness and perplexity heuristic scanners, academic paraphrasing engines, and APA/MLA citation constructors.</p>
               </div>
               <div className="p-4 rounded-xl bg-cyan-50/60 border border-cyan-100">
-                <h3 className="font-bold text-cyan-950 text-sm">6. Dev Pro & Engineering Tools (100 Tools)</h3>
+                <h3 className="font-bold text-cyan-950 text-sm">6. Dev Pro & Engineering Tools ({DEV_PRO_TOOLS_COUNT} Tools)</h3>
                 <p className="text-xs text-cyan-800/80 mt-1">Deterministic Luhn algorithm mock data generators, JSON AST formatters, regex analyzers, QR studio, and crypto hashers.</p>
               </div>
               <div className="p-4 rounded-xl bg-slate-900 border border-amber-500/40 sm:col-span-2 text-white">
-                <h3 className="font-bold text-amber-400 text-sm">7. Notion Templates & Custom Builder (26 Tools)</h3>
+                <h3 className="font-bold text-amber-400 text-sm">7. Notion Templates & Custom Builder ({NOTION_TOOLS_COUNT} Tools)</h3>
                 <p className="text-xs text-slate-300 mt-1">Custom database builder with 18 property types, table/kanban/JSON views, instant sample rows, CSV export, and 25 instant readymade productivity templates.</p>
               </div>
             </div>
@@ -156,7 +166,7 @@ export const AboutPage: React.FC<{ onNavigateHome: () => void }> = ({ onNavigate
               Transparent, Ethical Monetization
             </h2>
             <p className="text-slate-600 text-base leading-relaxed">
-              How do we keep 521 tools 100% free without charging users or selling confidential information? We partner with verified digital advertising networks, including Google AdSense, to display non-intrusive, privacy-compliant banner placements. These small contextual advertisements directly sponsor the continuous high-speed global CDN delivery and engineering maintenance of our suite.
+              How do we keep {TOTAL_TOOLS_COUNT} tools 100% free without charging users or selling confidential information? We partner with verified digital advertising networks, including Google AdSense, to display non-intrusive, privacy-compliant banner placements. These small contextual advertisements directly sponsor the continuous high-speed global CDN delivery and engineering maintenance of our suite.
             </p>
             <p className="text-slate-600 text-base leading-relaxed">
               We uphold strict advertising standards: zero pop-unders, zero deceptive download links, zero auto-playing audio ads, and zero malware. Every banner is clearly designated with an official <strong>ADVERTISEMENT</strong> label in strict compliance with Google Publisher Policies.

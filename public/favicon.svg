@@ -1,99 +1,110 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 140" fill="none">
   <defs>
-    <!-- Gear Blue Gradient -->
-    <linearGradient id="favGearGrad" x1="20" y1="10" x2="110" y2="110" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stopColor="#0072FF" />
-      <stop offset="60%" stopColor="#0052CC" />
-      <stop offset="100%" stopColor="#003580" />
+    <!-- Gear Blue 3D Gradient -->
+    <linearGradient id="favGearGrad" x1="20" y1="10" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#0099FF" />
+      <stop offset="50%" stopColor="#005BFF" />
+      <stop offset="100%" stopColor="#003399" />
     </linearGradient>
 
-    <!-- Wrench Orange/Amber Gradient -->
-    <linearGradient id="favWrenchGrad" x1="30" y1="20" x2="90" y2="90" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stopColor="#FFAE00" />
-      <stop offset="40%" stopColor="#FF7A00" />
-      <stop offset="100%" stopColor="#E64A00" />
+    <!-- Wrench Gold-to-Orange Gradient -->
+    <linearGradient id="favWrenchGrad" x1="30" y1="20" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#FFC800" />
+      <stop offset="45%" stopColor="#FF7A00" />
+      <stop offset="100%" stopColor="#E63900" />
     </linearGradient>
 
     <!-- Speed Streaks Gradients -->
-    <linearGradient id="favStreakOrange" x1="0" y1="0" x2="50" y2="0" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stopColor="#FFA000" />
+    <linearGradient id="favStreakOrange" x1="0" y1="0" x2="60" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#FFB300" />
       <stop offset="100%" stopColor="#FF5500" />
     </linearGradient>
 
     <!-- Drop Shadow Filter -->
     <filter id="favDropShadow" x="-10%" y="-10%" width="130%" height="130%">
-      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.25" />
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000000" flood-opacity="0.22" />
     </filter>
   </defs>
 
   <g filter="url(#favDropShadow)">
     <!-- Speed Motion Trails -->
     <!-- Top streak -->
-    <rect x="8" y="36" width="30" height="7" rx="3.5" fill="url(#favStreakOrange)" />
-    <circle cx="4" cy="39.5" r="3.5" fill="#0052CC" />
+    <rect x="8" y="42" width="34" height="8" rx="4" fill="url(#favStreakOrange)" />
+    <circle cx="4" cy="46" r="4" fill="#005BFF" />
+    
     <!-- Middle streak -->
-    <rect x="6" y="49" width="38" height="8" rx="4" fill="#0A2540" />
+    <rect x="6" y="56" width="42" height="9" rx="4.5" fill="#0A2540" />
+    <circle cx="2" cy="60.5" r="3" fill="#0099FF" />
+    
     <!-- Bottom streak -->
-    <rect x="12" y="63" width="26" height="7" rx="3.5" fill="url(#favStreakOrange)" />
-    <circle cx="6" cy="66.5" r="3.5" fill="#FFA000" />
-    <circle cx="2" cy="53" r="2.5" fill="#0072FF" />
+    <rect x="12" y="71" width="30" height="8" rx="4" fill="url(#favStreakOrange)" />
+    <circle cx="6" cy="75" r="4" fill="#FFB300" />
+
+    <circle cx="18" cy="85" r="4.5" fill="#FF5500" />
+    <circle cx="28" cy="92" r="3" fill="#005BFF" />
 
     <!-- White Contour Silhouette Background -->
     <path
-      d="M68 12L76 12L78 20.5L86.5 24L93.5 18L99.5 24L93.5 31L97 39.5L105.5 41.5L105.5 49.5L97 51.5L93.5 60L99.5 67L93.5 73L86.5 67L78 70.5L76 79L68 79L66 70.5L57.5 67L50.5 73L44.5 67L50.5 60L47 51.5L38.5 49.5L38.5 41.5L47 39.5L50.5 31L44.5 24L50.5 18L57.5 24L66 20.5Z"
+      d="M74 15L84 15L86 24L95 28L103 22L110 28L104 36L108 45L117 47L117 56L108 58L104 67L110 75L103 81L95 75L86 79L84 88L74 88L72 79L63 75L55 81L48 75L55 67L51 58L42 56L42 47L51 45L55 36L48 28L55 22L63 28L72 24Z"
       fill="#FFFFFF"
       stroke="#FFFFFF"
-      stroke-width="12"
+      stroke-width="14"
       stroke-linejoin="round"
       stroke-linecap="round"
     />
 
     <!-- Main Mechanical Gear Cog -->
     <path
-      d="M68 14L76 14L78 22L86 25.5L93 20L98 25L92.5 32L96 40L104 42L104 50L96 52L92.5 60L98 67L93 72L86 66.5L78 70L76 78L68 78L66 70L58 66.5L51 72L46 67L51.5 60L48 52L40 50L40 42L48 40L51.5 32L46 25L51 20L58 25.5L66 22Z"
+      d="M74 17L84 17L86 26L94.5 30L102 24.5L108 30.5L102 38.5L106 47L114.5 49L114.5 58L106 60L102 68.5L108 75.5L102 81.5L94.5 76L86 80L84 89L74 89L72 80L63.5 76L56 81.5L50 75.5L56 68.5L52 60L43.5 58L43.5 49L52 47L56 38.5L50 30.5L56 24.5L63.5 30L72 26Z"
       fill="url(#favGearGrad)"
-      stroke="#003580"
-      stroke-width="2"
+      stroke="#003399"
+      stroke-width="2.5"
       stroke-linejoin="round"
     />
 
     <!-- Gear Center Cavity -->
-    <circle cx="72" cy="46" r="19" fill="#091C36" />
+    <circle cx="79" cy="53" r="21" fill="#061830" stroke="#002266" stroke-width="1.5" />
 
     <!-- Wrench Tool Graphic inside Cavity -->
-    <g transform="rotate(-35 72 46)">
+    <g transform="rotate(-38 79 53)">
       <!-- Wrench Handle -->
       <path
-        d="M67 36 L77 36 L75 66 C75 69 69 69 69 66 Z"
+        d="M73 43 L85 43 L83 75 C83 78 77 78 77 75 Z"
         fill="url(#favWrenchGrad)"
         stroke="#FFFFFF"
-        stroke-width="1.5"
+        stroke-width="1.8"
       />
       <!-- Wrench Open Head -->
       <path
-        d="M61 36 C61 30 66 24 72 24 C78 24 83 30 83 36 C83 38 81 40 79 39 C77 38 75 33 72 33 C69 33 67 38 65 39 C63 40 61 38 61 36 Z"
+        d="M66 43 C66 36 72 30 79 30 C86 30 92 36 92 43 C92 45 90 47 88 46 C85 45 83 40 79 40 C75 40 73 45 70 46 C68 47 66 45 66 43 Z"
         fill="url(#favWrenchGrad)"
         stroke="#FFFFFF"
-        stroke-width="1.5"
+        stroke-width="1.8"
         stroke-linejoin="round"
       />
     </g>
 
     <!-- Clicking White Computer Cursor Arrow -->
-    <g transform="translate(62, 44)">
+    <g transform="translate(68, 51)">
       <!-- Cursor White Outer Die-Cut / Stroke -->
       <path
-        d="M0 0 L26 26 L15 28 L23 46 L16 49 L8 31 L-2 40 Z"
+        d="M0 0 L29 29 L17 31 L26 51 L18 55 L9 35 L-2 45 Z"
         fill="#FFFFFF"
-        stroke="#0A2540"
-        stroke-width="3.5"
+        stroke="#071E36"
+        stroke-width="4.5"
         stroke-linejoin="round"
         stroke-linecap="round"
       />
-      <!-- Cursor Highlight -->
+      <!-- Cursor Inner Fill -->
       <path
-        d="M2 4 L22 24 L13 25.5 L19 41 L15 43 L9 27.5 L0 35 Z"
+        d="M2 4 L25 27 L15 28.5 L22 46 L17 48 L10 31 L0 39 Z"
         fill="#FFFFFF"
+      />
+      <!-- Sky Blue Highlight Accent -->
+      <path
+        d="M2 4 L0 39 L6 33 L2 4 Z"
+        fill="#00B0FF"
+        opacity="0.4"
       />
     </g>
   </g>

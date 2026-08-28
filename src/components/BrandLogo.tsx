@@ -45,7 +45,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
         <img
           src="/logo.svg"
           alt="FreeToolsNoSignup.com"
-          className="h-10 sm:h-11 md:h-12 w-auto max-w-[220px] sm:max-w-[260px] object-contain drop-shadow-md"
+          className="h-11 sm:h-12 md:h-14 w-auto max-w-[240px] sm:max-w-[280px] object-contain drop-shadow-md"
           referrerPolicy="no-referrer"
           loading="eager"
         />
@@ -84,7 +84,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
       <img
         src="/logo.svg"
         alt="FreeToolsNoSignup.com"
-        className="h-7 sm:h-8 md:h-9 w-auto max-w-[170px] sm:max-w-[210px] md:max-w-[250px] object-contain drop-shadow-xs"
+        className="h-8 sm:h-9 md:h-10 w-auto max-w-[190px] sm:max-w-[230px] md:max-w-[270px] object-contain drop-shadow-xs"
         referrerPolicy="no-referrer"
         loading="eager"
       />
