@@ -15,6 +15,14 @@ async function startServer() {
   app.use(express.json({ limit: '1mb' }));
   app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 
+  // Safe Standard HTTP Security Headers (Production & Dev)
+  app.use((_req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    next();
+  });
+
   // Request IP extraction helper
   const getClientIp = (req: express.Request): string => {
     const forwarded = req.headers['x-forwarded-for'];
@@ -47,7 +55,7 @@ async function startServer() {
     res.json({
       configured: true,
       provider: activeProvider,
-      supportEmail: 'support@freetoolsnosignup.com',
+      supportEmail: 'hello@freetoolsnosignup.com',
       destinationConfigured: true,
       rateLimitSecured: true,
       spamHoneypotSecured: true,
@@ -96,7 +104,7 @@ async function startServer() {
       } else {
         return res.status(500).json({
           success: false,
-          error: 'An error occurred while transmitting your message to the support queue. Please retry or contact support@freetoolsnosignup.com directly.',
+          error: 'An error occurred while transmitting your message to the support queue. Please retry or contact hello@freetoolsnosignup.com directly.',
         });
       }
     } catch (err: any) {

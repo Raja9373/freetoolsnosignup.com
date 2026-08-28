@@ -1,40 +1,100 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
   <defs>
-    <linearGradient id="favBg" x1="4" y1="4" x2="60" y2="60" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stopColor="#0f172a" />
-      <stop offset="50%" stopColor="#1e1b4b" />
-      <stop offset="100%" stopColor="#09090b" />
+    <!-- Gear Blue Gradient -->
+    <linearGradient id="favGearGrad" x1="20" y1="10" x2="110" y2="110" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#0072FF" />
+      <stop offset="60%" stopColor="#0052CC" />
+      <stop offset="100%" stopColor="#003580" />
     </linearGradient>
-    <linearGradient id="favGold" x1="12" y1="10" x2="52" y2="54" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stopColor="#fef08a" />
-      <stop offset="25%" stopColor="#f59e0b" />
-      <stop offset="70%" stopColor="#d97706" />
-      <stop offset="100%" stopColor="#b45309" />
+
+    <!-- Wrench Orange/Amber Gradient -->
+    <linearGradient id="favWrenchGrad" x1="30" y1="20" x2="90" y2="90" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#FFAE00" />
+      <stop offset="40%" stopColor="#FF7A00" />
+      <stop offset="100%" stopColor="#E64A00" />
     </linearGradient>
-    <linearGradient id="favSapphire" x1="20" y1="16" x2="44" y2="48" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stopColor="#38bdf8" />
-      <stop offset="100%" stopColor="#6366f1" />
+
+    <!-- Speed Streaks Gradients -->
+    <linearGradient id="favStreakOrange" x1="0" y1="0" x2="50" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#FFA000" />
+      <stop offset="100%" stopColor="#FF5500" />
     </linearGradient>
-    <linearGradient id="favBorder" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stopColor="#fde047" stopOpacity="0.9" />
-      <stop offset="50%" stopColor="#d97706" stopOpacity="0.5" />
-      <stop offset="100%" stopColor="#fef08a" stopOpacity="0.9" />
-    </linearGradient>
+
+    <!-- Drop Shadow Filter -->
+    <filter id="favDropShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.25" />
+    </filter>
   </defs>
 
-  <!-- Shield Outer Facet -->
-  <path d="M32 4L56 15.5V35C56 47.5 46 56.5 32 60.5C18 56.5 8 47.5 8 35V15.5L32 4Z" fill="url(#favBg)" stroke="url(#favBorder)" stroke-width="2" stroke-linejoin="round" />
+  <g filter="url(#favDropShadow)">
+    <!-- Speed Motion Trails -->
+    <!-- Top streak -->
+    <rect x="8" y="36" width="30" height="7" rx="3.5" fill="url(#favStreakOrange)" />
+    <circle cx="4" cy="39.5" r="3.5" fill="#0052CC" />
+    <!-- Middle streak -->
+    <rect x="6" y="49" width="38" height="8" rx="4" fill="#0A2540" />
+    <!-- Bottom streak -->
+    <rect x="12" y="63" width="26" height="7" rx="3.5" fill="url(#favStreakOrange)" />
+    <circle cx="6" cy="66.5" r="3.5" fill="#FFA000" />
+    <circle cx="2" cy="53" r="2.5" fill="#0072FF" />
 
-  <!-- Royal Crown Geometry -->
-  <path d="M17 33L23 21L28 28L17 33Z" fill="url(#favGold)" opacity="0.9" />
-  <path d="M47 33L41 21L36 28L47 33Z" fill="url(#favGold)" opacity="0.9" />
-  <path d="M32 16L37 27L32 31L27 27L32 16Z" fill="url(#favGold)" />
+    <!-- White Contour Silhouette Background -->
+    <path
+      d="M68 12L76 12L78 20.5L86.5 24L93.5 18L99.5 24L93.5 31L97 39.5L105.5 41.5L105.5 49.5L97 51.5L93.5 60L99.5 67L93.5 73L86.5 67L78 70.5L76 79L68 79L66 70.5L57.5 67L50.5 73L44.5 67L50.5 60L47 51.5L38.5 49.5L38.5 41.5L47 39.5L50.5 31L44.5 24L50.5 18L57.5 24L66 20.5Z"
+      fill="#FFFFFF"
+      stroke="#FFFFFF"
+      stroke-width="12"
+      stroke-linejoin="round"
+      stroke-linecap="round"
+    />
 
-  <!-- Center Diamond Jewel -->
-  <polygon points="32,32 39,40 32,48 25,40" fill="url(#favSapphire)" stroke="#fef08a" stroke-width="1.2" />
+    <!-- Main Mechanical Gear Cog -->
+    <path
+      d="M68 14L76 14L78 22L86 25.5L93 20L98 25L92.5 32L96 40L104 42L104 50L96 52L92.5 60L98 67L93 72L86 66.5L78 70L76 78L68 78L66 70L58 66.5L51 72L46 67L51.5 60L48 52L40 50L40 42L48 40L51.5 32L46 25L51 20L58 25.5L66 22Z"
+      fill="url(#favGearGrad)"
+      stroke="#003580"
+      stroke-width="2"
+      stroke-linejoin="round"
+    />
 
-  <!-- Crown Jewels -->
-  <circle cx="32" cy="15" r="2" fill="#fef08a" />
-  <circle cx="22" cy="20.5" r="1.5" fill="#fef08a" />
-  <circle cx="42" cy="20.5" r="1.5" fill="#fef08a" />
+    <!-- Gear Center Cavity -->
+    <circle cx="72" cy="46" r="19" fill="#091C36" />
+
+    <!-- Wrench Tool Graphic inside Cavity -->
+    <g transform="rotate(-35 72 46)">
+      <!-- Wrench Handle -->
+      <path
+        d="M67 36 L77 36 L75 66 C75 69 69 69 69 66 Z"
+        fill="url(#favWrenchGrad)"
+        stroke="#FFFFFF"
+        stroke-width="1.5"
+      />
+      <!-- Wrench Open Head -->
+      <path
+        d="M61 36 C61 30 66 24 72 24 C78 24 83 30 83 36 C83 38 81 40 79 39 C77 38 75 33 72 33 C69 33 67 38 65 39 C63 40 61 38 61 36 Z"
+        fill="url(#favWrenchGrad)"
+        stroke="#FFFFFF"
+        stroke-width="1.5"
+        stroke-linejoin="round"
+      />
+    </g>
+
+    <!-- Clicking White Computer Cursor Arrow -->
+    <g transform="translate(62, 44)">
+      <!-- Cursor White Outer Die-Cut / Stroke -->
+      <path
+        d="M0 0 L26 26 L15 28 L23 46 L16 49 L8 31 L-2 40 Z"
+        fill="#FFFFFF"
+        stroke="#0A2540"
+        stroke-width="3.5"
+        stroke-linejoin="round"
+        stroke-linecap="round"
+      />
+      <!-- Cursor Highlight -->
+      <path
+        d="M2 4 L22 24 L13 25.5 L19 41 L15 43 L9 27.5 L0 35 Z"
+        fill="#FFFFFF"
+      />
+    </g>
+  </g>
 </svg>

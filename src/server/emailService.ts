@@ -128,7 +128,7 @@ export function validateSubmission(data: any): { valid: boolean; error?: string;
  */
 export async function sendContactEmail(payload: ContactSubmissionPayload): Promise<EmailServiceResult> {
   const destinationEmail = process.env.CONTACT_DESTINATION_EMAIL || 'alokmohansharma.delhi@gmail.com';
-  const fromEmail = process.env.RESEND_FROM_EMAIL || process.env.SMTP_FROM || 'FreeToolsNoSignup Support <support@freetoolsnosignup.com>';
+  const fromEmail = process.env.RESEND_FROM_EMAIL || process.env.SMTP_FROM || 'FreeToolsNoSignup Support <hello@freetoolsnosignup.com>';
   const timestampIso = new Date().toISOString();
   const timestampReadable = new Date().toUTCString();
 

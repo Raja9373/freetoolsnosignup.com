@@ -1,12 +1,111 @@
 @import "tailwindcss";
 
+@theme {
+  --color-navy-950: #040E24;
+  --color-navy-900: #071A3D;
+  --color-navy-850: #0B1F3A;
+  --color-navy-800: #0F274A;
+  --color-navy-700: #173766;
+  
+  --color-brand-blue: #126BFF;
+  --color-brand-blue-hover: #0E56D1;
+  --color-brand-blue-light: #EBF3FF;
+  --color-brand-blue-border: #C8DDFF;
+  
+  --color-bright-blue: #19A7FF;
+  --color-bright-blue-light: #EAF7FF;
+  
+  --color-brand-orange: #FF7A00;
+  --color-brand-orange-hover: #E66A00;
+  --color-brand-orange-light: #FFF4EB;
+  --color-brand-orange-border: #FFD4B2;
+  
+  --color-brand-yellow: #FFB000;
+  --color-brand-yellow-light: #FFF9EB;
+  
+  --color-page-bg: #F4F7FC;
+  --color-card-bg: #FFFFFF;
+  --color-card-tinted: #F8FAFD;
+  
+  --color-border-subtle: #E2E8F0;
+  --color-border-hover: #CBD5E1;
+  --color-border-accent: #C8D7EE;
+}
+
 @layer base {
   body {
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    background-color: #F4F7FC;
+    color: #0B1F3A;
   }
 }
 
-/* Custom subtle scrollbars for sidebars and tool grids */
+/* Custom modern card surfaces and depths */
+.modern-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 1px 3px rgba(11, 31, 58, 0.04), 0 4px 12px rgba(11, 31, 58, 0.03);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modern-card:hover {
+  border-color: #CBD5E1;
+  box-shadow: 0 4px 6px -1px rgba(11, 31, 58, 0.07), 0 10px 20px -3px rgba(11, 31, 58, 0.08);
+}
+
+.modern-card-interactive {
+  background-color: #FFFFFF;
+  border: 1px solid #E2EAF4;
+  box-shadow: 0 2px 4px rgba(7, 26, 61, 0.03), 0 6px 16px rgba(7, 26, 61, 0.04);
+  transition: all 0.2s ease-in-out;
+}
+
+.modern-card-interactive:hover {
+  transform: translateY(-2px);
+  border-color: #126BFF;
+  box-shadow: 0 8px 24px -4px rgba(18, 107, 255, 0.12), 0 2px 6px rgba(7, 26, 61, 0.04);
+}
+
+/* Primary and Accent Action Buttons */
+.btn-brand-primary {
+  background: linear-gradient(180deg, #1672FF 0%, #0E5BD9 100%);
+  color: #FFFFFF;
+  font-weight: 700;
+  border: 1px solid #0C51C4;
+  box-shadow: 0 2px 4px rgba(18, 107, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: all 0.15s ease;
+}
+
+.btn-brand-primary:hover {
+  background: linear-gradient(180deg, #1F7BFF 0%, #1265E8 100%);
+  box-shadow: 0 4px 12px rgba(18, 107, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+.btn-brand-primary:active {
+  transform: translateY(0);
+}
+
+.btn-brand-orange {
+  background: linear-gradient(180deg, #FF820D 0%, #EE6A00 100%);
+  color: #FFFFFF;
+  font-weight: 800;
+  border: 1px solid #D85C00;
+  box-shadow: 0 2px 6px rgba(255, 122, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transition: all 0.15s ease;
+}
+
+.btn-brand-orange:hover {
+  background: linear-gradient(180deg, #FF9126 0%, #F57200 100%);
+  box-shadow: 0 4px 14px rgba(255, 122, 0, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-brand-orange:active {
+  transform: translateY(0);
+}
+
+/* Custom subtle scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -17,10 +116,11 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.4);
+  background: rgba(148, 163, 184, 0.35);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.7);
+  background: rgba(148, 163, 184, 0.65);
 }
+

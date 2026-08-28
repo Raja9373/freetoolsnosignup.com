@@ -170,7 +170,7 @@ export const AboutPage: React.FC<{ onNavigateHome: () => void }> = ({ onNavigate
               <p className="text-slate-500 text-xs mt-0.5">Our developer team reviews community feature requests weekly.</p>
             </div>
             <a
-              href="mailto:support@freetoolsnosignup.com"
+              href="mailto:hello@freetoolsnosignup.com"
               className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition-colors shrink-0"
             >
               Contact Developer Team

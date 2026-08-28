@@ -24,14 +24,14 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({ categoryKey, onNavig
   }, [categoryKey, meta.title, meta.count]);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
+    <div className="min-h-screen bg-[#F4F7FC] text-[#0B1F3A] flex flex-col selection:bg-[#FF7A00] selection:text-white">
       {/* Top Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-2xs">
+      <header className="bg-white border-b border-[#E2E8F0] sticky top-0 z-30 shadow-2xs">
         <div className="max-w-6xl mx-auto px-4 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
               onClick={onNavigateHome}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F4F7FC] hover:bg-[#EBF3FF] hover:text-[#126BFF] text-[#0B1F3A] font-bold text-xs border border-[#E2E8F0] transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>All Categories</span>
@@ -40,7 +40,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({ categoryKey, onNavig
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-xs font-bold">
+            <span className="px-2.5 py-1 rounded-full bg-[#EBF3FF] text-[#126BFF] border border-[#C8DDFF] text-xs font-bold">
               {meta.badge}
             </span>
           </div>
@@ -56,22 +56,22 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({ categoryKey, onNavig
       <main className="max-w-6xl mx-auto px-4 py-8 flex-1 w-full space-y-8">
         {/* Breadcrumb & Hero */}
         <div>
-          <nav className="flex items-center gap-2 text-xs text-slate-500 mb-3 font-medium">
-            <a href="/" onClick={(e) => { e.preventDefault(); onNavigateHome(); }} className="hover:text-slate-800">Home</a>
+          <nav className="flex items-center gap-2 text-xs text-[#64748B] mb-3 font-medium">
+            <a href="/" onClick={(e) => { e.preventDefault(); onNavigateHome(); }} className="hover:text-[#126BFF] transition-colors">Home</a>
             <span>/</span>
-            <span className="text-slate-900 font-semibold">{meta.title}</span>
+            <span className="text-[#0B1F3A] font-bold">{meta.title}</span>
           </nav>
           
-          <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs">
+          <div className="bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-3">
+                <h1 className="text-2xl sm:text-3xl font-black text-[#0B1F3A] tracking-tight flex flex-wrap items-center gap-3">
                   <span>{meta.title}</span>
-                  <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700">
+                  <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-[#EBF3FF] text-[#126BFF] border border-[#C8DDFF]">
                     {categoryTools.length} Utilities Available
                   </span>
                 </h1>
-                <p className="text-slate-600 text-sm mt-2 max-w-2xl leading-relaxed">
+                <p className="text-[#64748B] text-sm mt-2 max-w-2xl leading-relaxed">
                   {meta.desc} Everything executes 100% locally in browser memory with zero signup and zero data retention.
                 </p>
               </div>
@@ -83,12 +83,12 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({ categoryKey, onNavig
         {flagshipTools.length > 0 && (
           <section className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-amber-500" />
+              <h2 className="text-lg font-bold text-[#0B1F3A] flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-[#FF7A00]" />
                 Flagship Interactive Engines
               </h2>
-              <span className="text-xs text-emerald-600 font-semibold flex items-center gap-1">
-                <ShieldCheck className="w-3.5 h-3.5" />
+              <span className="text-xs text-emerald-700 font-bold flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                 100% Client-Side
               </span>
             </div>
@@ -98,27 +98,27 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({ categoryKey, onNavig
                 <div
                   key={tool.id}
                   onClick={() => onOpenTool(tool.id)}
-                  className="group bg-white rounded-xl border border-slate-200 p-5 hover:border-slate-400 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
+                  className="group bg-white rounded-2xl border border-[#E2E8F0] p-5 hover:border-[#126BFF] hover:shadow-lg transition-all cursor-pointer flex flex-col justify-between"
                 >
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-2">
                       <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                         {tool.workingBadge || 'Interactive App'}
                       </span>
-                      <span className="text-[11px] text-slate-400 font-medium">
+                      <span className="text-[11px] text-[#64748B] font-mono font-medium">
                         {(tool.runsCount / 1000).toFixed(0)}k uses
                       </span>
                     </div>
-                    <h3 className="font-bold text-slate-900 text-sm group-hover:text-amber-600 transition-colors">
+                    <h3 className="font-bold text-[#0B1F3A] text-sm group-hover:text-[#126BFF] transition-colors">
                       {tool.name}
                     </h3>
-                    <p className="text-slate-500 text-xs mt-1.5 leading-relaxed">
+                    <p className="text-[#64748B] text-xs mt-1.5 leading-relaxed">
                       {tool.description}
                     </p>
                   </div>
 
-                  <button className="mt-4 w-full py-2 rounded-lg bg-slate-900 text-white font-semibold text-xs group-hover:bg-amber-600 transition-colors flex items-center justify-center gap-1.5">
-                    <Zap className="w-3.5 h-3.5" />
+                  <button className="mt-4 w-full py-2.5 rounded-xl bg-[#071A3D] text-white font-bold text-xs group-hover:bg-[#126BFF] transition-colors flex items-center justify-center gap-1.5 shadow-2xs">
+                    <Zap className="w-3.5 h-3.5 text-[#FF7A00]" />
                     <span>Launch Tool Now</span>
                   </button>
                 </div>
@@ -129,15 +129,15 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({ categoryKey, onNavig
 
         {/* Complete Catalog Directory Listing for Category */}
         <section className="space-y-4">
-          <h2 className="text-lg font-bold text-slate-900">
+          <h2 className="text-lg font-bold text-[#0B1F3A]">
             Full {meta.title} Directory ({categoryTools.length} Tools)
           </h2>
 
-          <div className="bg-white rounded-2xl border border-slate-200 divide-y divide-slate-100 overflow-hidden shadow-xs">
+          <div className="bg-white rounded-2xl border border-[#E2E8F0] divide-y divide-[#F1F5F9] overflow-hidden shadow-xs">
             {categoryTools.map((tool, idx) => (
               <React.Fragment key={tool.id}>
                 {idx > 0 && idx % 12 === 0 && (
-                  <div className="p-3 bg-slate-50 border-y border-slate-200">
+                  <div className="p-3 bg-[#F4F7FC] border-y border-[#E2E8F0]">
                     <AdUnitInFeed index={idx} />
                   </div>
                 )}

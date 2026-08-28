@@ -59,7 +59,7 @@ export const QRGeneratorModal: React.FC<QRGeneratorProps> = ({
     hidden: false
   });
   const [emailConfig, setEmailConfig] = useState({
-    email: 'support@freetoolsnosignup.com',
+    email: 'hello@freetoolsnosignup.com',
     subject: 'Project Inquiry',
     body: 'Hello, I would like to get more information about your tools.'
   });

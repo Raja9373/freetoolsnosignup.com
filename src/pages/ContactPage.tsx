@@ -82,26 +82,26 @@ export const ContactPage: React.FC<{ onNavigateHome: () => void }> = ({ onNaviga
         });
       } else {
         setErrorMessage(
-          result.error || 'Unable to deliver your message at this moment. Please try again or email support@freetoolsnosignup.com directly.'
+          result.error || 'Unable to deliver your message at this moment. Please try again or email hello@freetoolsnosignup.com directly.'
         );
       }
     } catch (err: any) {
       console.error('Contact form submission error:', err);
-      setErrorMessage('Network connection error. Please check your internet connection or email support@freetoolsnosignup.com directly.');
+      setErrorMessage('Network connection error. Please check your internet connection or email hello@freetoolsnosignup.com directly.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
+    <div className="min-h-screen bg-[#F4F7FC] text-[#0B1F3A] flex flex-col selection:bg-[#FF7A00] selection:text-white">
       {/* Top Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-2xs">
+      <header className="bg-white border-b border-[#E2E8F0] sticky top-0 z-30 shadow-2xs">
         <div className="max-w-6xl mx-auto px-4 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
               onClick={onNavigateHome}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F4F7FC] hover:bg-[#EBF3FF] hover:text-[#126BFF] text-[#0B1F3A] font-bold text-xs border border-[#E2E8F0] transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Back to Tools</span>
@@ -110,7 +110,7 @@ export const ContactPage: React.FC<{ onNavigateHome: () => void }> = ({ onNaviga
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-xs font-semibold">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#EBF3FF] text-[#126BFF] border border-[#C8DDFF] text-xs font-bold">
               <Clock className="w-3.5 h-3.5" />
               24-Hour SLA Response
             </span>
@@ -126,57 +126,57 @@ export const ContactPage: React.FC<{ onNavigateHome: () => void }> = ({ onNaviga
       {/* Main Content Area */}
       <main className="max-w-4xl mx-auto px-4 py-8 flex-1 w-full">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-xs text-slate-500 mb-6 font-medium">
-          <a href="/" onClick={(e) => { e.preventDefault(); onNavigateHome(); }} className="hover:text-slate-800">Home</a>
+        <nav className="flex items-center gap-2 text-xs text-[#64748B] mb-6 font-medium">
+          <a href="/" onClick={(e) => { e.preventDefault(); onNavigateHome(); }} className="hover:text-[#126BFF] transition-colors">Home</a>
           <span>/</span>
-          <span className="text-slate-900 font-semibold">Contact & Support</span>
+          <span className="text-[#0B1F3A] font-bold">Contact &amp; Support</span>
         </nav>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           
           {/* Left Column: Direct Info */}
           <div className="space-y-6">
-            <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-5">
-              <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                <Mail className="w-5 h-5 text-amber-500" />
+            <div className="bg-white rounded-3xl border border-[#E2E8F0] p-6 shadow-xs space-y-5">
+              <h2 className="text-lg font-bold text-[#0B1F3A] flex items-center gap-2">
+                <Mail className="w-5 h-5 text-[#FF7A00]" />
                 Get in Touch
               </h2>
-              <p className="text-slate-600 text-xs leading-relaxed">
+              <p className="text-[#64748B] text-xs leading-relaxed">
                 Have an inquiry about a tool, want to report a bug, or propose a new browser utility for our 521-tool catalog? We respond to every email.
               </p>
 
-              <div className="space-y-4 pt-2 border-t border-slate-100 text-xs">
+              <div className="space-y-4 pt-2 border-t border-[#F1F5F9] text-xs">
                 <div>
-                  <div className="text-slate-400 font-medium">Official Developer Email</div>
+                  <div className="text-[#64748B] font-medium">Official Developer Email</div>
                   <a 
-                    href="mailto:support@freetoolsnosignup.com" 
-                    className="font-bold text-slate-900 hover:text-amber-600 break-all text-sm block mt-0.5"
+                    href="mailto:hello@freetoolsnosignup.com" 
+                    className="font-bold text-[#0B1F3A] hover:text-[#126BFF] break-all text-sm block mt-0.5"
                   >
-                    support@freetoolsnosignup.com
+                    hello@freetoolsnosignup.com
                   </a>
                 </div>
 
                 <div>
-                  <div className="text-slate-400 font-medium">Response Time SLA</div>
-                  <div className="font-semibold text-slate-800 flex items-center gap-1.5 mt-0.5">
+                  <div className="text-[#64748B] font-medium">Response Time SLA</div>
+                  <div className="font-semibold text-[#0B1F3A] flex items-center gap-1.5 mt-0.5">
                     <Clock className="w-3.5 h-3.5 text-emerald-600" />
                     Within 24 Hours (Mon – Sun)
                   </div>
                 </div>
 
                 <div>
-                  <div className="text-slate-400 font-medium">Engineering Headquarters</div>
-                  <div className="text-slate-700 mt-0.5 leading-relaxed">
+                  <div className="text-[#64748B] font-medium">Engineering Headquarters</div>
+                  <div className="text-[#64748B] mt-0.5 leading-relaxed">
                     FreeToolsNoSignup Systems<br />
                     Connaught Place, New Delhi 110001<br />
-                    India & Global Cloud Edge
+                    India &amp; Global Cloud Edge
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Privacy Badge */}
-            <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs space-y-1.5">
+            <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs space-y-1.5">
               <div className="font-bold flex items-center gap-1.5">
                 <Shield className="w-4 h-4 text-emerald-600" />
                 Spam-Free Guarantee
@@ -188,11 +188,11 @@ export const ContactPage: React.FC<{ onNavigateHome: () => void }> = ({ onNaviga
           </div>
 
           {/* Right Column: Interactive Form */}
-          <div className="md:col-span-2 bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs">
-            <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight mb-2">
+          <div className="md:col-span-2 bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs">
+            <h1 className="text-2xl font-black text-[#0B1F3A] tracking-tight mb-2">
               Send Us a Message
             </h1>
-            <p className="text-slate-500 text-xs mb-6">
+            <p className="text-[#64748B] text-xs mb-6">
               Fill out the form below. Your message will be routed directly to our developer team with immediate Reply-To tracking.
             </p>
 
@@ -221,7 +221,7 @@ export const ContactPage: React.FC<{ onNavigateHome: () => void }> = ({ onNaviga
                 <div className="p-3.5 bg-white rounded-xl border border-emerald-200/80 text-left text-xs max-w-md mx-auto space-y-1.5 shadow-2xs">
                   <div className="text-slate-500 flex justify-between">
                     <span>Reply Destination:</span>
-                    <strong className="text-slate-800">{submittedData.email}</strong>
+                    <strong className="text-[#0B1F3A]">{submittedData.email}</strong>
                   </div>
                   <div className="text-slate-500 flex justify-between">
                     <span>Target Response:</span>
@@ -260,7 +260,7 @@ export const ContactPage: React.FC<{ onNavigateHome: () => void }> = ({ onNaviga
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                    <label className="block text-xs font-bold text-[#0B1F3A] mb-1">
                       Your Full Name <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -270,12 +270,12 @@ export const ContactPage: React.FC<{ onNavigateHome: () => void }> = ({ onNaviga
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       disabled={isSubmitting}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-slate-900 placeholder:text-slate-400 disabled:opacity-60"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] bg-[#F4F7FC] text-sm focus:outline-none focus:ring-2 focus:ring-[#126BFF]/20 focus:border-[#126BFF] text-[#0B1F3A] placeholder:text-[#64748B] disabled:opacity-60"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                    <label className="block text-xs font-bold text-[#0B1F3A] mb-1">
                       Your Email Address <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -285,35 +285,35 @@ export const ContactPage: React.FC<{ onNavigateHome: () => void }> = ({ onNaviga
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       disabled={isSubmitting}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-slate-900 placeholder:text-slate-400 disabled:opacity-60"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] bg-[#F4F7FC] text-sm focus:outline-none focus:ring-2 focus:ring-[#126BFF]/20 focus:border-[#126BFF] text-[#0B1F3A] placeholder:text-[#64748B] disabled:opacity-60"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-[#0B1F3A] mb-1">
                     Inquiry Subject
                   </label>
                   <select
                     value={formData.subject}
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                     disabled={isSubmitting}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-slate-900 disabled:opacity-60"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] bg-[#F4F7FC] text-sm focus:outline-none focus:ring-2 focus:ring-[#126BFF]/20 focus:border-[#126BFF] text-[#0B1F3A] disabled:opacity-60"
                   >
                     <option value="General Inquiry / Feedback">General Inquiry / Feedback</option>
                     <option value="Bug Report in a Tool">Bug Report in a Tool</option>
                     <option value="Suggest a New Tool for Catalog">Suggest a New Tool for Catalog</option>
-                    <option value="AdSense & Partnership Inquiry">AdSense & Partnership Inquiry</option>
-                    <option value="Data Privacy & GDPR Inquiry">Data Privacy & GDPR Inquiry</option>
+                    <option value="AdSense & Partnership Inquiry">AdSense &amp; Partnership Inquiry</option>
+                    <option value="Data Privacy & GDPR Inquiry">Data Privacy &amp; GDPR Inquiry</option>
                   </select>
                 </div>
 
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="block text-xs font-bold text-slate-700">
+                    <label className="block text-xs font-bold text-[#0B1F3A]">
                       Your Message <span className="text-red-500">*</span>
                     </label>
-                    <span className="text-[11px] text-slate-400 font-mono">
+                    <span className="text-[11px] text-[#64748B] font-mono">
                       {formData.message.length}/5000
                     </span>
                   </div>
@@ -325,7 +325,7 @@ export const ContactPage: React.FC<{ onNavigateHome: () => void }> = ({ onNaviga
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     disabled={isSubmitting}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-slate-900 placeholder:text-slate-400 resize-y disabled:opacity-60"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] bg-[#F4F7FC] text-sm focus:outline-none focus:ring-2 focus:ring-[#126BFF]/20 focus:border-[#126BFF] text-[#0B1F3A] placeholder:text-[#64748B] resize-y disabled:opacity-60"
                   />
                 </div>
 
@@ -333,7 +333,7 @@ export const ContactPage: React.FC<{ onNavigateHome: () => void }> = ({ onNaviga
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer"
+                    className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#071A3D] hover:bg-[#126BFF] text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer"
                   >
                     {isSubmitting ? (
                       <>
@@ -348,7 +348,7 @@ export const ContactPage: React.FC<{ onNavigateHome: () => void }> = ({ onNaviga
                     )}
                   </button>
 
-                  <div className="text-[11px] text-slate-500 flex items-center gap-1.5">
+                  <div className="text-[11px] text-[#64748B] flex items-center gap-1.5">
                     <Shield className="w-3.5 h-3.5 text-emerald-600" />
                     <span>Protected by Rate-Limiting &amp; Honeypot</span>
                   </div>

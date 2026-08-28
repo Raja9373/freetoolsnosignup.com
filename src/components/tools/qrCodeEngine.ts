@@ -100,7 +100,7 @@ export function buildQRPayload(options: QRCodeOptions): string {
     case 'email': {
       const { email, subject, body } = options.email;
       const cleanEmail = (email || '').trim();
-      if (!cleanEmail) return 'mailto:support@freetoolsnosignup.com';
+      if (!cleanEmail) return 'mailto:hello@freetoolsnosignup.com';
       const params: string[] = [];
       if (subject) params.push(`subject=${encodeURIComponent(subject)}`);
       if (body) params.push(`body=${encodeURIComponent(body)}`);

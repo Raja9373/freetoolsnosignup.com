@@ -38,14 +38,14 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
 
   const getToolIcon = (tool: ToolItem) => {
     switch (tool.category) {
-      case 'job-ats': return <Briefcase className="w-3.5 h-3.5 text-amber-600" />;
-      case 'ai-study': return <Sparkles className="w-3.5 h-3.5 text-amber-500" />;
+      case 'job-ats': return <Briefcase className="w-3.5 h-3.5 text-[#FF7A00]" />;
+      case 'ai-study': return <Sparkles className="w-3.5 h-3.5 text-[#126BFF]" />;
       case 'dev-pro': return <Code2 className="w-3.5 h-3.5 text-cyan-600" />;
-      case 'pdf': return <FileText className="w-3.5 h-3.5 text-blue-600" />;
+      case 'pdf': return <FileText className="w-3.5 h-3.5 text-[#126BFF]" />;
       case 'image': return <ImageIcon className="w-3.5 h-3.5 text-emerald-600" />;
       case 'calculator': return <Calculator className="w-3.5 h-3.5 text-purple-600" />;
-      case 'notion': return <Database className="w-3.5 h-3.5 text-amber-500" />;
-      default: return <Database className="w-3.5 h-3.5 text-slate-600" />;
+      case 'notion': return <Database className="w-3.5 h-3.5 text-[#071A3D]" />;
+      default: return <Database className="w-3.5 h-3.5 text-[#64748B]" />;
     }
   };
 
@@ -59,38 +59,38 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
   return (
     <aside 
       id="left-sidebar-column"
-      className={`w-full bg-[#f8fafc] border-r border-slate-200/80 p-4 flex flex-col gap-6 select-none ${className}`}
+      className={`w-full bg-[#F4F7FC] border-r border-[#E2E8F0] p-4 flex flex-col gap-6 select-none ${className}`}
     >
       {/* Brand Header */}
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2.5">
         <a href="/" className="block">
           <BrandLogo variant="full" showTagline={true} />
         </a>
 
         {/* Green Badge: No Signup Ever */}
-        <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200/90 px-2.5 py-1.5 rounded-xl text-emerald-900 shadow-xs">
-          <div className="flex items-center gap-1.5 text-xs font-bold">
+        <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200/90 px-3 py-1.5 rounded-xl text-emerald-900 shadow-2xs">
+          <div className="flex items-center gap-1.5 text-xs font-extrabold">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
             <span>{t('noSignupEver', 'No Signup Ever')}</span>
           </div>
-          <span className="text-[10px] font-mono font-bold text-emerald-700">100% FREE</span>
+          <span className="text-[10px] font-mono font-black text-emerald-700 bg-white px-1.5 py-0.5 rounded border border-emerald-200">100% FREE</span>
         </div>
       </div>
 
       {/* SECTION 1: RECENTLY USED */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-500">
-          <span className="flex items-center gap-1.5">
-            <History className="w-3.5 h-3.5 text-slate-400" />
+      <div className="space-y-2.5">
+        <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-[#64748B]">
+          <span className="flex items-center gap-1.5 text-[#071A3D]">
+            <History className="w-3.5 h-3.5 text-[#126BFF]" />
             {t('recentlyUsed', 'Recently Used')}
           </span>
           {recentTools.length > 0 && (
             <button
               onClick={onClearRecent}
-              className="text-[10px] font-medium text-slate-400 hover:text-slate-700 flex items-center gap-0.5"
+              className="text-[10px] font-semibold text-[#64748B] hover:text-[#071A3D] flex items-center gap-0.5"
               title={t('clearRecent', 'Clear recent')}
             >
               <Trash2 className="w-2.5 h-2.5" /> {t('clearRecent', 'Clear')}
@@ -99,26 +99,26 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
         </div>
 
         {recentTools.length === 0 ? (
-          <div className="p-3 bg-white/70 border border-dashed border-slate-200 rounded-xl text-[11px] text-slate-400 text-center">
+          <div className="p-3 bg-white border border-dashed border-[#CBD5E1] rounded-xl text-[11px] text-[#64748B] text-center">
             {t('noRecent', 'No recently run tools yet')}
           </div>
         ) : (
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             {recentTools.slice(0, 5).map((recent) => (
               <div
                 key={recent.id}
                 onClick={() => onSelectTool(recent.id)}
-                className="p-2 bg-white hover:bg-slate-100/90 border border-slate-200/80 rounded-xl cursor-pointer flex items-center justify-between transition-all group shadow-2xs"
+                className="p-2.5 bg-white hover:bg-[#F8FAFD] border border-[#E2E8F0] hover:border-[#126BFF] rounded-xl cursor-pointer flex items-center justify-between transition-all group shadow-2xs"
               >
                 <div className="flex items-center gap-2 overflow-hidden">
-                  <div className="w-6 h-6 rounded-md bg-slate-100 flex items-center justify-center shrink-0">
-                    <Zap className="w-3 h-3 text-amber-500" />
+                  <div className="w-6 h-6 rounded-lg bg-[#F4F7FC] flex items-center justify-center shrink-0 border border-[#E2E8F0]">
+                    <Zap className="w-3 h-3 text-[#FF7A00]" />
                   </div>
-                  <span className="text-xs font-bold text-slate-800 truncate group-hover:text-amber-600">
+                  <span className="text-xs font-bold text-[#0B1F3A] truncate group-hover:text-[#126BFF]">
                     {recent.name}
                   </span>
                 </div>
-                <span className="text-[10px] text-slate-400 shrink-0 font-mono">
+                <span className="text-[10px] text-[#64748B] shrink-0 font-mono">
                   {formatTimeAgo(recent.usedAt)}
                 </span>
               </div>
@@ -128,32 +128,32 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
       </div>
 
       {/* SECTION 2: POPULAR TOOLS (TOP 15) */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-500">
-          <span className="flex items-center gap-1.5">
-            <Flame className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
+      <div className="space-y-2.5">
+        <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-[#64748B]">
+          <span className="flex items-center gap-1.5 text-[#071A3D]">
+            <Flame className="w-3.5 h-3.5 text-[#FF7A00] fill-[#FF7A00]" />
             {t('top15Popular', 'Top 15 Popular')}
           </span>
-          <span className="text-[10px] font-mono text-slate-400 font-bold">HOT</span>
+          <span className="text-[10px] font-mono text-[#FF7A00] font-black bg-[#FFF4EB] px-1.5 py-0.5 rounded border border-[#FFD4B2]">HOT</span>
         </div>
 
-        <div className="space-y-1 max-h-[290px] overflow-y-auto pr-1">
+        <div className="space-y-1.5 max-h-[290px] overflow-y-auto pr-1">
           {popularTools.map((tool, idx) => {
             const isFav = favorites.includes(tool.id);
             return (
               <div
                 key={tool.id}
                 onClick={() => onSelectTool(tool.id)}
-                className="p-2 bg-white hover:bg-slate-100/90 border border-slate-200/80 rounded-xl cursor-pointer flex items-center justify-between transition-all group shadow-2xs"
+                className="p-2.5 bg-white hover:bg-[#F8FAFD] border border-[#E2E8F0] hover:border-[#126BFF] rounded-xl cursor-pointer flex items-center justify-between transition-all group shadow-2xs"
               >
                 <div className="flex items-center gap-2 overflow-hidden">
-                  <span className="text-[10px] font-mono font-bold text-slate-400 w-4">
+                  <span className="text-[10px] font-mono font-bold text-[#64748B] w-4">
                     {idx + 1}.
                   </span>
-                  <div className="w-5 h-5 rounded bg-slate-50 flex items-center justify-center shrink-0">
+                  <div className="w-6 h-6 rounded-lg bg-[#F4F7FC] flex items-center justify-center shrink-0 border border-[#E2E8F0]">
                     {getToolIcon(tool)}
                   </div>
-                  <span className="text-xs font-bold text-slate-800 truncate group-hover:text-amber-600">
+                  <span className="text-xs font-bold text-[#0B1F3A] truncate group-hover:text-[#126BFF]">
                     {tool.name}
                   </span>
                 </div>
@@ -164,12 +164,12 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
                       e.stopPropagation();
                       onToggleFavorite(tool.id);
                     }}
-                    className={`p-1 rounded hover:bg-slate-100 transition-colors ${
+                    className={`p-1 rounded-md hover:bg-[#F4F7FC] transition-colors ${
                       isFav ? 'text-rose-500' : 'text-slate-300 hover:text-slate-500'
                     }`}
                     title={isFav ? 'Remove from favorites' : 'Add to favorites'}
                   >
-                    <Heart className={`w-3 h-3 ${isFav ? 'fill-rose-500' : ''}`} />
+                    <Heart className={`w-3.5 h-3.5 ${isFav ? 'fill-rose-500' : ''}`} />
                   </button>
                 </div>
               </div>
@@ -179,31 +179,31 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
       </div>
 
       {/* SECTION 3: FAVORITES */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-500">
-          <span className="flex items-center gap-1.5">
+      <div className="space-y-2.5">
+        <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-[#64748B]">
+          <span className="flex items-center gap-1.5 text-[#071A3D]">
             <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
             {t('favorites', 'Favorites')} ({favorites.length})
           </span>
         </div>
 
         {favoriteToolObjects.length === 0 ? (
-          <div className="p-3 bg-white/70 border border-dashed border-slate-200 rounded-xl text-[11px] text-slate-400 text-center">
+          <div className="p-3 bg-white border border-dashed border-[#CBD5E1] rounded-xl text-[11px] text-[#64748B] text-center">
             {t('noFavorites', 'No starred favorites yet. Click the heart on any tool.')}
           </div>
         ) : (
-          <div className="space-y-1 max-h-[160px] overflow-y-auto">
+          <div className="space-y-1.5 max-h-[160px] overflow-y-auto pr-1">
             {favoriteToolObjects.map((tool) => (
               <div
                 key={tool.id}
                 onClick={() => onSelectTool(tool.id)}
-                className="p-2 bg-white hover:bg-slate-100 border border-slate-200/80 rounded-xl cursor-pointer flex items-center justify-between transition-all group"
+                className="p-2.5 bg-white hover:bg-[#F8FAFD] border border-[#E2E8F0] hover:border-[#126BFF] rounded-xl cursor-pointer flex items-center justify-between transition-all group shadow-2xs"
               >
                 <div className="flex items-center gap-2 overflow-hidden">
-                  <div className="w-5 h-5 rounded bg-rose-50 flex items-center justify-center shrink-0">
+                  <div className="w-6 h-6 rounded-lg bg-rose-50 flex items-center justify-center shrink-0 border border-rose-100">
                     <Heart className="w-3 h-3 text-rose-500 fill-rose-500" />
                   </div>
-                  <span className="text-xs font-bold text-slate-800 truncate group-hover:text-rose-600">
+                  <span className="text-xs font-bold text-[#0B1F3A] truncate group-hover:text-rose-600">
                     {tool.name}
                   </span>
                 </div>

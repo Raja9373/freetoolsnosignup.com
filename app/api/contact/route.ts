@@ -65,6 +65,6 @@ export async function GET() {
     status: 'ok',
     service: 'FreeToolsNoSignup Contact API',
     destinationConfigured: true,
-    supportEmail: 'support@freetoolsnosignup.com',
+    supportEmail: 'hello@freetoolsnosignup.com',
   });
 }

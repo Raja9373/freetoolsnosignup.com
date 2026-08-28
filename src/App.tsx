@@ -62,12 +62,18 @@ export default function App() {
 
   // Derive normalized route regardless of language prefix like /ja/about or /es/pdf-tools
   const normalizedPath = React.useMemo(() => {
-    const parts = (currentPath || '/').split('/').filter(Boolean);
-    if (parts.length > 0 && SUPPORTED_LANGUAGES.some(l => l.code === parts[0].toLowerCase())) {
+    let raw = (currentPath || '/').trim();
+    // Strip trailing slashes (e.g. /contact/ -> /contact)
+    if (raw.length > 1 && raw.endsWith('/')) {
+      raw = raw.replace(/\/+$/, '');
+    }
+    const lower = raw.toLowerCase();
+    const parts = lower.split('/').filter(Boolean);
+    if (parts.length > 0 && SUPPORTED_LANGUAGES.some(l => l.code === parts[0])) {
       const rest = parts.slice(1).join('/');
       return rest ? `/${rest}` : '/';
     }
-    return currentPath || '/';
+    return lower || '/';
   }, [currentPath]);
 
   // Persistence State: Recently Used & Favorites
@@ -238,14 +244,14 @@ export default function App() {
     : [];
 
   return (
-    <div id="ftns-app-root" className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-amber-500 selection:text-slate-950">
+    <div id="ftns-app-root" className="min-h-screen bg-[#F4F7FC] text-[#0B1F3A] flex flex-col font-sans selection:bg-[#FF7A00] selection:text-white">
       
       {/* Top Mobile Bar */}
-      <header className="lg:hidden bg-white border-b border-slate-200 p-3 sticky top-0 z-30 flex items-center justify-between shadow-2xs">
+      <header className="lg:hidden bg-white border-b border-[#E2E8F0] p-3 sticky top-0 z-30 flex items-center justify-between shadow-2xs">
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsMobileSidebarOpen(prev => !prev)}
-            className="p-2 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200"
+            className="p-2 rounded-xl bg-[#F4F7FC] text-[#071A3D] hover:bg-[#EBF3FF] hover:text-[#126BFF] border border-[#E2E8F0] transition-colors"
           >
             {isMobileSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -256,7 +262,8 @@ export default function App() {
           <LanguageSwitcher />
           <button
             onClick={() => setIsCmdKOpen(true)}
-            className="p-1.5 rounded-lg bg-amber-50 text-amber-900 border border-amber-200 font-bold text-xs flex items-center gap-1"
+            className="p-2 rounded-xl bg-[#FFF4EB] text-[#FF7A00] hover:bg-[#FFE8D6] border border-[#FFD4B2] font-bold text-xs flex items-center gap-1 shadow-2xs transition-colors"
+            title="Search tools"
           >
             <Search className="w-4 h-4" />
           </button>
@@ -265,11 +272,11 @@ export default function App() {
 
       {/* Mobile Drawer */}
       {isMobileSidebarOpen && (
-        <div className="lg:hidden fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm flex">
-          <div className="w-4/5 max-w-xs bg-[#f8fafc] h-full overflow-y-auto p-4 flex flex-col shadow-2xl">
-            <div className="flex justify-between items-center pb-3 border-b border-slate-200">
-              <span className="font-bold text-sm">Navigation & History</span>
-              <button onClick={() => setIsMobileSidebarOpen(false)} className="p-1 text-slate-400">
+        <div className="lg:hidden fixed inset-0 z-40 bg-[#071A3D]/70 backdrop-blur-xs flex">
+          <div className="w-4/5 max-w-xs bg-[#F4F7FC] h-full overflow-y-auto p-4 flex flex-col shadow-2xl border-r border-[#E2E8F0]">
+            <div className="flex justify-between items-center pb-3 border-b border-[#E2E8F0]">
+              <span className="font-extrabold text-sm text-[#071A3D]">Navigation & History</span>
+              <button onClick={() => setIsMobileSidebarOpen(false)} className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -288,8 +295,8 @@ export default function App() {
       {/* 3-COLUMN MAIN LAYOUT */}
       <div className="flex-1 w-full max-w-[1720px] mx-auto flex flex-col lg:flex-row items-stretch">
         
-        {/* COLUMN 1: LEFT SIDEBAR (20% Width, Sticky, #f8fafc) */}
-        <div className="hidden lg:block lg:w-[20%] xl:w-[20%] shrink-0 sticky top-0 h-screen overflow-y-auto border-r border-slate-200/80 bg-[#f8fafc]">
+        {/* COLUMN 1: LEFT SIDEBAR (20% Width, Sticky, light cool background #F4F7FC) */}
+        <div className="hidden lg:block lg:w-[20%] xl:w-[20%] shrink-0 sticky top-0 h-screen overflow-y-auto border-r border-[#E2E8F0] bg-[#F4F7FC]">
           <LeftSidebar
             recentTools={recentTools}
             favorites={favorites}
@@ -299,17 +306,17 @@ export default function App() {
           />
         </div>
 
-        {/* COLUMN 2: CENTER MAIN CONTENT (60% Width, White Background) */}
-        <main className="w-full lg:w-[60%] xl:w-[60%] bg-white px-4 sm:px-8 py-6 flex flex-col gap-8">
+        {/* COLUMN 2: CENTER MAIN CONTENT (60% Width, Light Cool Tinted Container with White Cards) */}
+        <main className="w-full lg:w-[60%] xl:w-[60%] bg-[#F4F7FC] px-4 sm:px-8 py-6 flex flex-col gap-7">
           
           {/* Top Header Row with AdSense and Language Switcher */}
           <div className="w-full flex flex-col gap-3">
             <div className="hidden lg:flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-emerald-50 text-emerald-800 border border-emerald-200/80 shadow-2xs">
                   ● 100% {t('privateInBrowser', 'Browser-Native')}
                 </span>
-                <span className="text-[11px] text-slate-400 font-medium">
+                <span className="text-xs text-[#64748B] font-medium">
                   {t('heroSubtitle', 'Zero signup walls. Client-side execution.')}
                 </span>
               </div>
@@ -320,21 +327,21 @@ export default function App() {
             <AdSenseBanner format="728x90" slotName="TopHeader" />
           </div>
 
-          {/* Big Search Bar with Cmd+K Shortcut */}
-          <div className="w-full space-y-3">
+          {/* Search Box Card with Cmd+K Shortcut */}
+          <div className="w-full bg-white border border-[#E2E8F0] p-4 sm:p-5 rounded-2xl shadow-xs space-y-3.5">
             <div className="relative flex items-center">
-              <Search className="w-5 h-5 text-slate-400 absolute left-4 pointer-events-none" />
+              <Search className="w-5 h-5 text-[#64748B] absolute left-4 pointer-events-none" />
               <input
                 id="main-center-search-input"
                 type="text"
                 value={searchFilter}
                 onChange={(e) => setSearchFilter(e.target.value)}
                 placeholder={t('searchPlaceholder', 'Search 521 working tools (ATS check, AI detector, PDF merge, Fake Data)...')}
-                className="w-full pl-12 pr-28 py-3.5 sm:py-4 bg-slate-50 hover:bg-white focus:bg-white border-2 border-slate-200 focus:border-amber-500 rounded-2xl text-sm sm:text-base font-medium text-slate-900 placeholder:text-slate-400 outline-none shadow-sm transition-all"
+                className="w-full pl-12 pr-28 py-3.5 sm:py-4 bg-[#F4F7FC] hover:bg-white focus:bg-white border-2 border-[#E2E8F0] focus:border-[#126BFF] focus:ring-4 focus:ring-[#126BFF]/10 rounded-2xl text-sm sm:text-base font-medium text-[#0B1F3A] placeholder:text-[#64748B]/70 outline-none shadow-2xs transition-all"
               />
               <button
                 onClick={() => setIsCmdKOpen(true)}
-                className="absolute right-3 px-2.5 py-1.5 bg-white border border-slate-200 hover:border-slate-300 rounded-xl text-xs font-mono font-bold text-slate-500 flex items-center gap-1 shadow-2xs transition-all"
+                className="absolute right-3 px-2.5 py-1.5 bg-white border border-[#E2E8F0] hover:border-[#126BFF]/50 hover:text-[#126BFF] rounded-xl text-xs font-mono font-bold text-[#64748B] flex items-center gap-1 shadow-2xs transition-all"
               >
                 <Command className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">K</span>
@@ -360,8 +367,8 @@ export default function App() {
                   }}
                   className={`px-3 py-1.5 rounded-full font-bold whitespace-nowrap transition-all ${
                     activeCategoryFilter === tab.id
-                      ? 'bg-slate-900 text-white shadow-xs'
-                      : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                      ? 'bg-[#071A3D] text-white shadow-xs border border-[#071A3D]'
+                      : 'bg-[#F4F7FC] hover:bg-[#EBF3FF] hover:text-[#126BFF] text-[#0B1F3A] border border-[#E2E8F0]'
                   }`}
                 >
                   {tab.label}
@@ -372,36 +379,36 @@ export default function App() {
 
           {/* Search Results Dropdown if user typed in center search */}
           {searchFilter.trim() && (
-            <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-xl space-y-3 animate-in fade-in">
-              <div className="flex items-center justify-between text-xs font-bold uppercase text-slate-500">
-                <span>{t('matchingTools', 'Matching Tools')} ({filteredTools.length})</span>
-                <button onClick={() => setSearchFilter('')} className="text-amber-600 hover:underline">
+            <div className="bg-white border border-[#CBD5E1] rounded-2xl p-5 shadow-xl space-y-3.5 animate-in fade-in">
+              <div className="flex items-center justify-between text-xs font-bold uppercase text-[#64748B]">
+                <span className="text-[#071A3D] font-extrabold">{t('matchingTools', 'Matching Tools')} ({filteredTools.length})</span>
+                <button onClick={() => setSearchFilter('')} className="text-[#FF7A00] hover:text-[#E66A00] font-bold hover:underline">
                   {t('clearSearch', 'Clear search')}
                 </button>
               </div>
 
               {filteredTools.length === 0 ? (
-                <div className="py-6 text-center text-slate-400 text-sm">
+                <div className="py-8 text-center text-[#64748B] text-sm">
                   {t('noToolsFound', 'No tools found. Try another keyword.')}
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-80 overflow-y-auto">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-h-80 overflow-y-auto pr-1">
                   {filteredTools.map(tool => (
                     <div
                       key={tool.id}
                       onClick={() => handleOpenTool(tool.id)}
-                      className="p-3 border border-slate-200 hover:border-amber-400 hover:bg-amber-50/20 rounded-xl cursor-pointer transition-all flex flex-col justify-between"
+                      className="p-3.5 bg-white border border-[#E2E8F0] hover:border-[#126BFF] hover:bg-[#F8FAFD] rounded-xl cursor-pointer transition-all flex flex-col justify-between shadow-2xs group"
                     >
                       <div>
                         <div className="flex items-center justify-between">
-                          <h4 className="text-sm font-bold text-slate-900">{tool.name}</h4>
-                          <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
+                          <h4 className="text-sm font-bold text-[#0B1F3A] group-hover:text-[#126BFF] transition-colors">{tool.name}</h4>
+                          <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-1.5 py-0.5 rounded font-bold">
                             {tool.workingBadge}
                           </span>
                         </div>
-                        <p className="text-xs text-slate-500 mt-1 line-clamp-2">{tool.description}</p>
+                        <p className="text-xs text-[#64748B] mt-1 line-clamp-2">{tool.description}</p>
                       </div>
-                      <span className="text-xs font-bold text-amber-700 mt-2 flex items-center gap-1">
+                      <span className="text-xs font-bold text-[#FF7A00] group-hover:text-[#E66A00] mt-2.5 flex items-center gap-1">
                         {t('runTool', 'Run Tool')} →
                       </span>
                     </div>
@@ -412,45 +419,45 @@ export default function App() {
           )}
 
           {/* HERO SECTION */}
-          <div className="space-y-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-100 text-amber-900 border border-amber-300 rounded-full text-xs font-extrabold shadow-2xs">
-              <Flame className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
+          <div className="bg-white border border-[#E2E8F0] rounded-3xl p-6 sm:p-8 shadow-xs space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#071A3D] text-white border border-[#0F274A] rounded-full text-xs font-extrabold shadow-2xs">
+              <Flame className="w-3.5 h-3.5 fill-[#FF7A00] text-[#FF7A00]" />
               <span>{t('workingTools', 'World\'s Largest WORKING Tools Platform')}</span>
             </div>
 
-            <h1 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight leading-tight">
+            <h1 className="text-2xl sm:text-4xl font-black text-[#0B1F3A] tracking-tight leading-tight">
               {t('heroTitle', 'The World\'s Largest Working Tools Platform — 521 Tools That Actually Work')}
             </h1>
 
-            <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+            <p className="text-[#64748B] text-sm sm:text-base leading-relaxed max-w-3xl">
               {t('heroSubtitle', 'Zero signup walls, zero subscription traps, and zero watermarks. All 521 tools run 100% in your browser for unmatched privacy, speed, and reliability.')}
             </p>
 
             {/* Value Badges */}
-            <div className="flex flex-wrap gap-2 pt-1 text-xs">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 rounded-lg text-slate-700 font-semibold">
+            <div className="flex flex-wrap gap-2.5 pt-2 text-xs">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#F4F7FC] border border-[#E2E8F0] rounded-xl text-[#0B1F3A] font-semibold">
                 <Check className="w-3.5 h-3.5 text-emerald-600" /> {t('freeForever', '100% Free Forever')}
               </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 rounded-lg text-slate-700 font-semibold">
-                <ShieldCheck className="w-3.5 h-3.5 text-blue-600" /> {t('privateInBrowser', 'Private In-Browser Sandbox')}
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#F4F7FC] border border-[#E2E8F0] rounded-xl text-[#0B1F3A] font-semibold">
+                <ShieldCheck className="w-3.5 h-3.5 text-[#126BFF]" /> {t('privateInBrowser', 'Private In-Browser Sandbox')}
               </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 rounded-lg text-slate-700 font-semibold">
-                <Zap className="w-3.5 h-3.5 text-amber-500" /> {t('noWatermark', 'No Watermarks Ever')}
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#F4F7FC] border border-[#E2E8F0] rounded-xl text-[#0B1F3A] font-semibold">
+                <Zap className="w-3.5 h-3.5 text-[#FF7A00]" /> {t('noWatermark', 'No Watermarks Ever')}
               </span>
             </div>
           </div>
 
           {/* Placement A: Homepage Top Banner (after hero) - 728x90 responsive */}
-          <div className="w-full pt-1">
+          <div className="w-full">
             <AdUnitTopBanner />
           </div>
 
           {/* THE 7 DABBA GRID (2 Rows x 3 Columns + 1 Full Width Notion Builder) */}
           <section className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <h2 className="text-lg font-bold text-[#0B1F3A] flex items-center gap-2">
                 <span>Featured Tool Categories</span>
-                <span className="text-xs font-normal text-slate-400">7 Working Clusters</span>
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#EBF3FF] text-[#126BFF] border border-[#C8DDFF]">7 Working Clusters</span>
               </h2>
             </div>
 
@@ -461,7 +468,7 @@ export default function App() {
           </section>
 
           {/* Center Bottom AdSense 728x90 */}
-          <div className="w-full pt-4">
+          <div className="w-full pt-2">
             <AdSenseBanner format="728x90" slotName="CenterBottom" />
           </div>
 
@@ -470,8 +477,8 @@ export default function App() {
 
         </main>
 
-        {/* COLUMN 3: RIGHT SIDEBAR (20% Width, Sticky, Light Gray #f8fafc) */}
-        <div className="hidden lg:block lg:w-[20%] xl:w-[20%] shrink-0 sticky top-0 h-screen overflow-y-auto border-l border-slate-200/80 bg-[#f8fafc]">
+        {/* COLUMN 3: RIGHT SIDEBAR (20% Width, Sticky, Light Cool Gray #F4F7FC) */}
+        <div className="hidden lg:block lg:w-[20%] xl:w-[20%] shrink-0 sticky top-0 h-screen overflow-y-auto border-l border-[#E2E8F0] bg-[#F4F7FC]">
           <RightSidebar />
         </div>
 

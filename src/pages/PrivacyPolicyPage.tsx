@@ -80,7 +80,7 @@ export const PrivacyPolicyPage: React.FC<{ onNavigateHome: () => void }> = ({ on
               At FreeToolsNoSignup.com ("we", "our", or "the Platform"), accessible at <strong>https://www.freetoolsnosignup.com</strong>, the privacy of our visitors is our highest core priority. This comprehensive Privacy Policy document outlines the types of information that may be collected, recorded, or processed when you visit our website, how we utilize and protect data, and the strict technical boundaries governing our zero-server client-side utility suite.
             </p>
             <p className="text-slate-600 text-sm leading-relaxed">
-              If you have any questions, require additional clarification, or wish to exercise data rights under international privacy laws, please contact our dedicated Data Protection Officer at: <strong>support@freetoolsnosignup.com</strong>.
+              If you have any questions, require additional clarification, or wish to exercise data rights under international privacy laws, please contact our dedicated Data Protection Officer at: <strong>hello@freetoolsnosignup.com</strong>.
             </p>
           </section>
 
@@ -215,7 +215,7 @@ export const PrivacyPolicyPage: React.FC<{ onNavigateHome: () => void }> = ({ on
           <section className="space-y-3">
             <h2 className="text-xl font-bold text-slate-900">8. Children's Online Privacy Protection (COPPA)</h2>
             <p className="text-slate-600 text-sm leading-relaxed">
-              Protecting the online privacy of children is especially vital. FreeToolsNoSignup.com does not knowingly collect any Personally Identifiable Information from children under the age of 13. If you believe your child has inadvertently provided information through our contact portal, contact us immediately at support@freetoolsnosignup.com, and we will promptly delete such records.
+              Protecting the online privacy of children is especially vital. FreeToolsNoSignup.com does not knowingly collect any Personally Identifiable Information from children under the age of 13. If you believe your child has inadvertently provided information through our contact portal, contact us immediately at hello@freetoolsnosignup.com, and we will promptly delete such records.
             </p>
           </section>
 
@@ -229,7 +229,7 @@ export const PrivacyPolicyPage: React.FC<{ onNavigateHome: () => void }> = ({ on
               <div><strong>Website:</strong> FreeToolsNoSignup.com (https://www.freetoolsnosignup.com)</div>
               <div><strong>AdSense Publisher Account:</strong> pub-9048615701580913</div>
               <div><strong>Chief Privacy & Security Officer:</strong> Alok Mohan Sharma</div>
-              <div><strong>Direct Support Inquiries:</strong> <a href="mailto:support@freetoolsnosignup.com" className="text-blue-600 underline font-semibold">support@freetoolsnosignup.com</a></div>
+              <div><strong>Direct Support Inquiries:</strong> <a href="mailto:hello@freetoolsnosignup.com" className="text-blue-600 underline font-semibold">hello@freetoolsnosignup.com</a></div>
             </div>
           </section>
         </article>
