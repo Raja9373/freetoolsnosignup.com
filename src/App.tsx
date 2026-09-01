@@ -364,7 +364,7 @@ export default function App() {
                 type="text"
                 value={searchFilter}
                 onChange={(e) => setSearchFilter(e.target.value)}
-                placeholder={t('searchPlaceholder', 'Search 521 working tools (ATS check, AI detector, PDF merge, Fake Data)...')}
+                placeholder={t('searchPlaceholder', `Search ${TOTAL_TOOLS_COUNT} working tools (ATS check, AI detector, PDF merge, Fake Data)...`)}
                 className="w-full pl-12 pr-28 py-3.5 sm:py-4 bg-[#F4F7FC] hover:bg-white focus:bg-white border-2 border-[#E2E8F0] focus:border-[#126BFF] focus:ring-4 focus:ring-[#126BFF]/10 rounded-2xl text-sm sm:text-base font-medium text-[#0B1F3A] placeholder:text-[#64748B]/70 outline-none shadow-2xs transition-all"
               />
               <button
@@ -450,15 +450,15 @@ export default function App() {
           <div className="bg-white border border-[#E2E8F0] rounded-3xl p-6 sm:p-8 shadow-xs space-y-4">
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#071A3D] text-white border border-[#0F274A] rounded-full text-xs font-extrabold shadow-2xs">
               <Flame className="w-3.5 h-3.5 fill-[#FF7A00] text-[#FF7A00]" />
-              <span>{t('workingTools', 'World\'s Largest WORKING Tools Platform')}</span>
+              <span>{t('workingTools', `${TOTAL_TOOLS_COUNT} Free Working Tools`)}</span>
             </div>
 
             <h1 className="text-2xl sm:text-4xl font-black text-[#0B1F3A] tracking-tight leading-tight">
-              {t('heroTitle', 'The World\'s Largest Working Tools Platform — 521 Tools That Actually Work')}
+              {t('heroTitle', '78 Powerful Tools That Actually Work — 100% Free, No Signup Required')}
             </h1>
 
             <p className="text-[#64748B] text-sm sm:text-base leading-relaxed max-w-3xl">
-              {t('heroSubtitle', 'Zero signup walls, zero subscription traps, and zero watermarks. All 521 tools run 100% in your browser for unmatched privacy, speed, and reliability.')}
+              {t('heroSubtitle', 'Zero signup walls, zero subscription traps, and zero watermarks. All 78 tools run 100% in your browser for unmatched privacy, speed, and reliability.')}
             </p>
 
             {/* Value Badges */}

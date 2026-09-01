@@ -7,7 +7,7 @@ import { BrandLogo } from '../components/BrandLogo';
 import { AdUnitTopBanner, AdUnitInFeed } from '../components/AdUnits';
 import { Footer } from '../components/Footer';
 import { getToolSEOData, ToolSEOData } from '../data/toolSEOContent';
-import { ALL_521_DIRECTORY_TOOLS } from '../data/allToolsDirectory';
+import { ALL_78_DIRECTORY_TOOLS } from '../data/allToolsDirectory';
 
 // Interactive Tool Engines for Top UI
 import { PDFToolsModal } from '../components/tools/PDFToolsModal';
@@ -32,7 +32,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
   onOpenToolModal
 }) => {
   // Find tool in directory metadata if available
-  const directoryTool = ALL_521_DIRECTORY_TOOLS.find(t => t.slug === toolSlug || t.id === toolSlug);
+  const directoryTool = ALL_78_DIRECTORY_TOOLS.find(t => t.slug === toolSlug || t.id === toolSlug);
   const seoData: ToolSEOData = getToolSEOData(toolSlug, directoryTool);
 
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
@@ -101,7 +101,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
   }, [seoData]);
 
   // Get related tools in same category
-  const relatedTools = ALL_521_DIRECTORY_TOOLS
+  const relatedTools = ALL_78_DIRECTORY_TOOLS
     .filter(t => t.category === seoData.category && t.slug !== seoData.slug && !t.id.includes('-engine-') && !t.id.includes('job-career-tool-') && !t.id.includes('study-academic-tool-') && !t.id.includes('dev-coder-tool-'))
     .slice(0, 6);
 

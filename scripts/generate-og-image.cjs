@@ -167,16 +167,16 @@ const png = createPng(1200, 630, (setPixel, w, h) => {
     }
   }
 
-  // Draw Header Badge: "521+ FREE WORKING TOOLS"
-  drawString(setPixel, '521+ FREE WORKING TOOLS', 110, 95, 3, 245, 158, 11);
+  // Draw Header Badge: "78+ FREE WORKING TOOLS"
+  drawString(setPixel, '78+ FREE WORKING TOOLS', 110, 95, 3, 245, 158, 11);
 
   // Draw Brand Title: "FREETOOLSNOSIGNUP.COM"
   drawString(setPixel, 'FREETOOLSNOSIGNUP.COM', 110, 155, 5, 255, 255, 255);
 
   // Draw Features
-  drawString(setPixel, 'PDF STUDIO - IMAGE TOOLS - 250+ CALCULATORS', 110, 260, 3, 147, 197, 253);
+  drawString(setPixel, 'PDF STUDIO - IMAGE TOOLS - CALCULATORS', 110, 260, 3, 147, 197, 253);
   drawString(setPixel, 'ATS RESUME - NOTION BUILDER - QR GENERATOR', 110, 320, 3, 147, 197, 253);
-  drawString(setPixel, 'DEVELOPER CRYPTO & NLP AI STUDY TOOLS', 110, 380, 3, 147, 197, 253);
+  drawString(setPixel, 'DEVELOPER DATA & NLP AI STUDY TOOLS', 110, 380, 3, 147, 197, 253);
 
   // Draw Guarantee
   drawString(setPixel, '100% FREE - NO SIGNUP - 100% IN-BROWSER PRIVACY', 110, 480, 3, 52, 211, 153);

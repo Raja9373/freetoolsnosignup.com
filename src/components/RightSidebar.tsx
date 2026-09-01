@@ -109,7 +109,7 @@ export const RightSidebar: React.FC<RightSidebarProps> = ({ className = '' }) =>
         {subscribed ? (
           <div className="p-3 bg-emerald-500/20 border border-emerald-500/40 rounded-xl text-xs text-emerald-300 flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
-            <span>You're in! Check your inbox for this week's 521 tools cheat sheet.</span>
+            <span>You're in! Check your inbox for this week's 78 tools cheat sheet.</span>
           </div>
         ) : (
           <form onSubmit={handleSubscribe} className="space-y-2">

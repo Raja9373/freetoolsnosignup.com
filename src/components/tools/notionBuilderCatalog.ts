@@ -1461,7 +1461,7 @@ export const NOTION_PRESETS: NotionPresetTemplate[] = [
         'col-3': '🔥 Super Productive',
         'col-4': 5,
         'col-5': 'Great health, supportive team, and quiet morning coffee',
-        'col-6': 'Completed the entire 521-tool suite with flawless zero-error build',
+        'col-6': 'Completed the entire 78-tool suite with flawless zero-error build',
         'col-7': true
       },
       {

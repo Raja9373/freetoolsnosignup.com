@@ -71,7 +71,7 @@ export const TOOLS_DATABASE: ToolItem[] = [
     description: 'Structure behavioral interview responses with Situation, Task, Action, and Result.',
     icon: 'HelpCircle',
     workingBadge: 'Interactive',
-    runsCount: 52100,
+    runsCount: 68400,
     tags: ['interview', 'star method', 'behavioral', 'questions']
   },
 
@@ -1236,70 +1236,70 @@ export const TOOLS_DATABASE: ToolItem[] = [
 export const CATEGORY_METADATA = {
   'pdf': {
     title: 'PDF Tools',
-    count: 54,
+    count: 33,
     color: 'blue',
     icon: 'FileText',
-    badge: '54 WORKING',
+    badge: '33 WORKING',
     desc: 'Merge, split, compress, watermark, protect & convert documents with zero server uploads.',
     featured: ['PDF Merge & Combine', 'PDF Splitter', 'PDF Compressor', 'PDF to Word Extractor']
   },
   'image': {
     title: 'Image Tools',
-    count: 40,
+    count: 16,
     color: 'emerald',
     icon: 'Image',
-    badge: '40 WORKING',
+    badge: '16 WORKING',
     desc: 'Compress, remove backgrounds, resize, crop & convert graphics directly in your browser.',
     featured: ['Lossless Compressor', 'Background Remover', 'Bulk Resizer', 'Format Converter']
   },
   'calculator': {
     title: 'Calculators',
-    count: 262,
+    count: 11,
     color: 'purple',
     icon: 'Calculator',
-    badge: '262 WORKING',
+    badge: '11 WORKING',
     desc: 'Financial EMI, mortgages, salary tax, compound SIP, fitness BMI, and engineering formulas.',
     featured: ['Loan EMI & Payoff', 'BMI & Fitness', 'Compound SIP Growth', 'Salary Take-Home']
   },
   'ai-study': {
     title: 'AI STUDY TOOLS',
-    count: 50,
+    count: 5,
     color: 'amber',
     icon: 'Sparkles',
-    badge: '50 WORKING • NEW',
+    badge: '5 WORKING • NEW',
     isNew: true,
     desc: 'Detect AI text, humanize paragraphs, check plagiarism, and generate academic citations.',
     featured: ['AI Content Detector', 'Academic Paraphraser', 'Plagiarism Remover', 'Citation Generator']
   },
   'job-ats': {
     title: 'JOB / ATS TOOLS',
-    count: 50,
+    count: 6,
     color: 'yellow',
     icon: 'Briefcase',
-    badge: '50 WORKING • HOT',
+    badge: '6 WORKING • HOT',
     isHot: true,
     desc: 'Match your resume to job postings, calculate ATS score, uncover missing keywords, and build CVs.',
     featured: ['ATS Resume Checker', 'Resume Builder', 'Cover Letter Generator', 'Salary Negotiator']
   },
   'dev-pro': {
     title: 'DEV PRO TOOLS',
-    count: 100,
+    count: 6,
     color: 'cyan',
     icon: 'Code2',
-    badge: '100 WORKING • NEW',
+    badge: '6 WORKING • NEW',
     isNew: true,
     desc: 'Mock data generation, test credit cards, QR code studio, JSON tree formatters & regex tester.',
     featured: ['Fake Data & Cards', 'JSON Formatter Tree', 'Custom QR Studio', 'Regex Tester']
   },
   'notion': {
     title: 'NOTION TEMPLATE BUILDER',
-    count: 26,
+    count: 1,
     color: 'slate',
     icon: 'Database',
-    badge: 'BUILD YOUR OWN • 25 PRESETS',
+    badge: 'BUILD YOUR OWN',
     isNew: true,
     isHot: true,
-    desc: 'Custom Notion database builder with 18 property types, live interactive preview, and 25 readymade templates with instant CSV import/export.',
+    desc: 'Custom Notion database builder with 18 property types, live interactive preview, and instant CSV import/export.',
     featured: ['Custom Database Builder', 'Content Calendar Preset', 'Habit Tracker Preset', 'Job CRM Preset']
   }
 };

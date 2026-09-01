@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { ArrowLeft, Sparkles, ShieldCheck, Zap, ArrowRight, ExternalLink } from 'lucide-react';
 import { CATEGORY_METADATA, TOOLS_DATABASE } from '../data/toolsData';
-import { ALL_521_DIRECTORY_TOOLS } from '../data/allToolsDirectory';
+import { ALL_78_DIRECTORY_TOOLS } from '../data/allToolsDirectory';
 import { AdSenseBanner } from '../components/AdSenseBanner';
 import { AdUnitTopBanner, AdUnitInFeed } from '../components/AdUnits';
 import { ToolCategory } from '../types';
@@ -15,7 +15,7 @@ interface CategoryPageProps {
 
 export const CategoryPage: React.FC<CategoryPageProps> = ({ categoryKey, onNavigateHome, onOpenTool }) => {
   const meta = CATEGORY_METADATA[categoryKey] || CATEGORY_METADATA['pdf'];
-  const categoryTools = ALL_521_DIRECTORY_TOOLS.filter(t => t.category === categoryKey);
+  const categoryTools = ALL_78_DIRECTORY_TOOLS.filter(t => t.category === categoryKey);
   const flagshipTools = TOOLS_DATABASE.filter(t => t.category === categoryKey);
 
   useEffect(() => {

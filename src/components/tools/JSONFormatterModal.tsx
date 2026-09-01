@@ -9,15 +9,15 @@ interface JSONFormatterModalProps {
 const SAMPLE_JSON = `{
   "platform": "FreeToolsNoSignup.com",
   "features": ["100% Free", "Zero Signup", "No Watermark", "Client-Side Privacy"],
-  "totalTools": 521,
+  "totalTools": 78,
   "categories": {
-    "job_ats": 50,
-    "ai_study": 50,
-    "dev_pro": 100,
-    "pdf": 54,
-    "image": 40,
-    "calculators": 201,
-    "notion_templates": 26
+    "job_ats": 6,
+    "ai_study": 5,
+    "dev_pro": 6,
+    "pdf": 33,
+    "image": 16,
+    "calculators": 11,
+    "notion_templates": 1
   },
   "rating": 4.98,
   "isActive": true
