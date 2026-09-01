@@ -25,6 +25,7 @@ import { DisclaimerPage } from './pages/DisclaimerPage';
 import { CategoryPage } from './pages/CategoryPage';
 import { NotionBuilderPage } from './pages/NotionBuilderPage';
 import { QRCodeGeneratorPage } from './pages/QRCodeGeneratorPage';
+import { ToolPage } from './pages/ToolPage';
 
 // Interactive Tool Modals
 import { NotionTemplateBuilder } from './components/tools/NotionTemplateBuilder';
@@ -242,8 +243,22 @@ export default function App() {
     return <NotionBuilderPage onNavigateHome={() => navigateTo('/')} />;
   }
 
-  if (normalizedPath === '/qr-code-generator' || normalizedPath === '/qr-generator' || normalizedPath === '/tools/qr-generator') {
+  if (normalizedPath === '/qr-code-generator' || normalizedPath === '/qr-generator') {
     return <QRCodeGeneratorPage onNavigateHome={() => navigateTo('/')} />;
+  }
+
+  if (normalizedPath.startsWith('/tools/')) {
+    const toolSlug = normalizedPath.replace(/^\/tools\//, '').trim();
+    if (toolSlug) {
+      return (
+        <ToolPage
+          toolSlug={toolSlug}
+          onNavigateHome={() => navigateTo('/')}
+          onNavigateTo={(p) => navigateTo(p)}
+          onOpenToolModal={(id) => handleOpenTool(id)}
+        />
+      );
+    }
   }
 
   // Filtered tools for direct center search
