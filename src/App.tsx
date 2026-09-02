@@ -247,8 +247,8 @@ export default function App() {
     return <QRCodeGeneratorPage onNavigateHome={() => navigateTo('/')} />;
   }
 
-  if (normalizedPath.startsWith('/tools/')) {
-    const toolSlug = normalizedPath.replace(/^\/tools\//, '').trim();
+  if (normalizedPath.startsWith('/tools/') || normalizedPath.startsWith('/tool/')) {
+    const toolSlug = normalizedPath.replace(/^\/tools?\//, '').trim();
     if (toolSlug) {
       return (
         <ToolPage
@@ -259,6 +259,17 @@ export default function App() {
         />
       );
     }
+  }
+
+  if (normalizedPath.startsWith('/category/')) {
+    const categoryKey = normalizedPath.replace(/^\/category\//, '').trim() as ToolCategory;
+    return (
+      <CategoryPage
+        categoryKey={categoryKey}
+        onNavigateHome={() => navigateTo('/')}
+        onOpenTool={handleOpenTool}
+      />
+    );
   }
 
   // Filtered tools for direct center search
