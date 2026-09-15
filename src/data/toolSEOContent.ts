@@ -558,9 +558,11 @@ export const REAL_TOOLS_SEO_DATABASE: Record<string, Partial<ToolSEOData>> = {
 export function getToolSEOData(slug: string, toolMeta?: { name: string; category: any; categoryName: string; description: string }): ToolSEOData {
   const existing = REAL_TOOLS_SEO_DATABASE[slug];
 
+  const isCalcSlug = /calc|emi|loan|tax|gst|sip|ppf|fd|rd|nps|gratuity|hra|cibil|swp|ssw|mis|td|kisan|sukanya|senior|inflation|retirement|child|marriage|refinance|401k|roth|ira|apr|debt|rent|social|jutaku|nenkin|shisan|hipoteca|iva|isa|vat|global-calc/i.test(slug);
+
   const name = existing?.name || toolMeta?.name || slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-  const category = (existing?.category || toolMeta?.category || 'pdf') as 'pdf' | 'image' | 'calculator' | 'job-ats' | 'ai-study' | 'dev-pro' | 'notion';
-  const categoryName = existing?.categoryName || toolMeta?.categoryName || 'Productivity Tools';
+  const category = (existing?.category || toolMeta?.category || (isCalcSlug ? 'calculator' : 'pdf')) as 'pdf' | 'image' | 'calculator' | 'job-ats' | 'ai-study' | 'dev-pro' | 'notion';
+  const categoryName = existing?.categoryName || toolMeta?.categoryName || (category === 'calculator' ? 'Calculators' : 'Productivity Tools');
   const description = existing?.description || toolMeta?.description || `Use ${name} online 100% free with zero signup, zero watermarks, and complete in-browser privacy on FreeToolsNoSignup.com.`;
 
   const whatIs = existing?.whatIs || [

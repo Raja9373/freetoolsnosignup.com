@@ -16,6 +16,9 @@ export const COUNTRIES: CountryOption[] = [
   { code: 'JP', name: 'Japan', flag: '🇯🇵', currency: 'JPY', symbol: '¥', language: 'ja-JP' },
   { code: 'ES', name: 'Spain / EU', flag: '🇪🇸', currency: 'EUR', symbol: '€', language: 'es-ES' },
   { code: 'GB', name: 'United Kingdom', flag: '🇬🇧', currency: 'GBP', symbol: '£', language: 'en-GB' },
+  { code: 'CA', name: 'Canada', flag: '🇨🇦', currency: 'CAD', symbol: 'C$', language: 'en-CA' },
+  { code: 'AU', name: 'Australia', flag: '🇦🇺', currency: 'AUD', symbol: 'A$', language: 'en-AU' },
+  { code: 'DE', name: 'Germany', flag: '🇩🇪', currency: 'EUR', symbol: '€', language: 'de-DE' },
 ];
 
 export function GeoFlagSwitcher() {
