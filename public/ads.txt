@@ -1,3 +1,1 @@
-google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
-# Replace pub-0000000000000000 with real AdSense Publisher ID after AdSense account approval
-# For now placeholder - User will replace after AdSense gives ID
+google.com, pub-9048615701580913, DIRECT, f08c47fec0942fa0
