@@ -1,6 +1,7 @@
 import React from 'react';
 import { CheckCircle2, ShieldCheck, Zap, Globe, Sparkles, Code2, ArrowLeft, BarChart3, Database, Cpu } from 'lucide-react';
 import { TOTAL_TOOLS_COUNT } from '../data/toolCounts';
+import { SEOHead } from '../components/SEOHead';
 
 interface AuditPageProps {
   onNavigateHome: () => void;
@@ -21,6 +22,11 @@ export const AuditPage: React.FC<AuditPageProps> = ({ onNavigateHome, onNavigate
 
   return (
     <div className="min-h-screen bg-[#F4F7FC] text-[#0A1931] flex flex-col font-sans">
+      <SEOHead 
+        title="100/100 System Audit & Compliance Dashboard | FreeToolsNoSignup"
+        description="Verify live compliance, PWA status, tool indexing, and security performance of FreeToolsNoSignup.com."
+        canonicalUrl="https://www.freetoolsnosignup.com/audit"
+      />
       {/* Header */}
       <header className="bg-white border-b border-[#E2E8F0] px-6 py-4 flex items-center justify-between sticky top-0 z-30 shadow-2xs">
         <div className="flex items-center gap-3">

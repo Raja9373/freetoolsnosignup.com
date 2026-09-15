@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   ArrowLeft, ShieldCheck, Zap, Sparkles, ChevronDown, ChevronUp, 
   CheckCircle2, ArrowRight, ExternalLink, Laptop, Lock, Clock, 
@@ -9,6 +9,7 @@ import { AdUnitTopBanner, AdUnitInFeed } from '../components/AdUnits';
 import { Footer } from '../components/Footer';
 import { getToolSEOData, ToolSEOData } from '../data/toolSEOContent';
 import { ALL_DIRECTORY_TOOLS } from '../data/allToolsDirectory';
+import { SEOHead } from '../components/SEOHead';
 
 // Interactive Tool Engines for Top UI
 import { PDFToolsModal } from '../components/tools/PDFToolsModal';
@@ -300,6 +301,59 @@ export const ToolPage: React.FC<ToolPageProps> = ({
 
   return (
     <div className="min-h-screen bg-[#F4F7FC] text-[#0B1F3A] flex flex-col selection:bg-[#FF7A00] selection:text-white relative">
+      <SEOHead
+        title={seoData.title}
+        description={seoData.description}
+        canonicalUrl={`https://www.freetoolsnosignup.com/tools/${seoData.slug}`}
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@graph': [
+            {
+              '@type': 'SoftwareApplication',
+              'name': seoData.name,
+              'url': `https://www.freetoolsnosignup.com/tools/${seoData.slug}`,
+              'description': seoData.description,
+              'applicationCategory': 'UtilitiesApplication',
+              'operatingSystem': 'Any',
+              'datePublished': new Date().toISOString().split('T')[0],
+              'version': '1.0.0',
+              'author': {
+                '@type': 'Organization',
+                'name': 'FreeToolsNoSignup',
+                'url': 'https://www.freetoolsnosignup.com'
+              },
+              'offers': {
+                '@type': 'Offer',
+                'price': '0',
+                'priceCurrency': 'USD'
+              }
+            },
+            {
+              '@type': 'BreadcrumbList',
+              'itemListElement': [
+                {
+                  '@type': 'ListItem',
+                  'position': 1,
+                  'name': 'Home',
+                  'item': 'https://www.freetoolsnosignup.com/'
+                },
+                {
+                  '@type': 'ListItem',
+                  'position': 2,
+                  'name': seoData.categoryName,
+                  'item': `https://www.freetoolsnosignup.com${getCategoryPath(seoData.category)}`
+                },
+                {
+                  '@type': 'ListItem',
+                  'position': 3,
+                  'name': seoData.name,
+                  'item': `https://www.freetoolsnosignup.com/tools/${seoData.slug}`
+                }
+              ]
+            }
+          ]
+        }}
+      />
       
       {/* Floating Global Close Button for All 2753 Tools */}
       <button

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { ShieldCheck, Cpu, ArrowLeft, Heart, Zap, Globe, Sparkles, CheckCircle2, Lock, FileText, Code2, Users } from 'lucide-react';
 import { AdSenseBanner } from '../components/AdSenseBanner';
 import { BrandLogo } from '../components/BrandLogo';
+import { SEOHead } from '../components/SEOHead';
 import { 
   TOTAL_TOOLS_COUNT, 
   PDF_TOOLS_COUNT, 
@@ -15,12 +16,16 @@ import {
 
 export const AboutPage: React.FC<{ onNavigateHome: () => void }> = ({ onNavigateHome }) => {
   useEffect(() => {
-    document.title = 'About Us | FreeToolsNoSignup.com - The Zero-Friction Utility Platform';
     window.scrollTo(0, 0);
   }, []);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
+      <SEOHead 
+        title="About Us | FreeToolsNoSignup.com - The Zero-Friction Utility Platform"
+        description="Discover FreeToolsNoSignup.com, offering 2,753+ completely free, secure, client-side browser utilities with zero registration and absolute privacy."
+        canonicalUrl="https://www.freetoolsnosignup.com/about"
+      />
       {/* Top Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-2xs">
         <div className="max-w-6xl mx-auto px-4 py-3.5 flex items-center justify-between">
