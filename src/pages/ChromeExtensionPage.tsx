@@ -22,7 +22,7 @@ export const ChromeExtensionPage: React.FC<ChromeExtensionPageProps> = ({
 
   const manifestCode = `{
   "manifest_version": 3,
-  "name": "2753 Free Tools No Signup",
+  "name": "3253 Free Tools No Signup",
   "version": "1.0.0",
   "description": "Instant offline search across 2,753 free browser-native tools with zero signup.",
   "action": {
@@ -62,7 +62,7 @@ export const ChromeExtensionPage: React.FC<ChromeExtensionPageProps> = ({
 </head>
 <body>
   <div class="header">
-    <span class="title">2753 Free Tools</span>
+    <span class="title">3253 Free Tools</span>
     <span class="badge">No Signup</span>
   </div>
   <input type="text" id="search" placeholder="Search 2,753 tools (PDF, ATS, JSON, Notion)..." autofocus>
@@ -128,17 +128,17 @@ render(POPULAR);
       zip.file('manifest.json', manifestCode);
       zip.file('popup.html', popupHtml);
       zip.file('popup.js', popupJs);
-      zip.file('README.txt', `2753 Free Tools No Signup - Chrome Extension (Manifest v3)
+      zip.file('README.txt', `3253 Free Tools No Signup - Chrome Extension (Manifest v3)
 Installation Guide:
 1. Open Google Chrome and type chrome://extensions/ in the address bar.
 2. Turn ON the "Developer mode" toggle in the top right corner.
 3. Click "Load unpacked" button in the top left.
 4. Select this extracted folder.
-5. Done! Click the puzzle icon in Chrome toolbar to pin 2753 Free Tools.`);
+5. Done! Click the puzzle icon in Chrome toolbar to pin 3253 Free Tools.`);
 
       // Generate zip blob
       const content = await zip.generateAsync({ type: 'blob' });
-      download(content, '2753-tools-chrome-extension.zip', 'application/zip');
+      download(content, '3253-tools-chrome-extension.zip', 'application/zip');
     } catch (err) {
       console.error('Failed to generate extension zip:', err);
     } finally {

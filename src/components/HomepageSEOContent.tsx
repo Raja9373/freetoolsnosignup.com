@@ -17,7 +17,7 @@ interface FAQItem {
 const HOMEPAGE_FAQS: FAQItem[] = [
   {
     q: "Is FreeToolsNoSignup really 100% free with no hidden charges or subscriptions?",
-    a: "Yes. Every single one of our 2753 tools is completely free to use forever. There are zero subscription tiers, zero trial expiration clocks, no premium paywalls, and no credit card requirements. What you see is 100% functional immediately."
+    a: "Yes. Every single one of our 3253 tools is completely free to use forever. There are zero subscription tiers, zero trial expiration clocks, no premium paywalls, and no credit card requirements. What you see is 100% functional immediately."
   },
   {
     q: "Why is no signup, account registration, or login required?",
@@ -28,11 +28,11 @@ const HOMEPAGE_FAQS: FAQItem[] = [
     a: "Absolutely. FreeToolsNoSignup operates on a strict zero-knowledge in-browser architecture. When you convert PDFs, resize high-resolution images, format confidential code, or calculate financial metrics, the processing occurs locally inside your web browser's memory (RAM) via WebAssembly and HTML5 APIs. Your files never touch our servers or traverse third-party cloud infrastructure."
   },
   {
-    q: "How are all 2753 tools supported without charging users?",
-    a: "FreeToolsNoSignup is supported by non-intrusive standard web advertising (via Google AdSense) and voluntary community backlinks. Because our entire tool suite runs on client-side compute, our server hosting costs are a tiny fraction of conventional SaaS companies, enabling us to keep all 2753 tools free indefinitely."
+    q: "How are all 3253 tools supported without charging users?",
+    a: "FreeToolsNoSignup is supported by non-intrusive standard web advertising (via Google AdSense) and voluntary community backlinks. Because our entire tool suite runs on client-side compute, our server hosting costs are a tiny fraction of conventional SaaS companies, enabling us to keep all 3253 tools free indefinitely."
   },
   {
-    q: "Can I use these 2753 free tools offline or in airplane mode?",
+    q: "Can I use these 3253 free tools offline or in airplane mode?",
     a: "Yes! Because the core logic, WebAssembly binaries, and JavaScript libraries execute directly on your local device, once you have loaded a tool's page, you can disconnect from Wi-Fi or turn on airplane mode and continue merging PDFs, resizing images, and calculating numbers without an active internet connection."
   },
   {
@@ -45,7 +45,7 @@ const HOMEPAGE_FAQS: FAQItem[] = [
   },
   {
     q: "Are these tools compatible with smartphones, tablets, and desktops?",
-    a: "Yes. All 2753 tools are built on a responsive mobile-first architecture. They run seamlessly on Apple iOS Safari, iPadOS, Android Chrome, macOS Safari, Windows Edge, and Linux Firefox without needing any mobile app installations or browser extensions."
+    a: "Yes. All 3253 tools are built on a responsive mobile-first architecture. They run seamlessly on Apple iOS Safari, iPadOS, Android Chrome, macOS Safari, Windows Edge, and Linux Firefox without needing any mobile app installations or browser extensions."
   },
   {
     q: "How is FreeToolsNoSignup different from typical SaaS online tools?",
@@ -94,7 +94,7 @@ export const HomepageSEOContent: React.FC<HomepageSEOContentProps> = ({ onNaviga
   }, []);
 
   const handleCopyShare = () => {
-    const shareText = `Check out FreeToolsNoSignup.com - 2753 free tools no signup, 100% private in browser with zero watermarks! https://www.freetoolsnosignup.com/`;
+    const shareText = `Check out FreeToolsNoSignup.com - 3253 free tools no signup, 100% private in browser with zero watermarks! https://www.freetoolsnosignup.com/`;
     if (navigator.clipboard) {
       navigator.clipboard.writeText(shareText);
       setCopiedLink(true);

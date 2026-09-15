@@ -224,7 +224,7 @@ export const LaunchPage: React.FC<LaunchPageProps> = ({ onNavigateHome, onNaviga
               </p>
             </div>
 
-            {/* Asset 5: All 2753 Tools Directory */}
+            {/* Asset 5: All 3253 Tools Directory */}
             <div className="bg-white rounded-2xl border border-[#E2E8F0] p-5 shadow-xs space-y-3 md:col-span-2 lg:col-span-2">
               <div className="w-full h-40 rounded-xl bg-gradient-to-br from-[#F59E0B] to-[#B45309] p-4 flex flex-col justify-between text-white relative overflow-hidden">
                 <div className="flex items-center justify-between">

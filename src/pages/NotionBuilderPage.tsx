@@ -58,7 +58,7 @@ export const NotionBuilderPage: React.FC<NotionBuilderPageProps> = ({
 
   // SEO Title & JSON-LD Structured Data
   useEffect(() => {
-    document.title = 'Custom Notion Template & Database Builder (2753 Tools) | FreeToolsNoSignup';
+    document.title = 'Custom Notion Template & Database Builder (3253 Tools) | FreeToolsNoSignup';
     
     let metaDesc = document.querySelector('meta[name="description"]');
     if (!metaDesc) {
@@ -236,7 +236,7 @@ export const NotionBuilderPage: React.FC<NotionBuilderPageProps> = ({
         </div>
       )}
 
-      {/* Top Header: Matching Other Tools with 2753 Count and Search Bar */}
+      {/* Top Header: Matching Other Tools with 3253 Count and Search Bar */}
       <header className="bg-white border-b border-[#E2E8F0] sticky top-0 z-30 shadow-2xs">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
           {/* Brand Logo & Back to Home */}

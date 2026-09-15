@@ -14,6 +14,7 @@ import { AdUnitTopBanner, AdUnitInFeed, AdUnitAuto } from './components/AdUnits'
 import { Footer } from './components/Footer';
 import { AllCategoryModal } from './components/AllCategoryModal';
 import { LanguageSwitcher } from './components/LanguageSwitcher';
+import { GeoFlagSwitcher } from './components/GeoFlagSwitcher';
 import { useTranslation } from './i18n/I18nContext';
 import { SUPPORTED_LANGUAGES } from './i18n/languages';
 import { PWAInstallBanner } from './components/PWAInstallBanner';
@@ -388,6 +389,7 @@ export default function App() {
             <Heart className="w-3.5 h-3.5 fill-current text-red-500" />
             <span className="text-[11px] font-bold">{favorites.length}</span>
           </button>
+          <GeoFlagSwitcher />
           <LanguageSwitcher />
           <button
             onClick={() => setIsCmdKOpen(true)}
@@ -488,6 +490,7 @@ export default function App() {
                   <BarChart3 className="w-3.5 h-3.5" />
                   <span>Stats</span>
                 </button>
+                <GeoFlagSwitcher />
                 <LanguageSwitcher />
               </div>
             </div>

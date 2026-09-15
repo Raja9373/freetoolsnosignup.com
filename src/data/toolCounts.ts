@@ -3,10 +3,10 @@ import { COMPLETE_CALCULATOR_SUITE } from '../components/tools/allCalculatorsCat
 
 /**
  * SINGLE SOURCE OF TRUTH FOR ALL TOOL & CALCULATOR COUNTS
- * Directly loaded from tools.json (2753 tools)
+ * Directly loaded from tools.json (3253 tools)
  */
 
-// Total verified working tools in the database (2753)
+// Total verified working tools in the database (3253)
 export const TOTAL_TOOLS_COUNT = tools.length;
 
 // Total interactive calculators in the complete calculator suite

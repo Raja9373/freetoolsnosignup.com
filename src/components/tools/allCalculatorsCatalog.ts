@@ -20,6 +20,7 @@ import { GRAND_MASTER_PART2_SUITE } from './grandMasterPart2Suite';
 import { GRAND_MASTER_PART3_SUITE } from './grandMasterPart3Suite';
 import { GRAND_MASTER_PART4_SUITE } from './grandMasterPart4Suite';
 import { GRAND_MASTER_PART5_SUITE } from './grandMasterPart5Suite';
+import { GLOBAL_CALCULATORS_SUITE } from '../../data/calculators/globalCalculators';
 
 // Complete master calculator catalog synthesis
 function generateCompleteCalculatorSuite(): CalculatorDefinition[] {
@@ -47,6 +48,7 @@ function generateCompleteCalculatorSuite(): CalculatorDefinition[] {
   GRAND_MASTER_PART3_SUITE.forEach(c => map.set(c.id, c));
   GRAND_MASTER_PART4_SUITE.forEach(c => map.set(c.id, c));
   GRAND_MASTER_PART5_SUITE.forEach(c => map.set(c.id, c));
+  GLOBAL_CALCULATORS_SUITE.forEach(c => map.set(c.id, c));
 
   return Array.from(map.values());
 }
