@@ -125,3 +125,11 @@
   background: rgba(148, 163, 184, 0.65);
 }
 
+.category-pill {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+

@@ -21,7 +21,7 @@ import { AIToolFinder } from './components/AIToolFinder';
 import { ToolOfTheDay } from './components/ToolOfTheDay';
 import { EmailCapture } from './components/EmailCapture';
 import { RecentAndFavoritesSection } from './components/RecentAndFavoritesSection';
-import { AiChatbotWidget } from './components/AiChatbotWidget';
+import AiChatbotWidget from './components/AiChatbotWidget';
 
 // Dedicated Crawlable Pages
 import { AboutPage } from './pages/AboutPage';
@@ -520,21 +520,38 @@ export default function App() {
             {/* Quick Filter Category Pills - Royal Styling */}
             <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs no-scrollbar">
               {[
-                { id: 'all', label: `All (${TOTAL_TOOLS_COUNT})`, path: '/' },
-                { id: 'notion', label: `📓 Notion Builder (${NOTION_TOOLS_COUNT})`, path: '/notion-template-builder' },
-                { id: 'job-ats', label: `💼 Job & Career (${JOB_ATS_TOOLS_COUNT})`, path: '/job-ats' },
-                { id: 'ai-study', label: `🎓 AI & Study (${AI_STUDY_TOOLS_COUNT})`, path: '/ai-study' },
-                { id: 'dev-pro', label: `💻 Developer (${DEV_PRO_TOOLS_COUNT})`, path: '/dev-tools' },
-                { id: 'pdf', label: `📄 PDF Studio (${PDF_TOOLS_COUNT})`, path: '/pdf-tools' },
-                { id: 'image', label: `🖼️ Image & Media (${IMAGE_TOOLS_COUNT})`, path: '/image-tools' },
-                { id: 'calculator', label: `🧮 Calculators (${CALCULATOR_TOOLS_COUNT})`, path: '/calculators' },
+                { id: 'All', label: `All (${TOTAL_TOOLS_COUNT})`, path: '/' },
+                { id: 'Notion Builder', label: `📓 Notion Builder (${NOTION_TOOLS_COUNT})`, path: '/notion-template-builder' },
+                { id: 'Job & Career', label: `💼 Job & Career (${JOB_ATS_TOOLS_COUNT})`, path: '/job-ats' },
+                { id: 'AI & Study', label: `🎓 AI & Study (${AI_STUDY_TOOLS_COUNT})`, path: '/ai-study' },
+                { id: 'Developer', label: `💻 Developer (${DEV_PRO_TOOLS_COUNT})`, path: '/dev-tools' },
+                { id: 'PDF Studio', label: `📄 PDF Studio (${PDF_TOOLS_COUNT})`, path: '/pdf-tools' },
+                { id: 'Image & Media', label: `🖼️ Image & Media (${IMAGE_TOOLS_COUNT})`, path: '/image-tools' },
+                { id: 'Calculators', label: `🧮 Calculators (${CALCULATOR_TOOLS_COUNT})`, path: '/calculators' },
               ].map(tab => (
                 <button
                   key={tab.id}
                   onClick={() => {
                     setActiveCategoryFilter(tab.id);
+                    if (tab.id === 'All') {
+                      navigateTo('/');
+                    } else if (tab.id === 'Notion Builder') {
+                      navigateTo('/notion-template-builder');
+                    } else if (tab.id === 'Job & Career') {
+                      navigateTo('/job-ats');
+                    } else if (tab.id === 'AI & Study') {
+                      navigateTo('/ai-study');
+                    } else if (tab.id === 'Developer') {
+                      navigateTo('/dev-tools');
+                    } else if (tab.id === 'PDF Studio') {
+                      navigateTo('/pdf-tools');
+                    } else if (tab.id === 'Image & Media') {
+                      navigateTo('/image-tools');
+                    } else if (tab.id === 'Calculators') {
+                      navigateTo('/calculators');
+                    }
                   }}
-                  className={`px-3.5 py-2 rounded-xl font-medium whitespace-nowrap transition-all text-xs ${
+                  className={`px-3.5 py-2 rounded-xl font-medium whitespace-nowrap transition-all text-xs category-pill select-none cursor-pointer pointer-events-auto ${
                     activeCategoryFilter === tab.id
                       ? 'bg-[#0A1931] text-white shadow-sm border border-[#0A1931]'
                       : 'bg-[#F8FAFC] hover:bg-[#F1F5F9] text-[#475569] hover:text-[#0F172A] border border-[#E2E8F0]'
