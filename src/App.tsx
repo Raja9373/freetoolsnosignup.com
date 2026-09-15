@@ -247,7 +247,7 @@ export default function App() {
     normalizedPath === '/tool/custom-notion-template-database-builder' ||
     normalizedPath === '/tools/notion-template-builder'
   ) {
-    return <NotionBuilderPage onNavigateHome={() => navigateTo('/')} />;
+    return <NotionBuilderPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
   }
 
   if (normalizedPath === '/qr-code-generator' || normalizedPath === '/qr-generator') {

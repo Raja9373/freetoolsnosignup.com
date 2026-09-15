@@ -583,13 +583,21 @@ export const DabbaGrid: React.FC<DabbaGridProps> = ({ onOpenCategory, onOpenTool
                 <span>Launch Custom Builder →</span>
               </a>
 
-              {/* Secondary: "View All 25 Presets" bg: rgba(255,255,255,0.08) border white/20, white text, rounded-full */}
-              <button
-                onClick={() => onOpenCategory('notion')}
-                className="w-full py-2.5 px-5 bg-white/[0.08] hover:bg-white/[0.16] text-white font-semibold rounded-full text-xs flex items-center justify-center gap-2 border border-white/20 transition-all cursor-pointer"
+              {/* Secondary: "View All 25 Presets" - routes to page and scrolls to presets section */}
+              <a
+                href="/tools/custom-notion-template-database-builder#presets"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (onNavigateTo) {
+                    onNavigateTo('/tools/custom-notion-template-database-builder?section=presets');
+                  } else {
+                    window.location.href = '/tools/custom-notion-template-database-builder#presets';
+                  }
+                }}
+                className="w-full py-2.5 px-5 bg-white/[0.08] hover:bg-white/[0.16] text-white font-semibold rounded-full text-xs flex items-center justify-center gap-2 border border-white/20 transition-all cursor-pointer text-center"
               >
                 <span>View All 25 Presets</span>
-              </button>
+              </a>
             </div>
 
           </div>
