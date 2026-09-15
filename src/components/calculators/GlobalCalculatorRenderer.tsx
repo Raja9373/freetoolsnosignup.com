@@ -15,17 +15,6 @@ interface GlobalCalculatorRendererProps {
 export const GlobalCalculatorRenderer: React.FC<GlobalCalculatorRendererProps> = ({ toolId, onRecordUse }) => {
   const { country, symbol: geoSymbol } = useGeo();
 
-  const currencySymbol = useMemo(() => {
-    if (toolId.includes('us') || toolId.includes('mortgage') || toolId.includes('usd') || toolId.includes('fha') || toolId.includes('va-')) return '$';
-    if (toolId.includes('uk')) return '£';
-    if (toolId.includes('ca')) return 'C$';
-    if (toolId.includes('au')) return 'A$';
-    if (toolId.includes('eu') || toolId.includes('de') || toolId.includes('es')) return '€';
-    if (toolId.includes('jp')) return '¥';
-    if (toolId.includes('in') || toolId.includes('emi') || toolId.includes('sip') || toolId.includes('gst') || toolId.includes('tax')) return '₹';
-    return geoSymbol || '$';
-  }, [toolId, geoSymbol]);
-
   // Find calculator definition
   const calculator: CalculatorDefinition = useMemo(() => {
     const found = COMPLETE_CALCULATOR_SUITE.find(c => c.id === toolId || (c as any).slug === toolId);
@@ -57,12 +46,12 @@ export const GlobalCalculatorRenderer: React.FC<GlobalCalculatorRendererProps> =
         const totalInterest = p * r * t;
         const totalAmount = p + totalInterest;
         return {
-          primaryValue: `${currencySymbol}${Math.round(totalAmount).toLocaleString()}`,
+          primaryValue: Math.round(totalAmount).toLocaleString(),
           primaryLabel: 'Total Maturity Value',
-          primaryUnit: currencySymbol,
+          primaryUnit: geoSymbol,
           secondaryMetrics: [
-            { label: 'Principal Invested', value: `${currencySymbol}${Math.round(p).toLocaleString()}` },
-            { label: 'Total Interest Earned', value: `${currencySymbol}${Math.round(totalInterest).toLocaleString()}` }
+            { label: 'Principal Invested', value: Math.round(p).toLocaleString() },
+            { label: 'Total Interest Earned', value: Math.round(totalInterest).toLocaleString() }
           ],
           breakdown: [
             { label: 'Principal', value: p, color: '#0A1931' },
@@ -72,6 +61,22 @@ export const GlobalCalculatorRenderer: React.FC<GlobalCalculatorRendererProps> =
       }
     };
   }, [toolId]);
+
+  const currencySymbol = useMemo(() => {
+    const cAny = calculator as any;
+    if (cAny.currencySymbol) return cAny.currencySymbol;
+    if (cAny.currency) return cAny.currency;
+    if (cAny.primaryUnit && !cAny.primaryUnit.includes('mo') && cAny.primaryUnit.length <= 3) return cAny.primaryUnit;
+
+    if (toolId.includes('us') || toolId.includes('mortgage') || toolId.includes('usd') || toolId.includes('fha') || toolId.includes('va-') || toolId.includes('-us-')) return '$';
+    if (toolId.includes('uk')) return '£';
+    if (toolId.includes('ca')) return 'C$';
+    if (toolId.includes('au')) return 'A$';
+    if (toolId.includes('eu') || toolId.includes('de') || toolId.includes('es')) return '€';
+    if (toolId.includes('jp')) return '¥';
+    if (toolId.includes('in') || toolId.includes('emi') || toolId.includes('sip') || toolId.includes('gst') || toolId.includes('tax')) return '₹';
+    return geoSymbol || '$';
+  }, [toolId, calculator, geoSymbol]);
 
   // Form inputs state
   const [inputs, setInputs] = useState<Record<string, any>>(() => {

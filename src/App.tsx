@@ -606,46 +606,17 @@ export default function App() {
             }} 
           />
 
-          {/* HERO SECTION - Royal Premium Redesign */}
-          <div className="bg-white border border-[#E2E8F0] rounded-3xl p-8 sm:p-10 shadow-sm relative overflow-hidden space-y-6">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-[#C5A059]/10 via-[#0A1931]/5 to-transparent rounded-bl-full pointer-events-none" />
-
-            <div className="flex flex-wrap items-center gap-2.5">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#0A1931] text-white rounded-full text-xs font-bold tracking-wide shadow-sm border border-[#142D54]">
-                <Flame className="w-3.5 h-3.5 text-[#C5A059]" />
-                <span className="font-mono text-[#C5A059]">{TOTAL_TOOLS_COUNT}</span>
-                <span>WORKING TOOLS</span>
-              </div>
-              <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#F7F3EB] text-[#8C6B28] border border-[#E8DCBE] rounded-full text-xs font-semibold">
-                ★ 100% Free · No Signup Required
-              </span>
-            </div>
-
-            <div className="space-y-3 max-w-3xl">
-              <h1 className="font-serif-royal text-3xl sm:text-5xl lg:text-[54px] font-semibold text-[#0A1931] leading-[1.1] tracking-tight">
-                {`${TOTAL_TOOLS_COUNT} Powerful Tools That Actually Work`}
-              </h1>
-
-              <p className="text-[#475569] text-base sm:text-lg leading-relaxed font-normal">
-                {t('heroSubtitle', `Zero signup walls, zero subscription traps, and zero watermarks. All ${TOTAL_TOOLS_COUNT} tools execute 100% locally in your browser for unmatched privacy, speed, and reliability.`)}
-              </p>
-            </div>
-
-            {/* Value Badges - Clean & Elevated */}
-            <div className="flex flex-wrap gap-3 pt-2 text-xs">
-              <span className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-[#0A1931] font-medium shadow-2xs">
-                <Check className="w-4 h-4 text-[#C5A059]" /> {t('freeForever', '100% Free Forever')}
-              </span>
-              <span className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-[#0A1931] font-medium shadow-2xs">
-                <ShieldCheck className="w-4 h-4 text-[#0A1931]" /> {t('privateInBrowser', 'Private In-Browser Execution')}
-              </span>
-              <span className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-[#0A1931] font-medium shadow-2xs">
-                <Zap className="w-4 h-4 text-[#C5A059]" /> {t('noWatermark', 'No Watermarks Ever')}
-              </span>
-            </div>
+          {/* Small SEO H1 */}
+          <div className="px-2 py-4 mb-2">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2 leading-tight">
+              4753 Free Tools - No Signup - 100% Private in Your Browser
+            </h1>
+            <p className="text-sm md:text-base text-gray-600">
+              PDF, Image, Calculators, ATS, AI - All 100% offline - No API - 4,753 working utilities
+            </p>
           </div>
 
-          {/* Placement A: Homepage Top Banner (after hero) - 728x90 responsive */}
+          {/* Placement A: Homepage Top Banner - 728x90 responsive */}
           <div className="w-full">
             <AdUnitTopBanner />
           </div>
