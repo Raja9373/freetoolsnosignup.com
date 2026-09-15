@@ -27,8 +27,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
     }
   };
 
-  const badgeHtml = `<a href="https://www.freetoolsnosignup.com/" target="_blank" rel="noopener noreferrer"><img src="https://www.freetoolsnosignup.com/badge.svg" alt="FreeToolsNoSignup - 3253 Free Tools No Signup" width="200" height="40" /></a>`;
-  const textHtml = `<a href="https://www.freetoolsnosignup.com/" target="_blank" rel="noopener noreferrer">FreeToolsNoSignup - 3253 Free Tools No Signup</a>`;
+  const badgeHtml = `<a href="https://www.freetoolsnosignup.com/" target="_blank" rel="noopener noreferrer"><img src="https://www.freetoolsnosignup.com/badge.svg" alt="FreeToolsNoSignup - 4753 Free Tools No Signup" width="200" height="40" /></a>`;
+  const textHtml = `<a href="https://www.freetoolsnosignup.com/" target="_blank" rel="noopener noreferrer">FreeToolsNoSignup - 4753 Free Tools No Signup</a>`;
 
   const handleCopyCode = (type: 'badge' | 'text', snippet: string) => {
     if (navigator.clipboard) {

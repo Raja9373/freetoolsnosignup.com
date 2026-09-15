@@ -38,7 +38,7 @@ export const AIToolFinder: React.FC<AIToolFinderProps> = ({ onSelectTool }) => {
               </span>
             </h3>
             <p className="text-[11px] text-[#475569]">
-              Type naturally in Hindi, Hinglish, English, or Spanish — AI instantly finds the exact tool across 2,753 utilities.
+              Type naturally in Hindi, Hinglish, English, or Spanish — AI instantly finds the exact tool across 4,753 utilities.
             </p>
           </div>
         </div>

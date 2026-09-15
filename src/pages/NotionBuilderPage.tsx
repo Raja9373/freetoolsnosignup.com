@@ -58,7 +58,7 @@ export const NotionBuilderPage: React.FC<NotionBuilderPageProps> = ({
 
   // SEO Title & JSON-LD Structured Data
   useEffect(() => {
-    document.title = 'Custom Notion Template & Database Builder (3253 Tools) | FreeToolsNoSignup';
+    document.title = 'Custom Notion Template & Database Builder (4753 Tools) | FreeToolsNoSignup';
     
     let metaDesc = document.querySelector('meta[name="description"]');
     if (!metaDesc) {
@@ -236,7 +236,7 @@ export const NotionBuilderPage: React.FC<NotionBuilderPageProps> = ({
         </div>
       )}
 
-      {/* Top Header: Matching Other Tools with 3253 Count and Search Bar */}
+      {/* Top Header: Matching Other Tools with 4753 Count and Search Bar */}
       <header className="bg-white border-b border-[#E2E8F0] sticky top-0 z-30 shadow-2xs">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
           {/* Brand Logo & Back to Home */}
@@ -252,7 +252,7 @@ export const NotionBuilderPage: React.FC<NotionBuilderPageProps> = ({
             <BrandLogo variant="header" onClick={onNavigateHome} />
           </div>
 
-          {/* Search Bar Across All 2,753 Tools */}
+          {/* Search Bar Across All 4,753 Tools */}
           <div className="flex-1 max-w-lg relative hidden md:block">
             <div className="relative">
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -264,7 +264,7 @@ export const NotionBuilderPage: React.FC<NotionBuilderPageProps> = ({
                   setIsHeaderSearchOpen(true);
                 }}
                 onFocus={() => setIsHeaderSearchOpen(true)}
-                placeholder="Search 2,753 free browser tools (PDF, ATS, Dev, Notion)..."
+                placeholder="Search 4,753 free browser tools (PDF, ATS, Dev, Notion)..."
                 className="w-full bg-[#F8FAFC] border border-[#E2E8F0] focus:border-[#C5A059] focus:bg-white focus:outline-hidden rounded-xl pl-9 pr-4 py-1.5 text-xs text-[#0A1931] font-medium transition-all"
               />
               {headerSearchQuery && (
@@ -312,7 +312,7 @@ export const NotionBuilderPage: React.FC<NotionBuilderPageProps> = ({
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
               </span>
-              <span>2,753 Tools Active</span>
+              <span>4,753 Tools Active</span>
             </div>
 
             {/* In-Browser Privacy Badge */}

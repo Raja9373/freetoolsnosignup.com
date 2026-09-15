@@ -41,11 +41,11 @@ export const StatsPage: React.FC<StatsPageProps> = ({ onNavigateHome, onNavigate
 
   const handleUnlock = (e: React.FormEvent) => {
     e.preventDefault();
-    if (passwordInput.trim() === 'admin3253' || passwordInput.trim() === 'admin' || passwordInput.trim() === 'royal') {
+    if (passwordInput.trim() === 'admin4753' || passwordInput.trim() === 'admin' || passwordInput.trim() === 'royal') {
       setIsAdminUnlocked(true);
       localStorage.setItem('ftns_admin_unlocked', 'true');
     } else {
-      alert('Invalid passcode. Use "admin3253"');
+      alert('Invalid passcode. Use "admin4753"');
     }
   };
 
@@ -134,7 +134,7 @@ export const StatsPage: React.FC<StatsPageProps> = ({ onNavigateHome, onNavigate
                 type="password"
                 value={passwordInput}
                 onChange={(e) => setPasswordInput(e.target.value)}
-                placeholder="Enter admin passcode (e.g. admin3253)..."
+                placeholder="Enter admin passcode (e.g. admin4753)..."
                 className="w-full px-4 py-3 bg-[#F8FAFC] border border-[#E2E8F0] focus:border-[#0A1931] rounded-xl text-xs sm:text-sm outline-none text-center"
               />
               <button
@@ -152,7 +152,7 @@ export const StatsPage: React.FC<StatsPageProps> = ({ onNavigateHome, onNavigate
               <div>
                 <h1 className="text-2xl font-bold text-[#0A1931] flex items-center gap-2">
                   <BarChart3 className="w-6 h-6 text-[#C5A059]" />
-                  <span>3253 Tools Client-Side Analytics</span>
+                  <span>4753 Tools Client-Side Analytics</span>
                 </h1>
                 <p className="text-xs text-[#64748B]">
                   Live privacy-preserving metrics stored in client storage.

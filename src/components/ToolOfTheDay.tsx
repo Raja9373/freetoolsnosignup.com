@@ -30,7 +30,7 @@ export const ToolOfTheDay: React.FC<ToolOfTheDayProps> = ({ onOpenTool }) => {
               Tool of the Day
             </span>
             <span className="text-xs text-[#C5A059] font-mono font-semibold">
-              Rotates Daily Across 2,753 Tools
+              Rotates Daily Across 4,753 Tools
             </span>
           </div>
 

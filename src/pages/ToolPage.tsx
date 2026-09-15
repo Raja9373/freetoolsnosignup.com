@@ -215,7 +215,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
     };
   }, [seoData]);
 
-  // Global Close Handler & ESC key listener for all 3253 tools
+  // Global Close Handler & ESC key listener for all 4753 tools
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -355,7 +355,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
         }}
       />
       
-      {/* Floating Global Close Button for All 3253 Tools */}
+      {/* Floating Global Close Button for All 4753 Tools */}
       <button
         onClick={handleCloseTool}
         className="fixed top-20 right-6 z-50 w-12 h-12 bg-[#0A1931] hover:bg-red-600 text-white rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110 active:scale-95 cursor-pointer pointer-events-auto border-2 border-white"
@@ -428,7 +428,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
               <span>Embed</span>
             </button>
 
-            {/* GLOBAL CLOSE X BUTTON (For all 3253 tools) */}
+            {/* GLOBAL CLOSE X BUTTON (For all 4753 tools) */}
             <button
               onClick={handleCloseTool}
               type="button"

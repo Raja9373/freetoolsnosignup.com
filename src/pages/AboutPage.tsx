@@ -23,7 +23,7 @@ export const AboutPage: React.FC<{ onNavigateHome: () => void }> = ({ onNavigate
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
       <SEOHead 
         title="About Us | FreeToolsNoSignup.com - The Zero-Friction Utility Platform"
-        description="Discover FreeToolsNoSignup.com, offering 2,753+ completely free, secure, client-side browser utilities with zero registration and absolute privacy."
+        description="Discover FreeToolsNoSignup.com, offering 4,753+ completely free, secure, client-side browser utilities with zero registration and absolute privacy."
         canonicalUrl="https://www.freetoolsnosignup.com/about"
       />
       {/* Top Header */}
@@ -123,7 +123,7 @@ export const AboutPage: React.FC<{ onNavigateHome: () => void }> = ({ onNavigate
             </ul>
           </section>
 
-          {/* Section: The 3253 Working Tools Vision */}
+          {/* Section: The 4753 Working Tools Vision */}
           <section className="space-y-4">
             <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
               <Zap className="w-5 h-5 text-amber-500" />

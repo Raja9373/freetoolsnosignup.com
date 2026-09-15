@@ -26,7 +26,7 @@ export default function AiChatbotWidget() {
       {
         id: '1',
         sender: 'bot',
-        text: "Namaste! 👋 Mai aapka 3253 tools ka AI assistant hu.\n\nBatao — Kaunsa tool chahiye ya kya karna hai aapko?\n\nJaise:\n• 'PDF jodna hai'\n• 'Resume ka ATS score check karna hai'\n• 'Notion database banana hai'\n• 'Image ka background hatana hai'",
+        text: "Namaste! 👋 Mai aapka 4753 tools ka AI assistant hu.\n\nBatao — Kaunsa tool chahiye ya kya karna hai aapko?\n\nJaise:\n• 'PDF jodna hai'\n• 'Resume ka ATS score check karna hai'\n• 'Notion database banana hai'\n• 'Image ka background hatana hai'",
         timestamp: Date.now()
       }
     ]);
@@ -100,7 +100,7 @@ export default function AiChatbotWidget() {
           <div className="p-4 bg-[#0A1931] border-b border-[#C5A059]/20 flex justify-between items-center">
             <div>
               <div className="text-white font-bold flex items-center gap-2 text-sm">
-                🤖 Kaunsa tool chahiye? <span className="bg-[#C5A059] text-[#0A1931] px-2 py-0.5 rounded text-[10px] font-mono">3253</span>
+                🤖 Kaunsa tool chahiye? <span className="bg-[#C5A059] text-[#0A1931] px-2 py-0.5 rounded text-[10px] font-mono">4753</span>
               </div>
               <div className="text-gray-400 text-[11px]">Batao kya karna hai, mai tool dhundh ke deta hu</div>
             </div>

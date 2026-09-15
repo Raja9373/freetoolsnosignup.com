@@ -261,7 +261,7 @@ export const PartnersPage: React.FC<PartnersPageProps> = ({ onNavigateHome, onNa
                   onClick={() => onNavigateTo('/backlinks')}
                   className="w-full py-2.5 rounded-xl bg-[#F8FAFC] hover:bg-[#EBF3FF] text-[#126BFF] font-bold text-xs border border-[#E2E8F0] transition-colors flex items-center justify-center gap-1.5"
                 >
-                  <span>Browse 3253 Embed Codes</span>
+                  <span>Browse 4753 Embed Codes</span>
                 </button>
               </div>
             </div>

@@ -116,9 +116,9 @@ const notionTools: DirectoryTool[] = [
 
 import rawToolsData from './tools.json';
 
-// Total 3253 verified working tools across 7 categories
+// Total 4753 verified working tools across 7 categories
 export const ALL_DIRECTORY_TOOLS: DirectoryTool[] = rawToolsData as DirectoryTool[];
-export const ALL_3253_DIRECTORY_TOOLS: DirectoryTool[] = ALL_DIRECTORY_TOOLS;
+export const ALL_4753_DIRECTORY_TOOLS: DirectoryTool[] = ALL_DIRECTORY_TOOLS;
 
 export const ALL_521_DIRECTORY_TOOLS = ALL_DIRECTORY_TOOLS;
 export const ALL_520_DIRECTORY_TOOLS = ALL_DIRECTORY_TOOLS;

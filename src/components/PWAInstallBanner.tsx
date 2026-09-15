@@ -34,13 +34,13 @@ export const PWAInstallBanner: React.FC = () => {
             </div>
             <div>
               <p className="text-xs sm:text-sm font-semibold tracking-tight text-white flex items-center gap-1.5 justify-center sm:justify-start">
-                <span>Install 3253 Tools App — Works Offline</span>
+                <span>Install 4753 Tools App — Works Offline</span>
                 <span className="hidden md:inline-flex px-1.5 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider bg-[#C5A059]/20 text-[#E5C77A] border border-[#C5A059]/40">
                   Instant PWA
                 </span>
               </p>
               <p className="text-[11px] text-slate-300 hidden sm:block">
-                Launch all 2,753 private browser tools directly from your home screen or desktop dock with 0ms latency.
+                Launch all 4,753 private browser tools directly from your home screen or desktop dock with 0ms latency.
               </p>
             </div>
           </div>

@@ -22,9 +22,9 @@ export const ChromeExtensionPage: React.FC<ChromeExtensionPageProps> = ({
 
   const manifestCode = `{
   "manifest_version": 3,
-  "name": "3253 Free Tools No Signup",
+  "name": "4753 Free Tools No Signup",
   "version": "1.0.0",
-  "description": "Instant offline search across 2,753 free browser-native tools with zero signup.",
+  "description": "Instant offline search across 4,753 free browser-native tools with zero signup.",
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -62,10 +62,10 @@ export const ChromeExtensionPage: React.FC<ChromeExtensionPageProps> = ({
 </head>
 <body>
   <div class="header">
-    <span class="title">3253 Free Tools</span>
+    <span class="title">4753 Free Tools</span>
     <span class="badge">No Signup</span>
   </div>
-  <input type="text" id="search" placeholder="Search 2,753 tools (PDF, ATS, JSON, Notion)..." autofocus>
+  <input type="text" id="search" placeholder="Search 4,753 tools (PDF, ATS, JSON, Notion)..." autofocus>
   <div class="list" id="results"></div>
   <div class="footer">
     <a href="https://www.freetoolsnosignup.com/" target="_blank">Open FreeToolsNoSignup.com &rarr;</a>
@@ -128,17 +128,17 @@ render(POPULAR);
       zip.file('manifest.json', manifestCode);
       zip.file('popup.html', popupHtml);
       zip.file('popup.js', popupJs);
-      zip.file('README.txt', `3253 Free Tools No Signup - Chrome Extension (Manifest v3)
+      zip.file('README.txt', `4753 Free Tools No Signup - Chrome Extension (Manifest v3)
 Installation Guide:
 1. Open Google Chrome and type chrome://extensions/ in the address bar.
 2. Turn ON the "Developer mode" toggle in the top right corner.
 3. Click "Load unpacked" button in the top left.
 4. Select this extracted folder.
-5. Done! Click the puzzle icon in Chrome toolbar to pin 3253 Free Tools.`);
+5. Done! Click the puzzle icon in Chrome toolbar to pin 4753 Free Tools.`);
 
       // Generate zip blob
       const content = await zip.generateAsync({ type: 'blob' });
-      download(content, '3253-tools-chrome-extension.zip', 'application/zip');
+      download(content, '4753-tools-chrome-extension.zip', 'application/zip');
     } catch (err) {
       console.error('Failed to generate extension zip:', err);
     } finally {
@@ -187,7 +187,7 @@ Installation Guide:
           </div>
 
           <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
-            2,753 Free Tools Extension for Google Chrome &amp; Brave
+            4,753 Free Tools Extension for Google Chrome &amp; Brave
           </h1>
           <p className="text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed">
             Search, launch, and use PDF editors, ATS resume scanners, QR generators, and Notion template builders instantly with a 1-click popup right from your Chrome toolbar. 100% free, no login, zero tracking.
@@ -220,7 +220,7 @@ Installation Guide:
             </div>
             <h3 className="font-bold text-sm text-[#0A1931]">Instant 0ms Search</h3>
             <p className="text-xs text-[#64748B] leading-relaxed">
-              Fuzzy search across 2,753 utilities without opening new tabs. Launch any tool directly in your browser.
+              Fuzzy search across 4,753 utilities without opening new tabs. Launch any tool directly in your browser.
             </p>
           </div>
           <div className="p-5 bg-white border border-[#E2E8F0] rounded-2xl shadow-2xs space-y-2">

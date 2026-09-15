@@ -9,7 +9,7 @@ interface JSONFormatterModalProps {
 const SAMPLE_JSON = `{
   "platform": "FreeToolsNoSignup.com",
   "features": ["100% Free", "Zero Signup", "No Watermark", "Client-Side Privacy"],
-  "totalTools": 3253,
+  "totalTools": 4753,
   "categories": {
     "job_ats": 6,
     "ai_study": 5,

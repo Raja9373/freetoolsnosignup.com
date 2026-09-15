@@ -1,11 +1,11 @@
-# ⚡ FreeToolsNoSignup — 2,753 Free In-Browser Tools • No Signup • No BS
+# ⚡ FreeToolsNoSignup — 4,753 Free In-Browser Tools • No Signup • No BS
 
 [![Product Hunt](https://img.shields.io/badge/Product%20Hunt-Launch%20Day-DA552F?style=for-the-badge&logo=producthunt&logoColor=white)](https://www.freetoolsnosignup.com/launch)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 [![Privacy: 100% Client-Side](https://img.shields.io/badge/Privacy-100%25%20In--Browser%20RAM-059669?style=for-the-badge)](https://www.freetoolsnosignup.com/)
 [![Tools Count](https://img.shields.io/badge/Total%20Tools-2%2C753%20Verified-126BFF?style=for-the-badge)](https://www.freetoolsnosignup.com/)
 
-> **2,753 powerful browser-native utilities that actually work.**
+> **4,753 powerful browser-native utilities that actually work.**
 > Zero signups, zero credit cards, zero cloud tracking, and zero watermarks.
 > Everything executes 100% locally in your browser memory via WebAssembly and HTML5 APIs.
 
@@ -33,7 +33,7 @@ Most "free online tools" websites follow a predatory freemium playbook:
 
 ---
 
-## 🛠️ The 7 Core Clusters (2,753 Tools)
+## 🛠️ The 7 Core Clusters (4,753 Tools)
 
 ### 1. 📄 PDF Tools (489 Tools)
 - [PDF Merge & Combine Pro](https://www.freetoolsnosignup.com/tools/pdf-merge) — Combine multi-page PDFs with visual reordering.
@@ -97,11 +97,11 @@ You can embed any tool directly into your WordPress blog, documentation, or pers
   style="border: 1px solid #e2e8f0; border-radius: 12px;">
 </iframe>
 <p style="font-size: 12px; color: #64748b;">
-  Powered by <a href="https://www.freetoolsnosignup.com/tools/pdf-merge" target="_blank">FreeToolsNoSignup (2,753 Free Tools)</a>
+  Powered by <a href="https://www.freetoolsnosignup.com/tools/pdf-merge" target="_blank">FreeToolsNoSignup (4,753 Free Tools)</a>
 </p>
 ```
 
-Browse all 2,753 embed codes at [https://www.freetoolsnosignup.com/backlinks](https://www.freetoolsnosignup.com/backlinks).
+Browse all 4,753 embed codes at [https://www.freetoolsnosignup.com/backlinks](https://www.freetoolsnosignup.com/backlinks).
 
 ---
 
