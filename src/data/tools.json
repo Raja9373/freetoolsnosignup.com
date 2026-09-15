@@ -1,0 +1,29 @@
+[
+  {
+    "id": "ceo-agent",
+    "slug": "ceo-agent",
+    "name": "CEO Agent",
+    "category": "AGENT - Business",
+    "categoryName": "Business Agents",
+    "description": "AI-powered strategic business management agent.",
+    "isFlagship": true
+  },
+  {
+    "id": "pdf-merge",
+    "slug": "pdf-merge",
+    "name": "PDF Merge",
+    "category": "PDF TOOLS",
+    "categoryName": "PDF Tools",
+    "description": "Combine multiple PDF files into one.",
+    "isFlagship": true
+  },
+  {
+    "id": "image-compressor",
+    "slug": "image-compressor",
+    "name": "Image Compressor",
+    "category": "IMAGE TOOLS",
+    "categoryName": "Image Tools",
+    "description": "Reduce image file size without losing quality.",
+    "isFlagship": true
+  }
+]
