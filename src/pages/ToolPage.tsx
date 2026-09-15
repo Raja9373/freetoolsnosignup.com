@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   ArrowLeft, ShieldCheck, Zap, Sparkles, ChevronDown, ChevronUp, 
   CheckCircle2, ArrowRight, ExternalLink, Laptop, Lock, Clock, 
-  FileText, Layers, Play, Share2, Copy, Check, Code, Globe, Heart
+  FileText, Layers, Play, Share2, Copy, Check, Code, Globe, Heart, X
 } from 'lucide-react';
 import { BrandLogo } from '../components/BrandLogo';
 import { AdUnitTopBanner, AdUnitInFeed } from '../components/AdUnits';
@@ -214,6 +214,28 @@ export const ToolPage: React.FC<ToolPageProps> = ({
     };
   }, [seoData]);
 
+  // Global Close Handler & ESC key listener for all 2753 tools
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        document.body.style.overflow = 'auto';
+        onNavigateHome();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    document.body.style.overflow = 'auto';
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'auto';
+    };
+  }, [onNavigateHome]);
+
+  const handleCloseTool = () => {
+    document.body.style.overflow = 'auto';
+    onNavigateHome();
+  };
+
   // Guaranteed 6 related tools in same category
   const relatedTools = ALL_DIRECTORY_TOOLS
     .filter(t => t.category === seoData.category && t.slug !== seoData.slug && !t.id.includes('-engine-') && !t.id.includes('job-career-tool-') && !t.id.includes('study-academic-tool-') && !t.id.includes('dev-coder-tool-'))
@@ -279,6 +301,16 @@ export const ToolPage: React.FC<ToolPageProps> = ({
   return (
     <div className="min-h-screen bg-[#F4F7FC] text-[#0B1F3A] flex flex-col selection:bg-[#FF7A00] selection:text-white relative">
       
+      {/* Floating Global Close Button for All 2753 Tools */}
+      <button
+        onClick={handleCloseTool}
+        className="fixed top-20 right-6 z-50 w-12 h-12 bg-[#0A1931] hover:bg-red-600 text-white rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110 active:scale-95 cursor-pointer pointer-events-auto border-2 border-white"
+        title="Close Tool & Return Home (ESC)"
+        aria-label="Close Tool"
+      >
+        <X className="w-6 h-6" strokeWidth={2.5} />
+      </button>
+      
       {/* Floating Toast Message */}
       {toastMessage && (
         <div className="fixed bottom-6 right-6 z-50 bg-[#0A1931] text-white text-xs font-bold px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2 animate-in slide-in-from-bottom-5 border border-[#1E3A8A]">
@@ -301,7 +333,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
             <BrandLogo variant="header" onClick={onNavigateHome} />
           </div>
 
-          {/* Top Right "Share & Get Backlink" Bar */}
+          {/* Top Right "Share & Get Backlink" Bar & Close Button */}
           <div className="flex items-center gap-2">
             <span className="hidden md:inline-block text-[11px] font-bold text-[#64748B] mr-1">
               Share &amp; Get Backlink:
@@ -340,6 +372,17 @@ export const ToolPage: React.FC<ToolPageProps> = ({
             >
               <Code className="w-3.5 h-3.5" />
               <span>Embed</span>
+            </button>
+
+            {/* GLOBAL CLOSE X BUTTON (For all 2753 tools) */}
+            <button
+              onClick={handleCloseTool}
+              type="button"
+              aria-label="Close tool - Back to home"
+              className="ml-2 w-9 h-9 flex items-center justify-center bg-[#0A1931] text-white hover:bg-red-600 rounded-full transition-all duration-200 cursor-pointer shadow-md hover:scale-110 active:scale-95 pointer-events-auto"
+              title="Close Tool (ESC)"
+            >
+              <X className="w-5 h-5" strokeWidth={2.5} />
             </button>
           </div>
         </div>
