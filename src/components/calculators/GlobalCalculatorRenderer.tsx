@@ -15,6 +15,17 @@ interface GlobalCalculatorRendererProps {
 export const GlobalCalculatorRenderer: React.FC<GlobalCalculatorRendererProps> = ({ toolId, onRecordUse }) => {
   const { country, symbol: geoSymbol } = useGeo();
 
+  const currencySymbol = useMemo(() => {
+    if (toolId.includes('us') || toolId.includes('mortgage') || toolId.includes('usd') || toolId.includes('fha') || toolId.includes('va-')) return '$';
+    if (toolId.includes('uk')) return '£';
+    if (toolId.includes('ca')) return 'C$';
+    if (toolId.includes('au')) return 'A$';
+    if (toolId.includes('eu') || toolId.includes('de') || toolId.includes('es')) return '€';
+    if (toolId.includes('jp')) return '¥';
+    if (toolId.includes('in') || toolId.includes('emi') || toolId.includes('sip') || toolId.includes('gst') || toolId.includes('tax')) return '₹';
+    return geoSymbol || '$';
+  }, [toolId, geoSymbol]);
+
   // Find calculator definition
   const calculator: CalculatorDefinition = useMemo(() => {
     const found = COMPLETE_CALCULATOR_SUITE.find(c => c.id === toolId || (c as any).slug === toolId);
@@ -46,12 +57,12 @@ export const GlobalCalculatorRenderer: React.FC<GlobalCalculatorRendererProps> =
         const totalInterest = p * r * t;
         const totalAmount = p + totalInterest;
         return {
-          primaryValue: Math.round(totalAmount).toLocaleString(),
+          primaryValue: `${currencySymbol}${Math.round(totalAmount).toLocaleString()}`,
           primaryLabel: 'Total Maturity Value',
-          primaryUnit: geoSymbol,
+          primaryUnit: currencySymbol,
           secondaryMetrics: [
-            { label: 'Principal Invested', value: Math.round(p).toLocaleString() },
-            { label: 'Total Interest Earned', value: Math.round(totalInterest).toLocaleString() }
+            { label: 'Principal Invested', value: `${currencySymbol}${Math.round(p).toLocaleString()}` },
+            { label: 'Total Interest Earned', value: `${currencySymbol}${Math.round(totalInterest).toLocaleString()}` }
           ],
           breakdown: [
             { label: 'Principal', value: p, color: '#0A1931' },
@@ -150,7 +161,7 @@ export const GlobalCalculatorRenderer: React.FC<GlobalCalculatorRendererProps> =
                       {field.label}
                     </label>
                     <span className="font-mono font-bold text-[#126BFF] bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100">
-                      {field.type === 'number' && (field.label.toLowerCase().includes('amount') || field.label.toLowerCase().includes('principal') || field.label.toLowerCase().includes('price') || field.label.toLowerCase().includes('salary')) ? geoSymbol : ''}
+                      {field.type === 'number' && (field.label.toLowerCase().includes('amount') || field.label.toLowerCase().includes('principal') || field.label.toLowerCase().includes('price') || field.label.toLowerCase().includes('salary')) ? currencySymbol : ''}
                       {Number(val).toLocaleString()} {field.unit || ''}
                     </span>
                   </div>

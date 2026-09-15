@@ -522,7 +522,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
             {seoData.category === 'pdf' && (
               <PDFToolsModal
                 initialToolId={seoData.id}
-                onClose={() => {}}
+                onClose={() => onNavigateHome()}
                 onRecordUse={() => {}}
               />
             )}
@@ -530,7 +530,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
             {seoData.category === 'image' && (
               <ImageToolsModal
                 initialToolId={seoData.id}
-                onClose={() => {}}
+                onClose={() => onNavigateHome()}
                 onRecordUse={() => {}}
               />
             )}
@@ -538,7 +538,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
             {seoData.category === 'calculator' && (
               <CalculatorModal
                 initialToolId={seoData.id}
-                onClose={() => {}}
+                onClose={() => onNavigateHome()}
                 onRecordUse={() => {}}
               />
             )}
@@ -546,7 +546,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
             {seoData.category === 'job-ats' && (
               <ATSToolsSuite
                 initialToolId={seoData.id}
-                onClose={() => {}}
+                onClose={() => onNavigateHome()}
                 onRecordUse={() => {}}
               />
             )}
@@ -554,7 +554,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
             {seoData.category === 'ai-study' && (
               <AIStudySuite
                 initialToolId={seoData.id}
-                onClose={() => {}}
+                onClose={() => onNavigateHome()}
                 onRecordUse={() => {}}
               />
             )}
@@ -562,7 +562,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
             {seoData.category === 'dev-pro' && (
               <DevToolsSuite
                 initialToolId={seoData.id}
-                onClose={() => {}}
+                onClose={() => onNavigateHome()}
                 onRecordUse={() => {}}
               />
             )}
@@ -570,7 +570,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
             {seoData.category === 'notion' && (
               <NotionTemplateBuilder
                 initialPresetId={seoData.id}
-                onClose={() => {}}
+                onClose={() => onNavigateHome()}
                 onRecordUse={() => {}}
               />
             )}
@@ -916,7 +916,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
           {seoData.category === 'pdf' && (
             <PDFToolsModal
               initialToolId={seoData.id}
-              onClose={() => setIsInteractiveModalOpen(false)}
+              onClose={() => { setIsInteractiveModalOpen(false); onNavigateHome(); }}
               onRecordUse={() => {}}
             />
           )}
@@ -924,7 +924,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
           {seoData.category === 'image' && (
             <ImageToolsModal
               initialToolId={seoData.id}
-              onClose={() => setIsInteractiveModalOpen(false)}
+              onClose={() => { setIsInteractiveModalOpen(false); onNavigateHome(); }}
               onRecordUse={() => {}}
             />
           )}
@@ -932,7 +932,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
           {seoData.category === 'calculator' && (
             <CalculatorModal
               initialToolId={seoData.id}
-              onClose={() => setIsInteractiveModalOpen(false)}
+              onClose={() => { setIsInteractiveModalOpen(false); onNavigateHome(); }}
               onRecordUse={() => {}}
             />
           )}
@@ -940,7 +940,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
           {seoData.category === 'job-ats' && (
             <ATSToolsSuite
               initialToolId={seoData.id}
-              onClose={() => setIsInteractiveModalOpen(false)}
+              onClose={() => { setIsInteractiveModalOpen(false); onNavigateHome(); }}
               onRecordUse={() => {}}
             />
           )}
@@ -948,7 +948,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
           {seoData.category === 'ai-study' && (
             <AIStudySuite
               initialToolId={seoData.id}
-              onClose={() => setIsInteractiveModalOpen(false)}
+              onClose={() => { setIsInteractiveModalOpen(false); onNavigateHome(); }}
               onRecordUse={() => {}}
             />
           )}
@@ -956,7 +956,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
           {seoData.category === 'dev-pro' && (
             <DevToolsSuite
               initialToolId={seoData.id}
-              onClose={() => setIsInteractiveModalOpen(false)}
+              onClose={() => { setIsInteractiveModalOpen(false); onNavigateHome(); }}
               onRecordUse={() => {}}
             />
           )}
@@ -964,7 +964,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
           {seoData.category === 'notion' && (
             <NotionTemplateBuilder
               initialPresetId={seoData.id}
-              onClose={() => setIsInteractiveModalOpen(false)}
+              onClose={() => { setIsInteractiveModalOpen(false); onNavigateHome(); }}
               onRecordUse={() => {}}
             />
           )}
