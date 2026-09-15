@@ -133,16 +133,25 @@ export const ToolPage: React.FC<ToolPageProps> = ({
     const toolUrl = `https://www.freetoolsnosignup.com/tools/${seoData.slug}`;
     const categoryUrl = `https://www.freetoolsnosignup.com${getCategoryPath(seoData.category)}`;
 
+    const currentDate = new Date().toISOString().split('T')[0];
+
     const schemaData = {
       '@context': 'https://schema.org',
       '@graph': [
         {
-          '@type': 'WebApplication',
+          '@type': 'SoftwareApplication',
           'name': seoData.name,
           'url': toolUrl,
           'description': seoData.description,
           'applicationCategory': 'UtilitiesApplication',
           'operatingSystem': 'Any',
+          'datePublished': currentDate,
+          'version': '1.0.0',
+          'author': {
+            '@type': 'Organization',
+            'name': 'FreeToolsNoSignup',
+            'url': 'https://www.freetoolsnosignup.com'
+          },
           'offers': {
             '@type': 'Offer',
             'price': '0',
