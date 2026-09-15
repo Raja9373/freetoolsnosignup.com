@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { AlertCircle, ArrowLeft, ShieldAlert, DollarSign, Briefcase, Sparkles, Activity, FileCheck } from 'lucide-react';
 import { AdSenseBanner } from '../components/AdSenseBanner';
 import { BrandLogo } from '../components/BrandLogo';
+import { TOTAL_TOOLS_COUNT } from '../data/toolCounts';
 
 export const DisclaimerPage: React.FC<{ onNavigateHome: () => void }> = ({ onNavigateHome }) => {
   useEffect(() => {
@@ -58,7 +59,7 @@ export const DisclaimerPage: React.FC<{ onNavigateHome: () => void }> = ({ onNav
               Legal & Technical Disclaimer
             </h1>
             <p className="text-slate-500 text-sm mt-2">
-              Applies to all 78 tools on FreeToolsNoSignup.com • Last Reviewed: August 2026
+              Applies to all {TOTAL_TOOLS_COUNT} tools on FreeToolsNoSignup.com • Last Reviewed: August 2026
             </p>
           </header>
 

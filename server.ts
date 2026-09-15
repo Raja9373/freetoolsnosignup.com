@@ -19,11 +19,13 @@ async function startServer() {
   // Safe Standard HTTP Security Headers (Production & Dev)
   app.use((req, res, next) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+    const host = req.headers.host || '';
+    if (process.env.NODE_ENV === 'production' && !host.includes('run.app')) {
+      res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+    }
     res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
 
     // Canonical redirect from http to https or apex to www for general traffic
-    const host = req.headers.host || '';
     const isApex = host === 'freetoolsnosignup.com';
     const isHttp = req.headers['x-forwarded-proto'] === 'http';
 

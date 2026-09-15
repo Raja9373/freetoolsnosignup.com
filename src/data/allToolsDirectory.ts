@@ -114,18 +114,13 @@ const notionTools: DirectoryTool[] = [
   { id: 'notion-template-builder', slug: 'notion-template-builder', name: 'Custom Notion Template & Database Builder', category: 'notion', categoryName: 'Notion Templates', description: 'Build custom Notion databases with 18 property types, custom colors, live table preview, and 1-click CSV import export.', isFlagship: true }
 ];
 
-// Total 78 verified working tools across 7 categories
-export const ALL_78_DIRECTORY_TOOLS: DirectoryTool[] = [
-  ...pdfTools,        // 33
-  ...imageTools,      // 16
-  ...calculatorTools, // 11
-  ...jobAtsTools,     // 6
-  ...aiStudyTools,    // 5
-  ...devProTools,     // 6
-  ...notionTools      // 1
-];
+import rawToolsData from './tools.json';
 
-export const ALL_521_DIRECTORY_TOOLS = ALL_78_DIRECTORY_TOOLS;
-export const ALL_520_DIRECTORY_TOOLS = ALL_78_DIRECTORY_TOOLS;
-export const ALL_516_DIRECTORY_TOOLS = ALL_78_DIRECTORY_TOOLS;
-export const ALL_495_DIRECTORY_TOOLS = ALL_78_DIRECTORY_TOOLS;
+// Total 2753 verified working tools across 7 categories
+export const ALL_DIRECTORY_TOOLS: DirectoryTool[] = rawToolsData as DirectoryTool[];
+export const ALL_2753_DIRECTORY_TOOLS: DirectoryTool[] = ALL_DIRECTORY_TOOLS;
+
+export const ALL_521_DIRECTORY_TOOLS = ALL_DIRECTORY_TOOLS;
+export const ALL_520_DIRECTORY_TOOLS = ALL_DIRECTORY_TOOLS;
+export const ALL_516_DIRECTORY_TOOLS = ALL_DIRECTORY_TOOLS;
+export const ALL_495_DIRECTORY_TOOLS = ALL_DIRECTORY_TOOLS;

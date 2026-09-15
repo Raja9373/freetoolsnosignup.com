@@ -118,7 +118,7 @@ export const AboutPage: React.FC<{ onNavigateHome: () => void }> = ({ onNavigate
             </ul>
           </section>
 
-          {/* Section: The 78 Working Tools Vision */}
+          {/* Section: The 2753 Working Tools Vision */}
           <section className="space-y-4">
             <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
               <Zap className="w-5 h-5 text-amber-500" />

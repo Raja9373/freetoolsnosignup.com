@@ -1,21 +1,22 @@
-import { ALL_78_DIRECTORY_TOOLS, DirectoryTool } from './allToolsDirectory';
+import tools from './tools.json';
 import { COMPLETE_CALCULATOR_SUITE } from '../components/tools/allCalculatorsCatalog';
 
 /**
  * SINGLE SOURCE OF TRUTH FOR ALL TOOL & CALCULATOR COUNTS
- * Automatically recalculates if tools or calculators are added/removed in the registry.
+ * Directly loaded from tools.json (2753 tools)
  */
 
-// Total verified working directory tools across all categories
-export const TOTAL_TOOLS_COUNT = ALL_78_DIRECTORY_TOOLS.length;
+// Total verified working tools in the database (2753)
+export const TOTAL_TOOLS_COUNT = tools.length;
 
 // Total interactive calculators in the complete calculator suite
 export const INTERACTIVE_CALCULATORS_COUNT = COMPLETE_CALCULATOR_SUITE.length;
 
-// Calculate category-specific counts dynamically from the actual registry
-export const CATEGORY_COUNTS: Record<string, number> = ALL_78_DIRECTORY_TOOLS.reduce(
+// Calculate category-specific counts dynamically from tools.json
+export const CATEGORY_COUNTS: Record<string, number> = (tools as any[]).reduce(
   (acc, tool) => {
-    acc[tool.category] = (acc[tool.category] || 0) + 1;
+    const cat = tool.category || 'other';
+    acc[cat] = (acc[cat] || 0) + 1;
     return acc;
   },
   {} as Record<string, number>
@@ -41,4 +42,4 @@ export const SITE_HERO_SUBTITLE = `Zero signup walls, zero subscription traps, a
 export const SITE_SEARCH_PLACEHOLDER = `Search ${TOTAL_TOOLS_COUNT} working tools (ATS check, AI detector, PDF merge, Fake Data)...`;
 export const SITE_FOOTER_TITLE = `FreeToolsNoSignup.com — ${TOTAL_TOOLS_COUNT} Browser-Native Tools, including ${CALCULATOR_TOOLS_COUNT} Calculators`;
 export const SITE_FOOTER_STATS = `${TOTAL_TOOLS_COUNT} Browser-Native Tools • ${CALCULATOR_TOOLS_COUNT} Calculator Tools • ${INTERACTIVE_CALCULATORS_COUNT} Calculator Functions`;
-export const SITE_WORKING_BADGE = `${TOTAL_TOOLS_COUNT} Working Browser Tools`;
+export const SITE_WORKING_BADGE = `${TOTAL_TOOLS_COUNT} WORKING TOOLS`;

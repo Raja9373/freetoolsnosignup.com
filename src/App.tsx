@@ -239,7 +239,14 @@ export default function App() {
     return <CategoryPage categoryKey="dev-pro" onNavigateHome={() => navigateTo('/')} onOpenTool={handleOpenTool} />;
   }
 
-  if (normalizedPath === '/notion-template-builder' || normalizedPath === '/notion-builder' || normalizedPath === '/notion') {
+  if (
+    normalizedPath === '/notion-template-builder' || 
+    normalizedPath === '/notion-builder' || 
+    normalizedPath === '/notion' ||
+    normalizedPath === '/tools/custom-notion-template-database-builder' ||
+    normalizedPath === '/tool/custom-notion-template-database-builder' ||
+    normalizedPath === '/tools/notion-template-builder'
+  ) {
     return <NotionBuilderPage onNavigateHome={() => navigateTo('/')} />;
   }
 
@@ -366,48 +373,48 @@ export default function App() {
             <AdSenseBanner format="728x90" slotName="TopHeader" />
           </div>
 
-          {/* Search Box Card with Cmd+K Shortcut */}
-          <div className="w-full bg-white border border-[#E2E8F0] p-4 sm:p-5 rounded-2xl shadow-xs space-y-3.5">
+          {/* Search Box Card with Cmd+K Shortcut - Royal Premium */}
+          <div className="w-full bg-white border border-[#E2E8F0] p-5 sm:p-6 rounded-3xl shadow-sm space-y-4">
             <div className="relative flex items-center">
-              <Search className="w-5 h-5 text-[#64748B] absolute left-4 pointer-events-none" />
+              <Search className="w-5 h-5 text-[#475569] absolute left-4 pointer-events-none" />
               <input
                 id="main-center-search-input"
                 type="text"
                 value={searchFilter}
                 onChange={(e) => setSearchFilter(e.target.value)}
-                placeholder={t('searchPlaceholder', `Search ${TOTAL_TOOLS_COUNT} working tools (ATS check, AI detector, PDF merge, Fake Data)...`)}
-                className="w-full pl-12 pr-28 py-3.5 sm:py-4 bg-[#F4F7FC] hover:bg-white focus:bg-white border-2 border-[#E2E8F0] focus:border-[#126BFF] focus:ring-4 focus:ring-[#126BFF]/10 rounded-2xl text-sm sm:text-base font-medium text-[#0B1F3A] placeholder:text-[#64748B]/70 outline-none shadow-2xs transition-all"
+                placeholder={`Search ${TOTAL_TOOLS_COUNT} working tools (ATS check, AI detector, PDF merge, Fake Data)...`}
+                className="w-full pl-12 pr-28 py-3.5 sm:py-4 bg-[#F8FAFC] hover:bg-white focus:bg-white border-2 border-[#E2E8F0] focus:border-[#0A1931] focus:ring-4 focus:ring-[#0A1931]/5 rounded-2xl text-sm sm:text-base font-medium text-[#0F172A] placeholder:text-[#94A3B8] outline-none shadow-2xs transition-all"
               />
               <button
                 onClick={() => setIsCmdKOpen(true)}
-                className="absolute right-3 px-2.5 py-1.5 bg-white border border-[#E2E8F0] hover:border-[#126BFF]/50 hover:text-[#126BFF] rounded-xl text-xs font-mono font-bold text-[#64748B] flex items-center gap-1 shadow-2xs transition-all"
+                className="absolute right-3.5 px-3 py-1.5 bg-white border border-[#E2E8F0] hover:border-[#0A1931] hover:text-[#0A1931] rounded-xl text-xs font-mono font-bold text-[#64748B] flex items-center gap-1.5 shadow-2xs transition-all"
               >
                 <Command className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">K</span>
               </button>
             </div>
 
-            {/* Quick Filter Category Pills */}
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+            {/* Quick Filter Category Pills - Royal Styling */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs no-scrollbar">
               {[
-                { id: 'all', label: `${t('filterAll', 'All')} (${TOTAL_TOOLS_COUNT})`, path: '/' },
+                { id: 'all', label: `All (${TOTAL_TOOLS_COUNT})`, path: '/' },
                 { id: 'notion', label: `📓 Notion Builder (${NOTION_TOOLS_COUNT})`, path: '/notion-template-builder' },
-                { id: 'job-ats', label: `${t('filterJob', '💼 Job / ATS')} (${JOB_ATS_TOOLS_COUNT})`, path: '/job-ats' },
-                { id: 'ai-study', label: `${t('filterAi', '🎓 AI Study')} (${AI_STUDY_TOOLS_COUNT})`, path: '/ai-study' },
-                { id: 'dev-pro', label: `${t('filterDev', '💻 Dev Pro')} (${DEV_PRO_TOOLS_COUNT})`, path: '/dev-tools' },
-                { id: 'pdf', label: `${t('filterPdf', '📄 PDF')} (${PDF_TOOLS_COUNT})`, path: '/pdf-tools' },
-                { id: 'image', label: `${t('filterImage', '🖼️ Image')} (${IMAGE_TOOLS_COUNT})`, path: '/image-tools' },
-                { id: 'calculator', label: `${t('filterCalc', '🧮 Calculators')} (${CALCULATOR_TOOLS_COUNT})`, path: '/calculators' },
+                { id: 'job-ats', label: `💼 Job & Career (${JOB_ATS_TOOLS_COUNT})`, path: '/job-ats' },
+                { id: 'ai-study', label: `🎓 AI & Study (${AI_STUDY_TOOLS_COUNT})`, path: '/ai-study' },
+                { id: 'dev-pro', label: `💻 Developer (${DEV_PRO_TOOLS_COUNT})`, path: '/dev-tools' },
+                { id: 'pdf', label: `📄 PDF Studio (${PDF_TOOLS_COUNT})`, path: '/pdf-tools' },
+                { id: 'image', label: `🖼️ Image & Media (${IMAGE_TOOLS_COUNT})`, path: '/image-tools' },
+                { id: 'calculator', label: `🧮 Calculators (${CALCULATOR_TOOLS_COUNT})`, path: '/calculators' },
               ].map(tab => (
                 <button
                   key={tab.id}
                   onClick={() => {
                     setActiveCategoryFilter(tab.id);
                   }}
-                  className={`px-3 py-1.5 rounded-full font-bold whitespace-nowrap transition-all ${
+                  className={`px-3.5 py-2 rounded-xl font-medium whitespace-nowrap transition-all text-xs ${
                     activeCategoryFilter === tab.id
-                      ? 'bg-[#071A3D] text-white shadow-xs border border-[#071A3D]'
-                      : 'bg-[#F4F7FC] hover:bg-[#EBF3FF] hover:text-[#126BFF] text-[#0B1F3A] border border-[#E2E8F0]'
+                      ? 'bg-[#0A1931] text-white shadow-sm border border-[#0A1931]'
+                      : 'bg-[#F8FAFC] hover:bg-[#F1F5F9] text-[#475569] hover:text-[#0F172A] border border-[#E2E8F0]'
                   }`}
                 >
                   {tab.label}
@@ -457,31 +464,41 @@ export default function App() {
             </div>
           )}
 
-          {/* HERO SECTION */}
-          <div className="bg-white border border-[#E2E8F0] rounded-3xl p-6 sm:p-8 shadow-xs space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#071A3D] text-white border border-[#0F274A] rounded-full text-xs font-extrabold shadow-2xs">
-              <Flame className="w-3.5 h-3.5 fill-[#FF7A00] text-[#FF7A00]" />
-              <span>{t('workingTools', `${TOTAL_TOOLS_COUNT} Free Working Tools`)}</span>
+          {/* HERO SECTION - Royal Premium Redesign */}
+          <div className="bg-white border border-[#E2E8F0] rounded-3xl p-8 sm:p-10 shadow-sm relative overflow-hidden space-y-6">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-[#C5A059]/10 via-[#0A1931]/5 to-transparent rounded-bl-full pointer-events-none" />
+
+            <div className="flex flex-wrap items-center gap-2.5">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#0A1931] text-white rounded-full text-xs font-bold tracking-wide shadow-sm border border-[#142D54]">
+                <Flame className="w-3.5 h-3.5 text-[#C5A059]" />
+                <span className="font-mono text-[#C5A059]">{TOTAL_TOOLS_COUNT}</span>
+                <span>WORKING TOOLS</span>
+              </div>
+              <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#F7F3EB] text-[#8C6B28] border border-[#E8DCBE] rounded-full text-xs font-semibold">
+                ★ 100% Free · No Signup Required
+              </span>
             </div>
 
-            <h1 className="text-2xl sm:text-4xl font-black text-[#0B1F3A] tracking-tight leading-tight">
-              {t('heroTitle', '78 Powerful Tools That Actually Work — 100% Free, No Signup Required')}
-            </h1>
+            <div className="space-y-3 max-w-3xl">
+              <h1 className="font-serif-royal text-3xl sm:text-5xl lg:text-[54px] font-semibold text-[#0A1931] leading-[1.1] tracking-tight">
+                {`${TOTAL_TOOLS_COUNT} Powerful Tools That Actually Work`}
+              </h1>
 
-            <p className="text-[#64748B] text-sm sm:text-base leading-relaxed max-w-3xl">
-              {t('heroSubtitle', 'Zero signup walls, zero subscription traps, and zero watermarks. All 78 tools run 100% in your browser for unmatched privacy, speed, and reliability.')}
-            </p>
+              <p className="text-[#475569] text-base sm:text-lg leading-relaxed font-normal">
+                {t('heroSubtitle', `Zero signup walls, zero subscription traps, and zero watermarks. All ${TOTAL_TOOLS_COUNT} tools execute 100% locally in your browser for unmatched privacy, speed, and reliability.`)}
+              </p>
+            </div>
 
-            {/* Value Badges */}
-            <div className="flex flex-wrap gap-2.5 pt-2 text-xs">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#F4F7FC] border border-[#E2E8F0] rounded-xl text-[#0B1F3A] font-semibold">
-                <Check className="w-3.5 h-3.5 text-emerald-600" /> {t('freeForever', '100% Free Forever')}
+            {/* Value Badges - Clean & Elevated */}
+            <div className="flex flex-wrap gap-3 pt-2 text-xs">
+              <span className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-[#0A1931] font-medium shadow-2xs">
+                <Check className="w-4 h-4 text-[#C5A059]" /> {t('freeForever', '100% Free Forever')}
               </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#F4F7FC] border border-[#E2E8F0] rounded-xl text-[#0B1F3A] font-semibold">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#126BFF]" /> {t('privateInBrowser', 'Private In-Browser Sandbox')}
+              <span className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-[#0A1931] font-medium shadow-2xs">
+                <ShieldCheck className="w-4 h-4 text-[#0A1931]" /> {t('privateInBrowser', 'Private In-Browser Execution')}
               </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#F4F7FC] border border-[#E2E8F0] rounded-xl text-[#0B1F3A] font-semibold">
-                <Zap className="w-3.5 h-3.5 text-[#FF7A00]" /> {t('noWatermark', 'No Watermarks Ever')}
+              <span className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-[#0A1931] font-medium shadow-2xs">
+                <Zap className="w-4 h-4 text-[#C5A059]" /> {t('noWatermark', 'No Watermarks Ever')}
               </span>
             </div>
           </div>
@@ -503,6 +520,7 @@ export default function App() {
             <DabbaGrid 
               onOpenCategory={(cat) => setSelectedCategory(cat)}
               onOpenTool={handleOpenTool}
+              onNavigateTo={navigateTo}
             />
           </section>
 

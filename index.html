@@ -3,6 +3,74 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Environment Fetch Setter Guard & Error Suppressor -->
+    <script>
+      (function() {
+        // Suppress uncaught 'Cannot set property fetch of #<Window> which has only a getter' errors from iframe/extension injection
+        var suppressFetchError = function(e) {
+          var msg = (e && (e.message || (e.error && e.error.message))) || String(e || '');
+          if (msg.indexOf('Cannot set property fetch') !== -1 || msg.indexOf('property fetch of') !== -1) {
+            if (e.preventDefault) e.preventDefault();
+            if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+            if (e.stopPropagation) e.stopPropagation();
+            return true;
+          }
+        };
+        window.addEventListener('error', suppressFetchError, true);
+        window.addEventListener('unhandledrejection', function(e) {
+          var reason = e && (e.reason && e.reason.message) ? e.reason.message : String(e && e.reason || '');
+          if (reason.indexOf('Cannot set property fetch') !== -1 || reason.indexOf('property fetch of') !== -1) {
+            if (e.preventDefault) e.preventDefault();
+            return true;
+          }
+        });
+        var oldOnError = window.onerror;
+        window.onerror = function(msg, url, line, col, err) {
+          var errorMsg = String(msg || (err && err.message) || '');
+          if (errorMsg.indexOf('Cannot set property fetch') !== -1 || errorMsg.indexOf('property fetch of') !== -1) {
+            return true;
+          }
+          if (typeof oldOnError === 'function') {
+            return oldOnError.apply(this, arguments);
+          }
+        };
+
+        // Ensure window.fetch has both a getter and a setter so reassignments succeed safely
+        try {
+          var activeFetch = window.fetch;
+          var desc = Object.getOwnPropertyDescriptor(window, 'fetch');
+          if (!desc || !desc.set || !desc.writable) {
+            try {
+              Object.defineProperty(window, 'fetch', {
+                get: function() {
+                  return activeFetch;
+                },
+                set: function(val) {
+                  activeFetch = val;
+                },
+                configurable: true,
+                enumerable: true
+              });
+            } catch (defineErr) {
+              if (typeof Window !== 'undefined' && Window.prototype) {
+                try {
+                  Object.defineProperty(Window.prototype, 'fetch', {
+                    get: function() {
+                      return activeFetch;
+                    },
+                    set: function(val) {
+                      activeFetch = val;
+                    },
+                    configurable: true,
+                    enumerable: true
+                  });
+                } catch (protoErr) {}
+              }
+            }
+          }
+        } catch (e) {}
+      })();
+    </script>
     <title>2753 Powerful Tools That Actually Work - 100% Free, No Signup Required | FreeToolsNoSignup</title>
     <meta name="description" content="Access 2753 free online tools including PDF, image, business, and developer utilities. No signup, no watermarks, and 100% private in-browser execution." />
     
@@ -22,7 +90,7 @@
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="FreeToolsNoSignup - 78 Free Working Browser Tools" />
+    <meta property="og:image:alt" content="FreeToolsNoSignup - 2753 Free Working Browser Tools" />
 
     <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -59,7 +127,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",

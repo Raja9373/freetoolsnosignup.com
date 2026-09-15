@@ -26,27 +26,27 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   };
 
   return (
-    <footer id="site-footer" className="w-full bg-[#071A3D] text-slate-400 text-xs mt-12 border-t border-[#0F274A]">
+    <footer id="site-footer" className="w-full bg-[#0A1931] text-slate-400 text-xs mt-16 border-t border-[#142D54]">
       
       {/* 500-WORD SEO SECTION */}
-      <div className="max-w-6xl mx-auto px-4 py-12 space-y-8 border-b border-[#0F274A]">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="max-w-6xl mx-auto px-6 py-14 space-y-8 border-b border-[#142D54]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <div className="space-y-2">
-            <div className="flex items-center gap-2 text-[#FFB000] font-bold uppercase tracking-wider text-xs">
-              <Zap className="w-4 h-4 text-[#FF7A00]" />
+            <div className="flex items-center gap-2 text-[#C5A059] font-semibold uppercase tracking-wider text-xs">
+              <Zap className="w-4 h-4 text-[#C5A059]" />
               <span>The Modern Standard for Free Online Utilities</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-black text-white leading-snug">
+            <h2 className="font-serif-royal text-2xl sm:text-3xl font-semibold text-white leading-snug">
               FreeToolsNoSignup.com — {TOTAL_TOOLS_COUNT} Browser-Native Tools, including {CALCULATOR_TOOLS_COUNT} Calculators
             </h2>
           </div>
           <BrandLogo variant="footer" onClick={() => onNavigate?.('/')} />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-slate-300 leading-relaxed text-xs sm:text-sm">
-          <div className="space-y-2">
-            <h4 className="font-bold text-white flex items-center gap-1.5">
-              <Lock className="w-4 h-4 text-emerald-400" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-slate-300 leading-relaxed text-xs sm:text-sm">
+          <div className="space-y-2.5">
+            <h4 className="font-semibold text-white flex items-center gap-2">
+              <Lock className="w-4 h-4 text-[#C5A059]" />
               100% Client-Side Data Privacy
             </h4>
             <p className="text-slate-400 text-xs leading-relaxed">
@@ -54,9 +54,9 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </p>
           </div>
 
-          <div className="space-y-2">
-            <h4 className="font-bold text-white flex items-center gap-1.5">
-              <Cpu className="w-4 h-4 text-[#FF7A00]" />
+          <div className="space-y-2.5">
+            <h4 className="font-semibold text-white flex items-center gap-2">
+              <Cpu className="w-4 h-4 text-[#C5A059]" />
               Zero Watermarks &amp; No Fake Limits
             </h4>
             <p className="text-slate-400 text-xs leading-relaxed">
@@ -64,9 +64,9 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </p>
           </div>
 
-          <div className="space-y-2">
-            <h4 className="font-bold text-white flex items-center gap-1.5">
-              <Globe className="w-4 h-4 text-[#19A7FF]" />
+          <div className="space-y-2.5">
+            <h4 className="font-semibold text-white flex items-center gap-2">
+              <Globe className="w-4 h-4 text-[#C5A059]" />
               Lightning Fast Edge Performance
             </h4>
             <p className="text-slate-400 text-xs leading-relaxed">
@@ -76,8 +76,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         </div>
 
         {/* Structured SEO Guide Details */}
-        <div className="bg-[#040E24] border border-[#126BFF]/20 rounded-2xl p-5 text-xs text-slate-400 space-y-3">
-          <h3 className="font-bold text-white text-sm">
+        <div className="bg-[#071326] border border-[#142D54] rounded-2xl p-6 text-xs text-slate-400 space-y-3">
+          <h3 className="font-semibold text-white text-sm">
             Comprehensive Directory of {TOTAL_TOOLS_COUNT} Working Tools Across 7 Categories:
           </h3>
           <p className="leading-relaxed">
@@ -87,40 +87,40 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
       </div>
 
       {/* FOOTER NAVIGATION & ADS.TXT */}
-      <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
-        <nav aria-label="Legal and Information Links" className="flex flex-wrap items-center justify-center gap-5 text-slate-300 font-medium">
+      <div className="max-w-6xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+        <nav aria-label="Legal and Information Links" className="flex flex-wrap items-center justify-center gap-6 text-slate-300 font-medium">
           <a 
             href="/about" 
             onClick={(e) => handleLinkClick(e, '/about')} 
-            className="hover:text-[#FF7A00] transition-colors"
+            className="hover:text-[#C5A059] transition-colors"
           >
             About Us
           </a>
           <a 
             href="/privacy-policy" 
             onClick={(e) => handleLinkClick(e, '/privacy-policy')} 
-            className="hover:text-[#FF7A00] transition-colors"
+            className="hover:text-[#C5A059] transition-colors"
           >
             Privacy Policy
           </a>
           <a 
             href="/terms-of-service" 
             onClick={(e) => handleLinkClick(e, '/terms-of-service')} 
-            className="hover:text-[#FF7A00] transition-colors"
+            className="hover:text-[#C5A059] transition-colors"
           >
             Terms of Service
           </a>
           <a 
             href="/disclaimer" 
             onClick={(e) => handleLinkClick(e, '/disclaimer')} 
-            className="hover:text-[#FF7A00] transition-colors"
+            className="hover:text-[#C5A059] transition-colors"
           >
             Disclaimer
           </a>
           <a 
             href="/contact" 
             onClick={(e) => handleLinkClick(e, '/contact')} 
-            className="hover:text-[#FF7A00] transition-colors"
+            className="hover:text-[#C5A059] transition-colors"
           >
             Contact
           </a>
@@ -128,7 +128,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             href="/ads.txt" 
             target="_blank" 
             rel="noopener noreferrer" 
-            className="hover:text-[#FF7A00] transition-colors font-mono"
+            className="hover:text-[#C5A059] transition-colors font-mono"
           >
             ads.txt
           </a>
@@ -136,7 +136,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             href="/sitemap.xml" 
             target="_blank" 
             rel="noopener noreferrer" 
-            className="hover:text-[#FF7A00] transition-colors"
+            className="hover:text-[#C5A059] transition-colors"
           >
             sitemap.xml
           </a>
