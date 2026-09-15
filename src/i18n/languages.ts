@@ -31,6 +31,32 @@ export const SUPPORTED_LANGUAGES: LanguageConfig[] = [
 
 export const DEFAULT_LOCALE = 'en';
 
+export const COUNTRY_TO_LOCALE: Record<string, string> = {
+  JP: 'ja', ES: 'es', FR: 'fr', DE: 'de', IN: 'hi', BR: 'pt', PT: 'pt', RU: 'ru', CN: 'zh', TW: 'zh', HK: 'zh',
+  SA: 'ar', AE: 'ar', EG: 'ar', IT: 'it', KR: 'ko', NL: 'nl', TR: 'tr', PL: 'pl', VN: 'vi', TH: 'th', ID: 'id', MY: 'ms', BD: 'bn',
+  MX: 'es', AR: 'es', CO: 'es', CL: 'es', PE: 'es', US: 'en', GB: 'en', CA: 'en', AU: 'en', NZ: 'en', IE: 'en', PK: 'ur'
+};
+
+export function hasUserSelectedLocale(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    const saved = localStorage.getItem('NEXT_LOCALE') || localStorage.getItem('ftns_locale');
+    if (saved && SUPPORTED_LANGUAGES.some(l => l.code === saved.toLowerCase())) {
+      return true;
+    }
+    const cookieMatch = document.cookie.match(/NEXT_LOCALE=([a-zA-Z-]+)/);
+    if (cookieMatch && cookieMatch[1]) {
+      const cLang = cookieMatch[1].split('-')[0].toLowerCase();
+      if (SUPPORTED_LANGUAGES.some(l => l.code === cLang)) {
+        return true;
+      }
+    }
+  } catch {
+    // ignore
+  }
+  return false;
+}
+
 export function detectBrowserLanguage(): string {
   if (typeof window === 'undefined') return DEFAULT_LOCALE;
 
@@ -73,3 +99,40 @@ export function detectBrowserLanguage(): string {
 
   return DEFAULT_LOCALE;
 }
+
+export async function detectGeoCountryAndLocale(): Promise<{ country: string | null; locale: string }> {
+  if (typeof window === 'undefined') return { country: null, locale: DEFAULT_LOCALE };
+
+  // 1. Try local server endpoint /api/geo
+  try {
+    const res = await fetch('/api/geo', { signal: AbortSignal.timeout(2000) });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.country && COUNTRY_TO_LOCALE[data.country]) {
+        return { country: data.country, locale: COUNTRY_TO_LOCALE[data.country] };
+      }
+      if (data.locale && SUPPORTED_LANGUAGES.some(l => l.code === data.locale)) {
+        return { country: data.country || null, locale: data.locale };
+      }
+    }
+  } catch {
+    // ignore
+  }
+
+  // 2. Fallback to public geo IP service (ideal for VPN testing)
+  try {
+    const geoRes = await fetch('https://api.country.is/', { signal: AbortSignal.timeout(2500) });
+    if (geoRes.ok) {
+      const geoData = await geoRes.json();
+      const country = (geoData.country || '').toUpperCase();
+      if (country && COUNTRY_TO_LOCALE[country]) {
+        return { country, locale: COUNTRY_TO_LOCALE[country] };
+      }
+    }
+  } catch {
+    // ignore
+  }
+
+  return { country: null, locale: DEFAULT_LOCALE };
+}
+

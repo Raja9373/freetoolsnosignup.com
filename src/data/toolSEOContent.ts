@@ -13,12 +13,14 @@ export interface ToolSEOData {
   categoryName: string;
   description: string;
   whatIs: string[];
+  whyNoSignup: string[];
+  privacyBenefits: string[];
   howToUse: { step: number; title: string; desc: string }[];
   features: { title: string; desc: string }[];
   faqs: ToolFAQ[];
 }
 
-export const REAL_TOOLS_SEO_DATABASE: Record<string, ToolSEOData> = {
+export const REAL_TOOLS_SEO_DATABASE: Record<string, Partial<ToolSEOData>> = {
   // --- PDF TOOLS ---
   'pdf-merge': {
     slug: 'pdf-merge',
@@ -554,47 +556,65 @@ export const REAL_TOOLS_SEO_DATABASE: Record<string, ToolSEOData> = {
 
 // Helper function to get SEO content for any tool slug, with rich high-value fallback
 export function getToolSEOData(slug: string, toolMeta?: { name: string; category: any; categoryName: string; description: string }): ToolSEOData {
-  if (REAL_TOOLS_SEO_DATABASE[slug]) {
-    return REAL_TOOLS_SEO_DATABASE[slug];
-  }
+  const existing = REAL_TOOLS_SEO_DATABASE[slug];
 
-  const name = toolMeta?.name || slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-  const category = toolMeta?.category || 'pdf';
-  const categoryName = toolMeta?.categoryName || 'Productivity Tools';
-  const description = toolMeta?.description || `Use ${name} online 100% free with zero signup, zero watermarks, and complete in-browser privacy on FreeToolsNoSignup.com.`;
+  const name = existing?.name || toolMeta?.name || slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  const category = (existing?.category || toolMeta?.category || 'pdf') as 'pdf' | 'image' | 'calculator' | 'job-ats' | 'ai-study' | 'dev-pro' | 'notion';
+  const categoryName = existing?.categoryName || toolMeta?.categoryName || 'Productivity Tools';
+  const description = existing?.description || toolMeta?.description || `Use ${name} online 100% free with zero signup, zero watermarks, and complete in-browser privacy on FreeToolsNoSignup.com.`;
+
+  const whatIs = existing?.whatIs || [
+    `Welcome to ${name}, part of our comprehensive collection of free tools no signup built for immediate productivity. As one of our flagship free online tools no login, this utility enables professionals, students, researchers, and creators to execute essential tasks directly in their browser without paywalls or friction. Among modern private browser tools, ${name} stands out by running directly on your local device without routing files through third-party cloud servers.`,
+    `Powered by cutting-edge client-side WebAssembly, HTML5 FileSystem APIs, and optimized JavaScript processing streams, ${name} processes your inputs entirely within local device memory (RAM). This architectural model guarantees absolute data confidentiality, lightning-fast execution times, zero wait queues, and watermark-free exports ready for personal or enterprise deployment.`
+  ];
+
+  const whyNoSignup = existing?.whyNoSignup || [
+    `Most conventional web utilities demand your personal email address, force password creation, and subsequently flood your inbox with unwanted promotional newsletters and upgrade upsells. At FreeToolsNoSignup.com, we fundamentally believe utility tools should function like traditional desktop software: instant, friction-free, and respectful of your attention.`,
+    `By eliminating signup walls, we save you valuable minutes on every task. You never have to verify an inbox link, confirm OTP tokens, reset forgotten passwords, or worry about your credentials being leaked in remote database breaches. Simply open ${name}, get your work done, and download your results immediately.`
+  ];
+
+  const privacyBenefits = existing?.privacyBenefits || [
+    `Traditional online conversion and productivity tools upload your confidential documents, images, and calculation inputs to remote servers. This introduces substantial security vulnerabilities, particularly when dealing with legal contracts, personal tax filings, medical reports, proprietary codebases, or copyrighted creative media.`,
+    `${name} operates under a strict zero-knowledge in-browser architecture. Because the processing engine runs 100% inside your client browser sandbox via WebAssembly and binary buffers, your source data never traverses the public internet or touches our backend disks. Once you close your browser tab, your session memory is automatically purged.`
+  ];
+
+  const howToUse = existing?.howToUse || [
+    { step: 1, title: `Open & Configure ${name}`, desc: `Access the workspace above and drag-and-drop your source file, paste your data, or configure your calculation parameters.` },
+    { step: 2, title: 'Adjust Options & Settings', desc: 'Fine-tune settings, presets, compression ratios, or layout sequences with real-time in-browser live feedback.' },
+    { step: 3, title: 'Execute & Download Output', desc: 'Click the action button to process your file in local memory and save your clean, watermark-free result instantly.' }
+  ];
+
+  const features = existing?.features || [
+    { title: '100% Private In-Browser Execution', desc: 'All data processing occurs locally on your device. Your sensitive files and information never touch remote cloud servers.' },
+    { title: 'Zero Signup & No Registration Walls', desc: 'No accounts, credit cards, or email verification required. Start using the tool immediately with zero friction.' },
+    { title: 'No Watermarks or Hidden Branding', desc: 'All exports, documents, and calculations are 100% clean and ready for professional or personal use.' },
+    { title: 'Lightning-Fast Client-Side Speed', desc: 'Bypass slow network upload and download bottlenecks with instant local binary execution.' },
+    { title: 'Universal Device & Platform Support', desc: 'Optimized for high-performance responsiveness across Windows, macOS, Linux, iOS, and Android browsers.' },
+    { title: '100% Free Forever', desc: 'Enjoy unlimited usage with zero hidden subscription fees or credit limits.' }
+  ];
+
+  const faqs = (existing?.faqs && existing.faqs.length >= 5) ? existing.faqs : [
+    { question: `Is ${name} really 100% free with no hidden charges?`, answer: `Yes, ${name} is completely free forever. There are zero credit cards required, zero trial expiration dates, and no watermarks applied to any of your outputs.` },
+    { question: 'Is my data secure and private when using this tool?', answer: 'Yes. FreeToolsNoSignup.com is built on a zero-knowledge, client-side architecture. All calculations and operations run strictly in your web browser memory without transmitting data to our servers.' },
+    { question: 'Why does this tool not require an account or login?', answer: 'We believe essential utilities should be universally accessible without surveillance or unnecessary signup friction. By keeping processing local, we eliminate the need to maintain user accounts or collect personal email addresses.' },
+    { question: 'Are there any usage caps, file size limits, or hourly rate limits?', answer: 'No. We do not enforce artificial paywalls or usage gates. You can process as many files and calculations as your local device hardware memory (RAM) supports.' },
+    { question: 'Can I use this tool on my smartphone or tablet?', answer: 'Yes. The interface is completely mobile-responsive and functions smoothly on iPhones, iPads, and Android devices across all major mobile web browsers.' }
+  ];
 
   return {
     slug,
-    id: slug,
+    id: existing?.id || slug,
     name,
-    title: `Free ${name} Tool - No Signup | freetoolsnosignup.com`,
-    h1: `Free ${name}`,
+    title: existing?.title || `Free ${name} Tool - No Signup | freetoolsnosignup.com`,
+    h1: existing?.h1 || `Free ${name}`,
     category,
     categoryName,
     description,
-    whatIs: [
-      `${name} is a high-speed, browser-native utility designed to help professionals, students, and creators complete essential tasks without friction. Unlike traditional websites that require email signups, subscriptions, or upload your private documents to remote cloud servers, our application executes 100% locally inside your web browser.`,
-      `By utilizing modern client-side WebAssembly, HTML5 APIs, and optimized JavaScript processing streams, your data is processed entirely in your device's memory. This guarantees absolute data confidentiality, high-speed performance, and zero watermarks on all exported files.`
-    ],
-    howToUse: [
-      { step: 1, title: `Open & Configure ${name}`, desc: `Access the tool above and provide your input data, file, or parameters into the interactive workspace.` },
-      { step: 2, title: 'Adjust Options & Settings', desc: 'Fine-tune settings, presets, and customized properties with instant real-time live preview.' },
-      { step: 3, title: 'Execute & Download Output', desc: 'Process the operation instantly and copy or download your clean, watermark-free result.' }
-    ],
-    features: [
-      { title: '100% Private In-Browser Execution', desc: 'All data processing occurs locally on your device. Your sensitive files and information never touch remote cloud servers.' },
-      { title: 'Zero Signup & No Registration Walls', desc: 'No accounts, credit cards, or email verification required. Start using the tool immediately with zero friction.' },
-      { title: 'No Watermarks or Hidden Branding', desc: 'All exports, documents, and calculations are 100% clean and ready for professional or personal use.' },
-      { title: 'Lightning-Fast Client-Side Speed', desc: 'Bypass slow network upload and download bottlenecks with instant local binary execution.' },
-      { title: 'Universal Device & Platform Support', desc: 'Optimized for high-performance responsiveness across Windows, macOS, Linux, iOS, and Android browsers.' },
-      { title: '100% Free Forever', desc: 'Enjoy unlimited usage with zero hidden subscription fees or credit limits.' }
-    ],
-    faqs: [
-      { question: `Is ${name} really 100% free to use?`, answer: `Yes, ${name} is completely free forever. There are no credit cards required, no trial expiration dates, and no watermarks applied to your outputs.` },
-      { question: 'Is my data secure and private when using this tool?', answer: 'Yes. FreeToolsNoSignup.com is built on a zero-knowledge, client-side architecture. All calculations and operations run strictly in your web browser memory without transmitting data to our servers.' },
-      { question: 'Do I need to install any software, plugins, or extensions?', answer: 'No. The tool runs directly inside any modern web browser including Google Chrome, Apple Safari, Microsoft Edge, and Mozilla Firefox.' },
-      { question: 'Are there any usage caps, file size limits, or hourly rate limits?', answer: 'No. We do not enforce artificial paywalls or usage gates. You can use the tool as many times as you need.' },
-      { question: 'Can I use this tool on my smartphone or tablet?', answer: 'Yes. The interface is completely mobile-responsive and functions smoothly on iPhones, iPads, and Android devices.' }
-    ]
+    whatIs,
+    whyNoSignup,
+    privacyBenefits,
+    howToUse,
+    features,
+    faqs
   };
 }

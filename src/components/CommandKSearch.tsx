@@ -3,6 +3,7 @@ import { Search, Sparkles, ArrowRight, CornerDownLeft, Flame, Briefcase, FileTex
 import { TOOLS_DATABASE } from '../data/toolsData';
 import { ToolItem } from '../types';
 import { TOTAL_TOOLS_COUNT } from '../data/toolCounts';
+import { useTranslation } from '../i18n/I18nContext';
 
 interface CommandKSearchProps {
   isOpen: boolean;
@@ -11,6 +12,7 @@ interface CommandKSearchProps {
 }
 
 export const CommandKSearch: React.FC<CommandKSearchProps> = ({ isOpen, onClose, onSelectTool }) => {
+  const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -93,7 +95,7 @@ export const CommandKSearch: React.FC<CommandKSearchProps> = ({ isOpen, onClose,
             type="text"
             value={query}
             onChange={(e) => { setQuery(e.target.value); setSelectedIndex(0); }}
-            placeholder={`Search ${TOTAL_TOOLS_COUNT} tools (e.g., ATS check, AI detector, PDF merge, fake data, EMI)...`}
+            placeholder={t('searchPlaceholder', `Search ${TOTAL_TOOLS_COUNT} tools (e.g., ATS check, AI detector, PDF merge, fake data, EMI)...`)}
             className="w-full bg-transparent text-sm sm:text-base font-medium text-[#0B1F3A] placeholder:text-[#64748B] outline-none"
           />
           <kbd className="hidden sm:inline-flex items-center gap-0.5 px-2 py-1 text-[11px] font-mono font-semibold text-[#64748B] bg-white border border-[#E2E8F0] rounded-md shadow-2xs">

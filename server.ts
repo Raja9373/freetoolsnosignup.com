@@ -30,7 +30,7 @@ async function startServer() {
     const isHttp = req.headers['x-forwarded-proto'] === 'http';
 
     // Allow crawlers to directly fetch ads.txt, robots.txt, and sitemap.xml on both apex and www
-    const isCrawlerFile = req.path === '/ads.txt' || req.path === '/robots.txt' || req.path === '/sitemap.xml';
+    const isCrawlerFile = req.path === '/ads.txt' || req.path === '/robots.txt' || req.path === '/sitemap.xml' || req.path === '/sitemap-index.xml';
 
     if (!isCrawlerFile && (isApex || (isHttp && process.env.NODE_ENV === 'production'))) {
       const targetHost = isApex ? 'www.freetoolsnosignup.com' : host;
@@ -48,6 +48,58 @@ async function startServer() {
     }
     return req.socket?.remoteAddress || '127.0.0.1';
   };
+
+  // Country to Locale dictionary
+  const COUNTRY_TO_LOCALE: Record<string, string> = {
+    JP: 'ja', ES: 'es', FR: 'fr', DE: 'de', IN: 'hi', BR: 'pt', PT: 'pt', RU: 'ru', CN: 'zh', TW: 'zh', HK: 'zh',
+    SA: 'ar', AE: 'ar', EG: 'ar', IT: 'it', KR: 'ko', NL: 'nl', TR: 'tr', PL: 'pl', VN: 'vi', TH: 'th', ID: 'id', MY: 'ms', BD: 'bn',
+    MX: 'es', AR: 'es', CO: 'es', CL: 'es', PE: 'es', US: 'en', GB: 'en', CA: 'en', AU: 'en', NZ: 'en', IE: 'en', PK: 'ur'
+  };
+
+  const SUPPORTED_LOCALES = ['en', 'ja', 'es', 'fr', 'de', 'hi', 'pt', 'ru', 'zh', 'ar', 'it', 'ko', 'nl', 'tr', 'pl', 'vi', 'th', 'id', 'ms', 'bn', 'ur'];
+
+  // API Country & Geo Detection Endpoint
+  app.get('/api/geo', (req, res) => {
+    // 1. Check Cookie first
+    const cookieHeader = req.headers.cookie || '';
+    const cookieMatch = cookieHeader.match(/NEXT_LOCALE=([a-zA-Z-]+)/);
+    const cookieLocale = cookieMatch ? cookieMatch[1].split('-')[0].toLowerCase() : null;
+
+    // 2. Detect country from Cloudflare, Vercel, GCP, or custom headers
+    const country = (
+      (req.headers['x-vercel-ip-country'] as string) ||
+      (req.headers['cf-ipcountry'] as string) ||
+      (req.headers['x-country-code'] as string) ||
+      (req.headers['x-appengine-country'] as string) ||
+      (req.headers['x-client-geo-country'] as string) ||
+      ''
+    ).trim().toUpperCase();
+
+    let detectedLocale = 'en';
+    if (cookieLocale && SUPPORTED_LOCALES.includes(cookieLocale)) {
+      detectedLocale = cookieLocale;
+    } else if (country && COUNTRY_TO_LOCALE[country]) {
+      detectedLocale = COUNTRY_TO_LOCALE[country];
+    } else {
+      const acceptLang = (req.headers['accept-language'] as string) || '';
+      const preferred = acceptLang.split(',')[0]?.split('-')[0]?.toLowerCase();
+      if (preferred && SUPPORTED_LOCALES.includes(preferred)) {
+        detectedLocale = preferred;
+      }
+    }
+
+    // Set cookie if detected locale is non-en and no cookie exists yet
+    if (!cookieLocale && detectedLocale !== 'en') {
+      res.setHeader('Set-Cookie', `NEXT_LOCALE=${detectedLocale}; Path=/; Max-Age=31536000; SameSite=Lax`);
+    }
+
+    res.json({
+      country: country || null,
+      locale: detectedLocale,
+      cookieLocale: cookieLocale || null,
+      ip: getClientIp(req),
+    });
+  });
 
   // API Health Check
   app.get('/api/health', (_req, res) => {
@@ -133,7 +185,7 @@ async function startServer() {
     }
   });
 
-  // Explicit handlers for sitemap.xml, robots.txt, and ads.txt
+  // Explicit handlers for sitemap.xml, sitemap-index.xml, robots.txt, and ads.txt
   app.get('/sitemap.xml', (_req, res) => {
     const sitemapPath = process.env.NODE_ENV === 'production'
       ? path.join(process.cwd(), 'dist', 'sitemap.xml')
@@ -145,6 +197,20 @@ async function startServer() {
       res.sendFile(sitemapPath);
     } else {
       res.sendFile(path.join(process.cwd(), 'public', 'sitemap.xml'));
+    }
+  });
+
+  app.get('/sitemap-index.xml', (_req, res) => {
+    const sitemapIndexPath = process.env.NODE_ENV === 'production'
+      ? path.join(process.cwd(), 'dist', 'sitemap-index.xml')
+      : path.join(process.cwd(), 'public', 'sitemap-index.xml');
+    res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    res.setHeader('X-Robots-Tag', 'noindex, follow');
+    if (fs.existsSync(sitemapIndexPath)) {
+      res.sendFile(sitemapIndexPath);
+    } else {
+      res.sendFile(path.join(process.cwd(), 'public', 'sitemap-index.xml'));
     }
   });
 

@@ -1,5 +1,5 @@
-import React from 'react';
-import { ShieldCheck, Zap, Lock, Cpu, Globe, CheckCircle2, Heart } from 'lucide-react';
+import React, { useState } from 'react';
+import { ShieldCheck, Zap, Lock, Cpu, Globe, CheckCircle2, Heart, Code, Copy, Check, ExternalLink } from 'lucide-react';
 import { BrandLogo } from './BrandLogo';
 import { 
   TOTAL_TOOLS_COUNT, 
@@ -18,10 +18,23 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
+  const [copiedType, setCopiedType] = useState<'badge' | 'text' | null>(null);
+
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, route: string) => {
     if (onNavigate) {
       e.preventDefault();
       onNavigate(route);
+    }
+  };
+
+  const badgeHtml = `<a href="https://www.freetoolsnosignup.com/" target="_blank" rel="noopener noreferrer"><img src="https://www.freetoolsnosignup.com/badge.svg" alt="FreeToolsNoSignup - 2753 Free Tools No Signup" width="200" height="40" /></a>`;
+  const textHtml = `<a href="https://www.freetoolsnosignup.com/" target="_blank" rel="noopener noreferrer">FreeToolsNoSignup - 2753 Free Tools No Signup</a>`;
+
+  const handleCopyCode = (type: 'badge' | 'text', snippet: string) => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(snippet);
+      setCopiedType(type);
+      setTimeout(() => setCopiedType(null), 2500);
     }
   };
 
@@ -84,17 +97,105 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             Our platform categorizes {TOTAL_TOOLS_COUNT} verified browser tools across seven core productivity domains: <strong>1. Job &amp; ATS Tools ({JOB_ATS_TOOLS_COUNT} Tools)</strong> (featuring the real-time keyword matcher, CV score diagnostic, tailored cover letter writer, and salary counter-offer scripts); <strong>2. AI Study Tools ({AI_STUDY_TOOLS_COUNT} Tools)</strong> (featuring the multi-layered burstiness AI content detector, 1-click humanizer, and APA/MLA citation generators); <strong>3. Dev Pro Tools ({DEV_PRO_TOOLS_COUNT} Tools)</strong> (synthetic QA data generators, valid test credit cards, QR code studios, and JSON tree formatters); <strong>4. PDF Tools ({PDF_TOOLS_COUNT} Tools)</strong> (client-side PDF merging, splitting, lossless compression, and text extraction); <strong>5. Image Tools ({IMAGE_TOOLS_COUNT} Tools)</strong> (lossless WebP/PNG/JPG compressors, aspect ratio resizers, and transparent cutout tools); <strong>6. Calculators ({CALCULATOR_TOOLS_COUNT} Tools • {INTERACTIVE_CALCULATORS_COUNT} Calculator Functions)</strong> (mortgage EMI, compound SIP growth models, net salary take-home estimators, WHO-compliant BMI, scientific, and physics engineering engines); and <strong>7. Notion Templates &amp; Custom Builder ({NOTION_TOOLS_COUNT} Tools)</strong> (featuring our custom column database builder with 18 property types, CSV/JSON export, and 25 instant readymade templates).
           </p>
         </div>
+
+        {/* LINK TO US & BACKLINK SECTION */}
+        <div className="bg-[#071326] border border-[#1E3A8A] rounded-2xl p-6 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h3 className="font-bold text-white text-sm flex items-center gap-2">
+                <Code className="w-4 h-4 text-[#C5A059]" />
+                <span>Link to Us — Free Backlink &amp; Widget Snippet</span>
+              </h3>
+              <p className="text-slate-400 text-xs mt-1">
+                Help your visitors find {TOTAL_TOOLS_COUNT} private tools with zero signups. Copy and paste either snippet into your website:
+              </p>
+            </div>
+            {onNavigate && (
+              <button
+                onClick={() => onNavigate('/partners')}
+                className="px-3.5 py-1.5 rounded-xl bg-[#142D54] hover:bg-[#1E3A8A] text-[#C5A059] font-bold text-xs border border-[#C5A059]/30 transition-colors shrink-0"
+              >
+                Claim Dofollow Backlink &rarr;
+              </button>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* HTML Badge */}
+            <div className="bg-[#0A1931] border border-[#142D54] rounded-xl p-3 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-white font-bold text-[11px]">Option A: Visual HTML Badge</span>
+                <button
+                  onClick={() => handleCopyCode('badge', badgeHtml)}
+                  className="text-xs text-[#C5A059] hover:underline font-bold flex items-center gap-1"
+                >
+                  {copiedType === 'badge' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                  <span>{copiedType === 'badge' ? 'Copied' : 'Copy HTML'}</span>
+                </button>
+              </div>
+              <div className="font-mono text-[10px] text-slate-400 bg-[#071326] p-2 rounded border border-[#142D54] truncate">
+                {badgeHtml}
+              </div>
+            </div>
+
+            {/* Anchor Text Link */}
+            <div className="bg-[#0A1931] border border-[#142D54] rounded-xl p-3 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-white font-bold text-[11px]">Option B: Clean Anchor Text Link</span>
+                <button
+                  onClick={() => handleCopyCode('text', textHtml)}
+                  className="text-xs text-[#C5A059] hover:underline font-bold flex items-center gap-1"
+                >
+                  {copiedType === 'text' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                  <span>{copiedType === 'text' ? 'Copied' : 'Copy HTML'}</span>
+                </button>
+              </div>
+              <div className="font-mono text-[10px] text-slate-400 bg-[#071326] p-2 rounded border border-[#142D54] truncate">
+                {textHtml}
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
-      {/* FOOTER NAVIGATION & ADS.TXT */}
+      {/* FOOTER NAVIGATION & DIRECTORY LINKS */}
       <div className="max-w-6xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
-        <nav aria-label="Legal and Information Links" className="flex flex-wrap items-center justify-center gap-6 text-slate-300 font-medium">
+        <nav aria-label="Legal and Information Links" className="flex flex-wrap items-center justify-center gap-5 text-slate-300 font-medium">
           <a 
             href="/about" 
             onClick={(e) => handleLinkClick(e, '/about')} 
             className="hover:text-[#C5A059] transition-colors"
           >
             About Us
+          </a>
+          <a 
+            href="/backlinks" 
+            onClick={(e) => handleLinkClick(e, '/backlinks')} 
+            className="hover:text-[#C5A059] transition-colors font-bold text-[#C5A059]"
+          >
+            Embed Widgets
+          </a>
+          <a 
+            href="/partners" 
+            onClick={(e) => handleLinkClick(e, '/partners')} 
+            className="hover:text-[#C5A059] transition-colors font-bold text-[#C5A059]"
+          >
+            Partners
+          </a>
+          <a 
+            href="/launch" 
+            onClick={(e) => handleLinkClick(e, '/launch')} 
+            className="hover:text-[#C5A059] transition-colors font-bold text-[#DA552F]"
+          >
+            Product Hunt Kit
+          </a>
+          <a 
+            href="/blog" 
+            onClick={(e) => handleLinkClick(e, '/blog')} 
+            className="hover:text-[#C5A059] transition-colors"
+          >
+            Blog
           </a>
           <a 
             href="/privacy-policy" 

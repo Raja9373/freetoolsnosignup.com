@@ -1,10 +1,18 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { SUPPORTED_LANGUAGES, DEFAULT_LOCALE, LanguageConfig, detectBrowserLanguage } from './languages';
+import { 
+  SUPPORTED_LANGUAGES, 
+  DEFAULT_LOCALE, 
+  LanguageConfig, 
+  detectBrowserLanguage, 
+  hasUserSelectedLocale, 
+  detectGeoCountryAndLocale 
+} from './languages';
 import { TRANSLATIONS } from './translations';
 
 interface I18nContextType {
   locale: string;
   currentLanguage: LanguageConfig;
+  detectedCountry: string | null;
   dir: 'ltr' | 'rtl';
   setLocale: (newLocale: string, updateUrl?: boolean) => void;
   t: (key: string, defaultVal?: string) => string;
@@ -16,11 +24,12 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [locale, setLocaleState] = useState<string>(() => {
     return detectBrowserLanguage();
   });
+  const [detectedCountry, setDetectedCountry] = useState<string | null>(null);
 
   const currentLanguage = SUPPORTED_LANGUAGES.find(l => l.code === locale) || SUPPORTED_LANGUAGES[0];
   const dir = currentLanguage.dir;
 
-  const setLocale = useCallback((newLocale: string, updateUrl = true) => {
+  const setLocale = useCallback((newLocale: string, updateUrl = false) => {
     const validMatch = SUPPORTED_LANGUAGES.find(l => l.code === newLocale.toLowerCase());
     const validLocale = validMatch ? validMatch.code : DEFAULT_LOCALE;
 
@@ -35,7 +44,7 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // ignore
     }
 
-    // 2. Update HTML attributes
+    // 2. Update HTML attributes dynamically
     try {
       document.documentElement.lang = validLocale;
       document.documentElement.dir = validMatch?.dir || 'ltr';
@@ -43,7 +52,7 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // ignore
     }
 
-    // 3. Update URL path seamlessly if requested
+    // 3. Optional: Update URL path only if explicitly requested
     if (updateUrl && typeof window !== 'undefined') {
       const currentPath = window.location.pathname;
       const pathParts = currentPath.split('/').filter(Boolean);
@@ -51,7 +60,6 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       let newPath = '';
       if (validLocale === DEFAULT_LOCALE) {
-        // For default locale ('en'), clean prefix or keep path
         if (isFirstPartLocale) {
           const rest = pathParts.slice(1).join('/');
           newPath = rest ? `/${rest}` : '/';
@@ -59,7 +67,6 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
           newPath = currentPath;
         }
       } else {
-        // Non-default locale: e.g. /ja, /es/about
         if (isFirstPartLocale) {
           const rest = pathParts.slice(1).join('/');
           newPath = rest ? `/${validLocale}/${rest}` : `/${validLocale}`;
@@ -74,6 +81,40 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }
   }, []);
+
+  // Country-wise auto language detection on mount (Geo IP + Browser)
+  useEffect(() => {
+    // If user already manually selected a language previously, honor their choice
+    if (hasUserSelectedLocale()) {
+      return;
+    }
+
+    let isMounted = true;
+
+    async function runAutoDetection() {
+      try {
+        const geo = await detectGeoCountryAndLocale();
+        if (!isMounted) return;
+
+        if (geo.country) {
+          setDetectedCountry(geo.country);
+        }
+
+        // If a geo locale is found and different from current, switch dynamically without changing URL
+        if (geo.locale && geo.locale !== locale && SUPPORTED_LANGUAGES.some(l => l.code === geo.locale)) {
+          setLocale(geo.locale, false);
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    runAutoDetection();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [locale, setLocale]);
 
   // Update HTML tag whenever locale changes
   useEffect(() => {
@@ -111,7 +152,7 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [locale]);
 
   return (
-    <I18nContext.Provider value={{ locale, currentLanguage, dir, setLocale, t }}>
+    <I18nContext.Provider value={{ locale, currentLanguage, detectedCountry, dir, setLocale, t }}>
       {children}
     </I18nContext.Provider>
   );

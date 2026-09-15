@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Search, Command, Sparkles, Flame, ShieldCheck, 
-  Zap, Menu, X, Check, Heart, ExternalLink, ArrowRight, Globe
+  Zap, Menu, X, Check, Heart, ExternalLink, ArrowRight, Globe,
+  Clock, Chrome, BarChart3
 } from 'lucide-react';
 import { ToolCategory, RecentTool } from './types';
 import { LeftSidebar } from './components/LeftSidebar';
@@ -15,6 +16,12 @@ import { AllCategoryModal } from './components/AllCategoryModal';
 import { LanguageSwitcher } from './components/LanguageSwitcher';
 import { useTranslation } from './i18n/I18nContext';
 import { SUPPORTED_LANGUAGES } from './i18n/languages';
+import { PWAInstallBanner } from './components/PWAInstallBanner';
+import { AIToolFinder } from './components/AIToolFinder';
+import { ToolOfTheDay } from './components/ToolOfTheDay';
+import { EmailCapture } from './components/EmailCapture';
+import { RecentAndFavoritesSection } from './components/RecentAndFavoritesSection';
+import { AiChatbotWidget } from './components/AiChatbotWidget';
 
 // Dedicated Crawlable Pages
 import { AboutPage } from './pages/AboutPage';
@@ -26,6 +33,14 @@ import { CategoryPage } from './pages/CategoryPage';
 import { NotionBuilderPage } from './pages/NotionBuilderPage';
 import { QRCodeGeneratorPage } from './pages/QRCodeGeneratorPage';
 import { ToolPage } from './pages/ToolPage';
+import { HomepageSEOContent } from './components/HomepageSEOContent';
+import { EmbedToolPage } from './pages/EmbedToolPage';
+import { BacklinksDirectoryPage } from './pages/BacklinksDirectoryPage';
+import { PartnersPage } from './pages/PartnersPage';
+import { LaunchPage } from './pages/LaunchPage';
+import { BlogPage } from './pages/BlogPage';
+import { ChromeExtensionPage } from './pages/ChromeExtensionPage';
+import { StatsPage } from './pages/StatsPage';
 
 // Interactive Tool Modals
 import { NotionTemplateBuilder } from './components/tools/NotionTemplateBuilder';
@@ -147,6 +162,22 @@ export default function App() {
     }
   }, [favorites]);
 
+  // Sync state when modified in other components or tabs
+  useEffect(() => {
+    const handleStorage = () => {
+      try {
+        const favs = JSON.parse(localStorage.getItem('ftns_favorites') || '[]');
+        setFavorites(favs);
+        const recs = JSON.parse(localStorage.getItem('ftns_recent_tools') || '[]');
+        setRecentTools(recs);
+      } catch {
+        // ignore
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
+
   // Global Command+K keyboard shortcut listener
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -194,91 +225,6 @@ export default function App() {
     setRecentTools([]);
   };
 
-  // Routing Views: About, Privacy Policy, Contact, Terms, Disclaimer, Category Pages
-  if (normalizedPath === '/about') {
-    return <AboutPage onNavigateHome={() => navigateTo('/')} />;
-  }
-
-  if (normalizedPath === '/privacy-policy') {
-    return <PrivacyPolicyPage onNavigateHome={() => navigateTo('/')} />;
-  }
-
-  if (normalizedPath === '/contact') {
-    return <ContactPage onNavigateHome={() => navigateTo('/')} />;
-  }
-
-  if (normalizedPath === '/terms-of-service') {
-    return <TermsPage onNavigateHome={() => navigateTo('/')} />;
-  }
-
-  if (normalizedPath === '/disclaimer') {
-    return <DisclaimerPage onNavigateHome={() => navigateTo('/')} />;
-  }
-
-  if (normalizedPath === '/pdf-tools') {
-    return <CategoryPage categoryKey="pdf" onNavigateHome={() => navigateTo('/')} onOpenTool={handleOpenTool} />;
-  }
-
-  if (normalizedPath === '/image-tools') {
-    return <CategoryPage categoryKey="image" onNavigateHome={() => navigateTo('/')} onOpenTool={handleOpenTool} />;
-  }
-
-  if (normalizedPath === '/calculators') {
-    return <CategoryPage categoryKey="calculator" onNavigateHome={() => navigateTo('/')} onOpenTool={handleOpenTool} />;
-  }
-
-  if (normalizedPath === '/job-ats') {
-    return <CategoryPage categoryKey="job-ats" onNavigateHome={() => navigateTo('/')} onOpenTool={handleOpenTool} />;
-  }
-
-  if (normalizedPath === '/ai-study') {
-    return <CategoryPage categoryKey="ai-study" onNavigateHome={() => navigateTo('/')} onOpenTool={handleOpenTool} />;
-  }
-
-  if (normalizedPath === '/dev-tools') {
-    return <CategoryPage categoryKey="dev-pro" onNavigateHome={() => navigateTo('/')} onOpenTool={handleOpenTool} />;
-  }
-
-  if (
-    normalizedPath === '/notion-template-builder' || 
-    normalizedPath === '/notion-builder' || 
-    normalizedPath === '/notion' ||
-    normalizedPath === '/tools/custom-notion-template-database-builder' ||
-    normalizedPath === '/tool/custom-notion-template-database-builder' ||
-    normalizedPath === '/tools/notion-template-builder'
-  ) {
-    return <NotionBuilderPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
-  }
-
-  if (normalizedPath === '/qr-code-generator' || normalizedPath === '/qr-generator') {
-    return <QRCodeGeneratorPage onNavigateHome={() => navigateTo('/')} />;
-  }
-
-  if (normalizedPath.startsWith('/tools/') || normalizedPath.startsWith('/tool/')) {
-    const toolSlug = normalizedPath.replace(/^\/tools?\//, '').trim();
-    if (toolSlug) {
-      return (
-        <ToolPage
-          toolSlug={toolSlug}
-          onNavigateHome={() => navigateTo('/')}
-          onNavigateTo={(p) => navigateTo(p)}
-          onOpenToolModal={(id) => handleOpenTool(id)}
-        />
-      );
-    }
-  }
-
-  if (normalizedPath.startsWith('/category/')) {
-    const categoryKey = normalizedPath.replace(/^\/category\//, '').trim() as ToolCategory;
-    return (
-      <CategoryPage
-        categoryKey={categoryKey}
-        onNavigateHome={() => navigateTo('/')}
-        onOpenTool={handleOpenTool}
-      />
-    );
-  }
-
   // Filtered tools for direct center search
   const filteredTools = searchFilter.trim() 
     ? TOOLS_DATABASE.filter(t => 
@@ -289,8 +235,129 @@ export default function App() {
       )
     : [];
 
-  return (
-    <div id="ftns-app-root" className="min-h-screen bg-[#F4F7FC] text-[#0B1F3A] flex flex-col font-sans selection:bg-[#FF7A00] selection:text-white">
+  // Routing Views: About, Privacy Policy, Contact, Terms, Disclaimer, Category Pages, Extension, Stats
+  const renderCurrentPage = () => {
+    if (normalizedPath === '/about') {
+      return <AboutPage onNavigateHome={() => navigateTo('/')} />;
+    }
+
+    if (normalizedPath === '/privacy-policy') {
+      return <PrivacyPolicyPage onNavigateHome={() => navigateTo('/')} />;
+    }
+
+    if (normalizedPath === '/contact') {
+      return <ContactPage onNavigateHome={() => navigateTo('/')} />;
+    }
+
+    if (normalizedPath === '/terms-of-service') {
+      return <TermsPage onNavigateHome={() => navigateTo('/')} />;
+    }
+
+    if (normalizedPath === '/disclaimer') {
+      return <DisclaimerPage onNavigateHome={() => navigateTo('/')} />;
+    }
+
+    if (normalizedPath === '/chrome-extension') {
+      return <ChromeExtensionPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+    }
+
+    if (normalizedPath === '/stats') {
+      return <StatsPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+    }
+
+    if (normalizedPath === '/pdf-tools') {
+      return <CategoryPage categoryKey="pdf" onNavigateHome={() => navigateTo('/')} onOpenTool={handleOpenTool} />;
+    }
+
+    if (normalizedPath === '/image-tools') {
+      return <CategoryPage categoryKey="image" onNavigateHome={() => navigateTo('/')} onOpenTool={handleOpenTool} />;
+    }
+
+    if (normalizedPath === '/calculators') {
+      return <CategoryPage categoryKey="calculator" onNavigateHome={() => navigateTo('/')} onOpenTool={handleOpenTool} />;
+    }
+
+    if (normalizedPath === '/job-ats') {
+      return <CategoryPage categoryKey="job-ats" onNavigateHome={() => navigateTo('/')} onOpenTool={handleOpenTool} />;
+    }
+
+    if (normalizedPath === '/ai-study') {
+      return <CategoryPage categoryKey="ai-study" onNavigateHome={() => navigateTo('/')} onOpenTool={handleOpenTool} />;
+    }
+
+    if (normalizedPath === '/dev-tools') {
+      return <CategoryPage categoryKey="dev-pro" onNavigateHome={() => navigateTo('/')} onOpenTool={handleOpenTool} />;
+    }
+
+    if (
+      normalizedPath === '/notion-template-builder' || 
+      normalizedPath === '/notion-builder' || 
+      normalizedPath === '/notion' ||
+      normalizedPath === '/tools/custom-notion-template-database-builder' ||
+      normalizedPath === '/tool/custom-notion-template-database-builder' ||
+      normalizedPath === '/tools/notion-template-builder'
+    ) {
+      return <NotionBuilderPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+    }
+
+    if (normalizedPath === '/qr-code-generator' || normalizedPath === '/qr-generator') {
+      return <QRCodeGeneratorPage onNavigateHome={() => navigateTo('/')} />;
+    }
+
+    if (normalizedPath === '/backlinks') {
+      return <BacklinksDirectoryPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+    }
+
+    if (normalizedPath === '/partners') {
+      return <PartnersPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+    }
+
+    if (normalizedPath === '/launch') {
+      return <LaunchPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+    }
+
+    if (normalizedPath === '/blog') {
+      return <BlogPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+    }
+
+    if (normalizedPath.startsWith('/blog/')) {
+      const articleSlug = normalizedPath.replace(/^\/blog\//, '').trim();
+      return <BlogPage articleSlug={articleSlug} onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+    }
+
+    if (normalizedPath.startsWith('/embed/')) {
+      const embedSlug = normalizedPath.replace(/^\/embed\//, '').trim();
+      return <EmbedToolPage toolSlug={embedSlug} />;
+    }
+
+    if (normalizedPath.startsWith('/tools/') || normalizedPath.startsWith('/tool/')) {
+      const toolSlug = normalizedPath.replace(/^\/tools?\//, '').trim();
+      if (toolSlug) {
+        return (
+          <ToolPage
+            toolSlug={toolSlug}
+            onNavigateHome={() => navigateTo('/')}
+            onNavigateTo={(p) => navigateTo(p)}
+            onOpenToolModal={(id) => handleOpenTool(id)}
+          />
+        );
+      }
+    }
+
+    if (normalizedPath.startsWith('/category/')) {
+      const categoryKey = normalizedPath.replace(/^\/category\//, '').trim() as ToolCategory;
+      return (
+        <CategoryPage
+          categoryKey={categoryKey}
+          onNavigateHome={() => navigateTo('/')}
+          onOpenTool={handleOpenTool}
+        />
+      );
+    }
+
+    // Default: Homepage view
+    return (
+      <div id="ftns-app-root" className="min-h-screen bg-[#F4F7FC] text-[#0B1F3A] flex flex-col font-sans selection:bg-[#FF7A00] selection:text-white">
       
       {/* Top Mobile Bar */}
       <header className="lg:hidden bg-white border-b border-[#E2E8F0] p-3 sticky top-0 z-30 flex items-center justify-between shadow-2xs">
@@ -305,6 +372,17 @@ export default function App() {
         </div>
 
         <div className="flex items-center gap-1.5">
+          <button
+            onClick={() => {
+              const el = document.getElementById('recent-favs-section');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="p-2 rounded-xl bg-red-50 text-red-600 border border-red-200 font-bold text-xs flex items-center gap-1 shadow-2xs"
+            title="Favorites"
+          >
+            <Heart className="w-3.5 h-3.5 fill-current text-red-500" />
+            <span className="text-[11px] font-bold">{favorites.length}</span>
+          </button>
           <LanguageSwitcher />
           <button
             onClick={() => setIsCmdKOpen(true)}
@@ -355,7 +433,7 @@ export default function App() {
         {/* COLUMN 2: CENTER MAIN CONTENT (60% Width, Light Cool Tinted Container with White Cards) */}
         <main className="w-full lg:w-[60%] xl:w-[60%] bg-[#F4F7FC] px-4 sm:px-8 py-6 flex flex-col gap-7">
           
-          {/* Top Header Row with AdSense and Language Switcher */}
+          {/* Top Header Row with AdSense, Navigation Buttons and Language Switcher */}
           <div className="w-full flex flex-col gap-3">
             <div className="hidden lg:flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -366,7 +444,47 @@ export default function App() {
                   {t('heroSubtitle', 'Zero signup walls. Client-side execution.')}
                 </span>
               </div>
-              <LanguageSwitcher />
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    const el = document.getElementById('recent-favs-section');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="px-3 py-1.5 rounded-xl bg-white border border-[#E2E8F0] hover:border-red-300 text-xs font-bold text-[#0A1931] flex items-center gap-1.5 shadow-2xs transition hover:bg-red-50/30"
+                  title="View your favorite tools"
+                >
+                  <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500" />
+                  <span>Favorites ({favorites.length})</span>
+                </button>
+                <button
+                  onClick={() => {
+                    const el = document.getElementById('recent-favs-section');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="px-3 py-1.5 rounded-xl bg-white border border-[#E2E8F0] hover:border-[#C5A059] text-xs font-bold text-[#0A1931] flex items-center gap-1.5 shadow-2xs transition hover:bg-amber-50/30"
+                  title="View recent tools"
+                >
+                  <Clock className="w-3.5 h-3.5 text-[#C5A059]" />
+                  <span>Recent ({recentTools.length})</span>
+                </button>
+                <button
+                  onClick={() => navigateTo('/chrome-extension')}
+                  className="px-3 py-1.5 rounded-xl bg-[#0A1931] hover:bg-[#142646] text-[#E8DCBE] hover:text-white text-xs font-bold flex items-center gap-1.5 shadow-2xs transition"
+                  title="Install Chrome Extension"
+                >
+                  <Chrome className="w-3.5 h-3.5 text-[#C5A059]" />
+                  <span>Extension</span>
+                </button>
+                <button
+                  onClick={() => navigateTo('/stats')}
+                  className="px-2.5 py-1.5 rounded-xl bg-white border border-[#E2E8F0] hover:border-[#0A1931] text-xs font-bold text-[#475569] hover:text-[#0A1931] flex items-center gap-1 shadow-2xs transition"
+                  title="Platform Analytics"
+                >
+                  <BarChart3 className="w-3.5 h-3.5" />
+                  <span>Stats</span>
+                </button>
+                <LanguageSwitcher />
+              </div>
             </div>
 
             {/* Top Leaderboard AdSense 728x90 */}
@@ -382,7 +500,7 @@ export default function App() {
                 type="text"
                 value={searchFilter}
                 onChange={(e) => setSearchFilter(e.target.value)}
-                placeholder={`Search ${TOTAL_TOOLS_COUNT} working tools (ATS check, AI detector, PDF merge, Fake Data)...`}
+                placeholder={t('searchPlaceholder', `Search ${TOTAL_TOOLS_COUNT} working tools (ATS check, AI detector, PDF merge, Fake Data)...`)}
                 className="w-full pl-12 pr-28 py-3.5 sm:py-4 bg-[#F8FAFC] hover:bg-white focus:bg-white border-2 border-[#E2E8F0] focus:border-[#0A1931] focus:ring-4 focus:ring-[#0A1931]/5 rounded-2xl text-sm sm:text-base font-medium text-[#0F172A] placeholder:text-[#94A3B8] outline-none shadow-2xs transition-all"
               />
               <button
@@ -464,6 +582,14 @@ export default function App() {
             </div>
           )}
 
+          {/* AI Semantic Tool Finder (Fuse.js powered natural language tool search) */}
+          <AIToolFinder 
+            onSelectTool={(slug) => {
+              recordToolUse(slug);
+              navigateTo(`/tools/${slug}`);
+            }} 
+          />
+
           {/* HERO SECTION - Royal Premium Redesign */}
           <div className="bg-white border border-[#E2E8F0] rounded-3xl p-8 sm:p-10 shadow-sm relative overflow-hidden space-y-6">
             <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-[#C5A059]/10 via-[#0A1931]/5 to-transparent rounded-bl-full pointer-events-none" />
@@ -508,6 +634,28 @@ export default function App() {
             <AdUnitTopBanner />
           </div>
 
+          {/* Tool of the Day Rotating Highlight */}
+          <ToolOfTheDay 
+            onOpenTool={(slug) => {
+              recordToolUse(slug);
+              navigateTo(`/tools/${slug}`);
+            }} 
+          />
+
+          {/* User Retention: Recent & Favorites Section */}
+          <div id="recent-favs-section">
+            <RecentAndFavoritesSection
+              recentTools={recentTools}
+              favorites={favorites}
+              onOpenTool={(slug) => {
+                recordToolUse(slug);
+                navigateTo(`/tools/${slug}`);
+              }}
+              onToggleFavorite={toggleFavorite}
+              onClearRecent={clearRecent}
+            />
+          </div>
+
           {/* THE 7 DABBA GRID (2 Rows x 3 Columns + 1 Full Width Notion Builder) */}
           <section className="space-y-4">
             <div className="flex items-center justify-between">
@@ -528,6 +676,12 @@ export default function App() {
           <div className="w-full pt-2">
             <AdSenseBanner format="728x90" slotName="CenterBottom" />
           </div>
+
+          {/* 1,000-Word SEO Article + 10 FAQs below tools grid */}
+          <HomepageSEOContent onNavigateTo={navigateTo} />
+
+          {/* Email Newsletter & VIP Tool Releases */}
+          <EmailCapture />
 
           {/* Footer Component with 500-word SEO text and Real Page Links */}
           <Footer onNavigate={navigateTo} />
@@ -702,6 +856,22 @@ export default function App() {
         />
       )}
 
-    </div>
+      </div>
+    );
+  };
+
+  return (
+    <>
+      <PWAInstallBanner />
+      {renderCurrentPage()}
+      <AiChatbotWidget
+        onOpenTool={(slug) => {
+          recordToolUse(slug);
+          navigateTo('/tools/' + slug);
+        }}
+        favorites={favorites}
+        onToggleFavorite={toggleFavorite}
+      />
+    </>
   );
 }

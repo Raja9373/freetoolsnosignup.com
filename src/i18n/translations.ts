@@ -163,7 +163,7 @@ export const TRANSLATIONS: Record<string, TranslationDictionary> = {
   ja: {
     heroTitle: "実際に動作する2753の実用ツール - 完全無料・登録不要",
     heroSubtitle: "登録一切不要。待ち時間ゼロ。ブラウザ内で100%プライベートに完結。",
-    searchPlaceholder: "2753の実用ツールを検索 (ATS履歴書診断、AI検出、PDF結合、ダミーデータ)...",
+    searchPlaceholder: "2753 個のツールを検索 (ATS履歴書診断、AI検出、PDF結合、ダミーデータ)...",
     searchBadge: "検索",
     noSignupEver: "会員登録不要",
     freeForever: "完全永久無料",

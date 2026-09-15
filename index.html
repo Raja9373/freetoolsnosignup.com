@@ -74,9 +74,40 @@
     <title>2753 Powerful Tools That Actually Work - 100% Free, No Signup Required | FreeToolsNoSignup</title>
     <meta name="description" content="Access 2753 free online tools including PDF, image, business, and developer utilities. No signup, no watermarks, and 100% private in-browser execution." />
     
-    <!-- Brand Favicon & Touch Icon -->
+    <!-- Brand Favicon, PWA Manifest & Touch Icon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#0A1931" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="FreeTools" />
+
+    <!-- Google Search Console & GA4 Analytics Placeholders -->
+    <meta name="google-site-verification" content="GSC_VERIFICATION_PLACEHOLDER_TOKEN_2753" />
+    <!-- Google Analytics 4 (Replace G-XXXXXXXXXX with production Measurement ID) -->
+    <!--
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+    -->
+    <script>
+      // Service Worker Registration for PWA Offline Caching
+      if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js').then(function(reg) {
+            console.log('[PWA] Service Worker registered with scope:', reg.scope);
+          }).catch(function(err) {
+            console.warn('[PWA] Service Worker registration failed:', err);
+          });
+        });
+      }
+    </script>
     
     <!-- Open Graph / Facebook / WhatsApp -->
     <meta property="og:site_name" content="FreeToolsNoSignup.com" />
@@ -99,29 +130,34 @@
     <meta name="twitter:description" content="Access 2753 free online tools including PDF, image, business, and developer utilities. No signup, no watermarks, and 100% private in-browser execution." />
     <meta name="twitter:image" content="https://www.freetoolsnosignup.com/og-image.png" />
     <meta name="twitter:image:alt" content="FreeToolsNoSignup.com" />
-    <!-- Google AdSense -->
+    <!-- Google AdSense Preconnect & Script -->
+    <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin />
+    <link rel="preconnect" href="https://googleads.g.doubleclick.net" crossorigin />
+    <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+    <link rel="dns-prefetch" href="https://googleads.g.doubleclick.net" />
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9048615701580913" crossorigin="anonymous"></script>
     
     <!-- SEO Multi-Language Hreflang Canonical Tags for 20+ Languages -->
     <link rel="alternate" hreflang="x-default" href="https://www.freetoolsnosignup.com/" />
-    <link rel="alternate" hreflang="en" href="https://www.freetoolsnosignup.com/en" />
-    <link rel="alternate" hreflang="hi" href="https://www.freetoolsnosignup.com/hi" />
-    <link rel="alternate" hreflang="es" href="https://www.freetoolsnosignup.com/es" />
+    <link rel="alternate" hreflang="en" href="https://www.freetoolsnosignup.com/" />
     <link rel="alternate" hreflang="ja" href="https://www.freetoolsnosignup.com/ja" />
-    <link rel="alternate" hreflang="de" href="https://www.freetoolsnosignup.com/de" />
+    <link rel="alternate" hreflang="es" href="https://www.freetoolsnosignup.com/es" />
     <link rel="alternate" hreflang="fr" href="https://www.freetoolsnosignup.com/fr" />
+    <link rel="alternate" hreflang="de" href="https://www.freetoolsnosignup.com/de" />
+    <link rel="alternate" hreflang="hi" href="https://www.freetoolsnosignup.com/hi" />
     <link rel="alternate" hreflang="pt" href="https://www.freetoolsnosignup.com/pt" />
     <link rel="alternate" hreflang="ru" href="https://www.freetoolsnosignup.com/ru" />
-    <link rel="alternate" hreflang="ar" href="https://www.freetoolsnosignup.com/ar" />
     <link rel="alternate" hreflang="zh" href="https://www.freetoolsnosignup.com/zh" />
-    <link rel="alternate" hreflang="ko" href="https://www.freetoolsnosignup.com/ko" />
+    <link rel="alternate" hreflang="ar" href="https://www.freetoolsnosignup.com/ar" />
     <link rel="alternate" hreflang="it" href="https://www.freetoolsnosignup.com/it" />
+    <link rel="alternate" hreflang="ko" href="https://www.freetoolsnosignup.com/ko" />
     <link rel="alternate" hreflang="nl" href="https://www.freetoolsnosignup.com/nl" />
     <link rel="alternate" hreflang="tr" href="https://www.freetoolsnosignup.com/tr" />
     <link rel="alternate" hreflang="pl" href="https://www.freetoolsnosignup.com/pl" />
-    <link rel="alternate" hreflang="id" href="https://www.freetoolsnosignup.com/id" />
     <link rel="alternate" hreflang="vi" href="https://www.freetoolsnosignup.com/vi" />
     <link rel="alternate" hreflang="th" href="https://www.freetoolsnosignup.com/th" />
+    <link rel="alternate" hreflang="id" href="https://www.freetoolsnosignup.com/id" />
+    <link rel="alternate" hreflang="ms" href="https://www.freetoolsnosignup.com/ms" />
     <link rel="alternate" hreflang="bn" href="https://www.freetoolsnosignup.com/bn" />
     <link rel="alternate" hreflang="ur" href="https://www.freetoolsnosignup.com/ur" />
 

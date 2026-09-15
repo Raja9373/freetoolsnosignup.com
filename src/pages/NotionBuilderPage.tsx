@@ -13,6 +13,7 @@ import { NotionPropertySelector } from '../components/tools/notion/NotionPropert
 import { NotionLiveTable } from '../components/tools/notion/NotionLiveTable';
 import { NotionPresetsSidebar } from '../components/tools/notion/NotionPresetsSidebar';
 import { NotionImportGuide } from '../components/tools/notion/NotionImportGuide';
+import { LanguageSwitcher } from '../components/LanguageSwitcher';
 import { ALL_DIRECTORY_TOOLS } from '../data/allToolsDirectory';
 
 interface NotionBuilderPageProps {
@@ -302,7 +303,9 @@ export const NotionBuilderPage: React.FC<NotionBuilderPageProps> = ({
           </div>
 
           {/* Right Header Status Badges */}
-          <div className="flex items-center gap-2.5 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+            <LanguageSwitcher />
+
             {/* Status Indicator */}
             <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#0A1931]/5 border border-[#0A1931]/10 text-xs font-semibold text-[#0A1931]">
               <span className="relative flex h-2 w-2">
@@ -313,9 +316,9 @@ export const NotionBuilderPage: React.FC<NotionBuilderPageProps> = ({
             </div>
 
             {/* In-Browser Privacy Badge */}
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold">
+            <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-              <span className="hidden sm:inline">100% Client-Side</span>
+              <span>100% Client-Side</span>
             </div>
           </div>
         </div>

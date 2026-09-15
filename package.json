@@ -32,6 +32,7 @@
     "dotenv": "^17.2.3",
     "downloadjs": "^1.4.7",
     "express": "^4.21.2",
+    "fuse.js": "^7.5.0",
     "js-yaml": "^5.3.0",
     "jsbarcode": "^3.12.3",
     "jszip": "^3.10.1",

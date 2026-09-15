@@ -1,67 +1,63 @@
-// Middleware for automatic language detection & cookie persistence
+import { NextRequest, NextResponse } from 'next/server';
 
-export const config = {
-  matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|ads.txt|robots.txt|sitemap.xml|sitemap-*.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml|js|css)$).*)',
-  ],
+const locales = ['en', 'ja', 'es', 'fr', 'de', 'hi', 'pt', 'ru', 'zh', 'ar', 'it', 'ko', 'nl', 'tr', 'pl', 'vi', 'th', 'id', 'ms', 'bn'];
+
+const countryToLocale: Record<string, string> = {
+  JP: 'ja', ES: 'es', FR: 'fr', DE: 'de', IN: 'hi', BR: 'pt', PT: 'pt', RU: 'ru', CN: 'zh', TW: 'zh', HK: 'zh',
+  SA: 'ar', AE: 'ar', EG: 'ar', IT: 'it', KR: 'ko', NL: 'nl', TR: 'tr', PL: 'pl', VN: 'vi', TH: 'th', ID: 'id', MY: 'ms', BD: 'bn',
+  MX: 'es', AR: 'es', CO: 'es', CL: 'es', PE: 'es'
 };
 
-export const SUPPORTED_LOCALES = [
-  'en', 'hi', 'es', 'ja', 'de', 'fr', 'pt', 'ru', 'ar', 
-  'zh', 'ko', 'it', 'nl', 'tr', 'pl', 'id', 'vi', 'th', 'bn', 'ur'
-];
+export function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
 
-export const DEFAULT_LOCALE = 'en';
+  // Skip if already has locale in path /ja/tools etc or is api/_next/static/ads.txt/sitemap
+  if (
+    locales.some(loc => pathname.startsWith(`/${loc}/`) || pathname === `/${loc}`) ||
+    pathname.startsWith('/api') ||
+    pathname.startsWith('/_next') ||
+    pathname.includes('.')
+  ) {
+    return NextResponse.next();
+  }
 
-export function getLocaleFromHeaders(acceptLanguageHeader?: string | null): string {
-  if (!acceptLanguageHeader) return DEFAULT_LOCALE;
+  // Check cookie first
+  const cookieLocale = request.cookies.get('NEXT_LOCALE')?.value;
+  if (cookieLocale && locales.includes(cookieLocale)) {
+    return NextResponse.next();
+  }
 
-  const languages = acceptLanguageHeader.split(',').map(l => l.trim().split(';')[0].toLowerCase());
-  for (const lang of languages) {
-    const prefix = lang.split('-')[0];
-    if (SUPPORTED_LOCALES.includes(prefix)) {
-      return prefix;
+  // Detect country from Vercel/Cloudflare headers
+  const country =
+    request.headers.get('x-vercel-ip-country') ||
+    request.headers.get('cf-ipcountry') ||
+    request.headers.get('x-country-code') ||
+    '';
+
+  let locale = 'en';
+  if (country && countryToLocale[country]) {
+    locale = countryToLocale[country];
+  } else {
+    // Fallback to Accept-Language header
+    const acceptLang = request.headers.get('accept-language') || '';
+    const preferred = acceptLang.split(',')[0]?.split('-')[0]?.toLowerCase();
+    if (preferred && locales.includes(preferred)) {
+      locale = preferred;
     }
   }
-  return DEFAULT_LOCALE;
-}
 
-export function middleware(request: { 
-  nextUrl?: { pathname: string }; 
-  url?: string;
-  headers?: { get: (name: string) => string | null }; 
-  cookies?: { get: (name: string) => any; set?: (name: string, value: string) => void };
-}) {
-  const pathname = request?.nextUrl?.pathname || (typeof request?.url === 'string' ? new URL(request.url).pathname : '');
-
-  // 1. Skip middleware for static files needed for AdSense, crawlers, and assets
-  if (
-    pathname === '/ads.txt' ||
-    pathname === '/robots.txt' ||
-    pathname === '/sitemap.xml' ||
-    pathname.startsWith('/sitemap-') ||
-    pathname.includes('.txt') ||
-    pathname.includes('.xml')
-  ) {
-    return;
+  // Don't redirect for en, just set cookie and stay
+  if (locale !== 'en') {
+    // Store in cookie for next time
+    const response = NextResponse.next();
+    response.cookies.set('NEXT_LOCALE', locale, { maxAge: 60 * 60 * 24 * 365 });
+    // Keep same URL for SEO but content dynamically loads via i18n provider
+    return response;
   }
 
-  // 2. Check existing cookie preference or detect from Accept-Language header
-  const cookieLocale = typeof request?.cookies?.get === 'function'
-    ? (request.cookies.get('NEXT_LOCALE')?.value || request.cookies.get('NEXT_LOCALE'))
-    : undefined;
-
-  let locale = DEFAULT_LOCALE;
-  if (cookieLocale && typeof cookieLocale === 'string' && SUPPORTED_LOCALES.includes(cookieLocale)) {
-    locale = cookieLocale;
-  } else if (request?.headers && typeof request.headers.get === 'function') {
-    const acceptLang = request.headers.get('accept-language');
-    locale = getLocaleFromHeaders(acceptLang);
-  }
-
-  // Never return raw string as response to prevent MIDDLEWARE_INVOCATION_FAILED
-  return;
+  return NextResponse.next();
 }
 
-export default middleware;
-
+export const config = {
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|ads.txt|robots.txt|sitemap.xml).*)']
+};
