@@ -21,7 +21,7 @@ import { PWAInstallBanner } from './components/PWAInstallBanner';
 import { AIToolFinder } from './components/AIToolFinder';
 import { ToolOfTheDay } from './components/ToolOfTheDay';
 import { EmailCapture } from './components/EmailCapture';
-import { RecentAndFavoritesSection } from './components/RecentAndFavoritesSection';
+
 import AiChatbotWidget from './components/AiChatbotWidget';
 
 // Dedicated Crawlable Pages
@@ -379,12 +379,9 @@ export default function App() {
 
         <div className="flex items-center gap-1.5">
           <button
-            onClick={() => {
-              const el = document.getElementById('recent-favs-section');
-              if (el) el.scrollIntoView({ behavior: 'smooth' });
-            }}
+            onClick={() => setIsMobileSidebarOpen(true)}
             className="p-2 rounded-xl bg-red-50 text-red-600 border border-red-200 font-bold text-xs flex items-center gap-1 shadow-2xs"
-            title="Favorites"
+            title="Favorites & Recent in Left Menu"
           >
             <Heart className="w-3.5 h-3.5 fill-current text-red-500" />
             <span className="text-[11px] font-bold">{favorites.length}</span>
@@ -453,23 +450,17 @@ export default function App() {
               </div>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => {
-                    const el = document.getElementById('recent-favs-section');
-                    if (el) el.scrollIntoView({ behavior: 'smooth' });
-                  }}
+                  onClick={() => setIsCmdKOpen(true)}
                   className="px-3 py-1.5 rounded-xl bg-white border border-[#E2E8F0] hover:border-red-300 text-xs font-bold text-[#0A1931] flex items-center gap-1.5 shadow-2xs transition hover:bg-red-50/30"
-                  title="View your favorite tools"
+                  title="View your favorite tools in left sidebar"
                 >
                   <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500" />
                   <span>Favorites ({favorites.length})</span>
                 </button>
                 <button
-                  onClick={() => {
-                    const el = document.getElementById('recent-favs-section');
-                    if (el) el.scrollIntoView({ behavior: 'smooth' });
-                  }}
+                  onClick={() => setIsCmdKOpen(true)}
                   className="px-3 py-1.5 rounded-xl bg-white border border-[#E2E8F0] hover:border-[#C5A059] text-xs font-bold text-[#0A1931] flex items-center gap-1.5 shadow-2xs transition hover:bg-amber-50/30"
-                  title="View recent tools"
+                  title="View recent tools in left sidebar"
                 >
                   <Clock className="w-3.5 h-3.5 text-[#C5A059]" />
                   <span>Recent ({recentTools.length})</span>
@@ -667,19 +658,7 @@ export default function App() {
             }} 
           />
 
-          {/* User Retention: Recent & Favorites Section */}
-          <div id="recent-favs-section">
-            <RecentAndFavoritesSection
-              recentTools={recentTools}
-              favorites={favorites}
-              onOpenTool={(slug) => {
-                recordToolUse(slug);
-                navigateTo(`/tools/${slug}`);
-              }}
-              onToggleFavorite={toggleFavorite}
-              onClearRecent={clearRecent}
-            />
-          </div>
+
 
           {/* THE 7 DABBA GRID (2 Rows x 3 Columns + 1 Full Width Notion Builder) */}
           <section className="space-y-4">
