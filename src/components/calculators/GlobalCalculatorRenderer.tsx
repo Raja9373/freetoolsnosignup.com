@@ -3,7 +3,7 @@ import {
   Calculator, DollarSign, TrendingUp, HelpCircle, Download, Share2, 
   Check, Info, Sliders, ShieldCheck, Sparkles, ArrowRight, BookOpen
 } from 'lucide-react';
-import { COMPLETE_CALCULATOR_SUITE } from '../tools/allCalculatorsCatalog';
+import { calculatorsRegistry } from '@/data/calculators/calculatorsRegistry';
 import { CalculatorDefinition, CalculatorResult } from '../tools/calculatorEngine';
 import { useGeo } from '../../context/GeoContext';
 
@@ -17,7 +17,7 @@ export const GlobalCalculatorRenderer: React.FC<GlobalCalculatorRendererProps> =
 
   // Find calculator definition
   const calculator: CalculatorDefinition = useMemo(() => {
-    const found = COMPLETE_CALCULATOR_SUITE.find(c => c.id === toolId || (c as any).slug === toolId);
+    const found = calculatorsRegistry.find(t => t.id === toolId || (t as any).slug === toolId);
     if (found) return found;
 
     // Fallback default calculation definition if not found
@@ -63,12 +63,24 @@ export const GlobalCalculatorRenderer: React.FC<GlobalCalculatorRendererProps> =
   }, [toolId]);
 
   const currencySymbol = useMemo(() => {
-    const cAny = calculator as any;
-    if (cAny.currencySymbol) return cAny.currencySymbol;
-    if (cAny.currency) return cAny.currency;
-    if (cAny.primaryUnit && !cAny.primaryUnit.includes('mo') && cAny.primaryUnit.length <= 3) return cAny.primaryUnit;
+    const foundTool = calculatorsRegistry.find(t => t.id === toolId || (t as any).slug === toolId) as any;
+    if (foundTool?.currency) return foundTool.currency;
+    if (foundTool?.currencySymbol) return foundTool.currencySymbol;
+    if (foundTool?.primaryUnit && !foundTool.primaryUnit.includes('mo') && !foundTool.primaryUnit.includes('/mo') && foundTool.primaryUnit.length <= 3) return foundTool.primaryUnit;
 
-    if (toolId.includes('us') || toolId.includes('mortgage') || toolId.includes('usd') || toolId.includes('fha') || toolId.includes('va-') || toolId.includes('-us-')) return '$';
+    if (
+      toolId.includes('us') || 
+      toolId.includes('mortgage') || 
+      toolId.includes('usd') || 
+      toolId.includes('fha') || 
+      toolId.includes('va-') || 
+      toolId.includes('-us-') ||
+      toolId.includes('loan') ||
+      toolId.includes('refinance') ||
+      toolId.includes('home') ||
+      toolId.includes('car') ||
+      toolId.includes('auto')
+    ) return '$';
     if (toolId.includes('uk')) return '£';
     if (toolId.includes('ca')) return 'C$';
     if (toolId.includes('au')) return 'A$';
@@ -76,7 +88,32 @@ export const GlobalCalculatorRenderer: React.FC<GlobalCalculatorRendererProps> =
     if (toolId.includes('jp')) return '¥';
     if (toolId.includes('in') || toolId.includes('emi') || toolId.includes('sip') || toolId.includes('gst') || toolId.includes('tax')) return '₹';
     return geoSymbol || '$';
-  }, [toolId, calculator, geoSymbol]);
+  }, [toolId, geoSymbol]);
+
+  const getFormattedLabel = (label: string) => {
+    return (label || '')
+      .replace(/\(\$\s*\/\s*₹\)/g, `(${currencySymbol})`)
+      .replace(/₹/g, currencySymbol)
+      .replace(/\$/g, currencySymbol);
+  };
+
+  const formatResultValue = (val: any) => {
+    if (typeof val === 'number') {
+      return `${currencySymbol}${Math.round(val).toLocaleString()}`;
+    }
+    const str = String(val || '');
+    if (str.startsWith('₹') || str.startsWith('$') || str.startsWith('£') || str.startsWith('€') || str.startsWith('¥')) {
+      return str.replace(/^[₹$£€¥]/, currencySymbol);
+    }
+    if (!isNaN(Number(str.replace(/[,]/g, '')))) {
+      return `${currencySymbol}${str}`;
+    }
+    return str.replace(/₹/g, currencySymbol).replace(/\$/g, currencySymbol);
+  };
+
+  const descriptionText = (calculator.description || '')
+    .replace(/₹/g, currencySymbol)
+    .replace(/\$/g, currencySymbol);
 
   // Form inputs state
   const [inputs, setInputs] = useState<Record<string, any>>(() => {
@@ -131,7 +168,7 @@ export const GlobalCalculatorRenderer: React.FC<GlobalCalculatorRendererProps> =
               {calculator.name}
             </h2>
             <p className="text-slate-300 text-xs sm:text-sm mt-1 max-w-2xl">
-              {calculator.description}
+              {descriptionText}
             </p>
           </div>
           <button
@@ -163,7 +200,7 @@ export const GlobalCalculatorRenderer: React.FC<GlobalCalculatorRendererProps> =
                 <div key={field.id} className="space-y-2">
                   <div className="flex justify-between items-center text-xs">
                     <label htmlFor={`calc-input-${field.id}`} className="font-bold text-[#0A1931]">
-                      {field.label}
+                      {getFormattedLabel(field.label)}
                     </label>
                     <span className="font-mono font-bold text-[#126BFF] bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100">
                       {field.type === 'number' && (field.label.toLowerCase().includes('amount') || field.label.toLowerCase().includes('principal') || field.label.toLowerCase().includes('price') || field.label.toLowerCase().includes('salary')) ? currencySymbol : ''}
@@ -227,18 +264,18 @@ export const GlobalCalculatorRenderer: React.FC<GlobalCalculatorRendererProps> =
             <div className="absolute right-0 bottom-0 translate-x-6 translate-y-6 w-48 h-48 bg-[#C5A059]/20 rounded-full blur-2xl pointer-events-none"></div>
             <div className="relative z-10 space-y-4">
               <span className="text-[11px] font-bold text-amber-400 uppercase tracking-widest block">
-                {result.primaryLabel}
+                {getFormattedLabel(result.primaryLabel)}
               </span>
               <div className="text-3xl sm:text-4xl font-extrabold text-white font-mono tracking-tight">
-                {result.primaryValue}
+                {formatResultValue(result.primaryValue)}
               </div>
 
               {result.secondaryMetrics && result.secondaryMetrics.length > 0 && (
                 <div className="pt-4 border-t border-white/10 space-y-2">
                   {result.secondaryMetrics.map((m, idx) => (
                     <div key={idx} className="flex justify-between items-center text-xs">
-                      <span className="text-slate-300 font-medium">{m.label}</span>
-                      <span className="font-mono font-bold text-white">{m.value}</span>
+                      <span className="text-slate-300 font-medium">{getFormattedLabel(m.label)}</span>
+                      <span className="font-mono font-bold text-white">{formatResultValue(m.value)}</span>
                     </div>
                   ))}
                 </div>

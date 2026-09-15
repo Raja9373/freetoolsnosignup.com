@@ -48015,10 +48015,29 @@ export const PHASE2_PART5: CalculatorDefinition[] = [
   },
 ];
 
+function enrichCalc(calc: CalculatorDefinition): CalculatorDefinition {
+  if (!calc.country || !calc.currencySymbol) {
+    if (calc.id.startsWith('calc-au')) {
+      calc.country = 'Australia';
+      calc.currencySymbol = 'A$';
+    } else if (calc.id.startsWith('calc-ca')) {
+      calc.country = 'Canada';
+      calc.currencySymbol = 'C$';
+    } else if (calc.id.startsWith('calc-de')) {
+      calc.country = 'Germany/EU';
+      calc.currencySymbol = '€';
+    } else {
+      calc.country = 'USA';
+      calc.currencySymbol = '$';
+    }
+  }
+  return calc;
+}
+
 export const PHASE2_CALCULATORS_SUITE: CalculatorDefinition[] = [
-  ...PHASE2_PART1,
-  ...PHASE2_PART2,
-  ...PHASE2_PART3,
-  ...PHASE2_PART4,
-  ...PHASE2_PART5,
+  ...PHASE2_PART1.map(enrichCalc),
+  ...PHASE2_PART2.map(enrichCalc),
+  ...PHASE2_PART3.map(enrichCalc),
+  ...PHASE2_PART4.map(enrichCalc),
+  ...PHASE2_PART5.map(enrichCalc),
 ];

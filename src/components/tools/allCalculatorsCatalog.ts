@@ -56,4 +56,5 @@ function generateCompleteCalculatorSuite(): CalculatorDefinition[] {
 }
 
 export const COMPLETE_CALCULATOR_SUITE = generateCompleteCalculatorSuite();
+export const calculatorsRegistry = COMPLETE_CALCULATOR_SUITE;
 

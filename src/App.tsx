@@ -25,10 +25,10 @@ import { EmailCapture } from './components/EmailCapture';
 import AiChatbotWidget from './components/AiChatbotWidget';
 
 // Dedicated Crawlable Pages
-import { AboutPage } from './pages/AboutPage';
-import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
-import { ContactPage } from './pages/ContactPage';
-import { TermsPage } from './pages/TermsPage';
+import { AboutUs } from './pages/AboutUs';
+import { PrivacyPolicy } from './pages/PrivacyPolicy';
+import { ContactUs } from './pages/ContactUs';
+import { TermsOfService } from './pages/TermsOfService';
 import { DisclaimerPage } from './pages/DisclaimerPage';
 import { CategoryPage } from './pages/CategoryPage';
 import { NotionBuilderPage } from './pages/NotionBuilderPage';
@@ -139,6 +139,87 @@ export default function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
+  // Dynamic Title & Meta Description based on active route
+  useEffect(() => {
+    let title = "4753 Free Tools - No Signup - 100% Private in Your Browser";
+    let description = "4753 Free Tools - No Signup - 100% Private in Your Browser - PDF, Image, Calculators, ATS, AI - All 100% offline - No API - 4,753 working utilities.";
+
+    if (normalizedPath === '/about') {
+      title = "About Us - FreeToolsNoSignup | 4,753 Free Browser Utilities";
+      description = "Learn about FreeToolsNoSignup: 4,753 free browser-native tools requiring zero signups, zero server uploads, and 100% data privacy.";
+    } else if (normalizedPath === '/privacy-policy') {
+      title = "Privacy Policy - FreeToolsNoSignup";
+      description = "Read our strict zero-knowledge privacy policy. All 4753 tools execute 100% locally in your browser memory with zero tracking or server uploads.";
+    } else if (normalizedPath === '/contact') {
+      title = "Contact Us - FreeToolsNoSignup";
+      description = "Get in touch with the FreeToolsNoSignup team for feedback, feature requests, or tool suggestions.";
+    } else if (normalizedPath === '/terms' || normalizedPath === '/terms-of-service') {
+      title = "Terms of Service - FreeToolsNoSignup";
+      description = "Review the terms and conditions for using FreeToolsNoSignup's 4,753 free browser-based utilities.";
+    } else if (normalizedPath === '/disclaimer') {
+      title = "Disclaimer - FreeToolsNoSignup";
+      description = "Read the legal disclaimer regarding FreeToolsNoSignup and our client-side utility tools.";
+    } else if (normalizedPath === '/chrome-extension') {
+      title = "Chrome Extension - FreeToolsNoSignup";
+      description = "Install the FreeToolsNoSignup Chrome Extension for instant offline access to 4,753 free productivity tools.";
+    } else if (normalizedPath === '/stats') {
+      title = "Platform Statistics - FreeToolsNoSignup";
+      description = "View live platform metrics, tool usage stats, and category breakdowns for FreeToolsNoSignup.";
+    } else if (normalizedPath === '/audit') {
+      title = "SEO & AdSense Audit - FreeToolsNoSignup";
+      description = "Audit report for FreeToolsNoSignup covering SEO, performance, accessibility, and AdSense readiness.";
+    } else if (normalizedPath === '/pdf-tools') {
+      title = "Free PDF Tools No Signup - Merge, Split, Compress PDF";
+      description = "Use 753+ free browser-based PDF tools to merge, split, compress, convert, and sign PDF documents securely without uploading files to servers.";
+    } else if (normalizedPath === '/image-tools') {
+      title = "Free Image & Photo Tools - Compress, Resize, Convert";
+      description = "800+ free browser-native image tools for compression, resizing, format conversion, and watermarking. 100% private and offline.";
+    } else if (normalizedPath === '/calculators') {
+      title = "Free Online Calculators - EMI, Mortgage, Tax, Math";
+      description = "Access 1,200+ free online calculators for finance, mortgages, EMI, loans, mathematics, and science with instant local computation.";
+    } else if (normalizedPath === '/job-ats') {
+      title = "ATS Resume Checker & Job Tools - Free No Signup";
+      description = "Check your resume against ATS algorithms, optimize keywords, and generate cover letters instantly with zero signup.";
+    } else if (normalizedPath === '/ai-study') {
+      title = "AI & Study Utilities - Free Browser Tools";
+      description = "Explore free AI detection tools, study planners, citation generators, and flashcard makers operating locally in your browser.";
+    } else if (normalizedPath === '/dev-tools') {
+      title = "Developer & Pro Tools - JSON, QR, Hash, Base64";
+      description = "1,000+ developer utilities for JSON formatting, base64 encoding, fake data generation, and QR code creation with zero server calls.";
+    } else if (normalizedPath === '/notion-template-builder' || normalizedPath === '/notion-builder' || normalizedPath.includes('notion')) {
+      title = "Notion Template Builder - Free Creator Tool";
+      description = "Build, customize, and export Notion templates instantly with our free browser utility tool.";
+    } else if (normalizedPath === '/qr-code-generator' || normalizedPath === '/qr-generator') {
+      title = "QR Code Generator & Scanner - Free No Signup";
+      description = "Generate custom QR codes, vCards, Wi-Fi credentials, and barcodes instantly with zero expiration or registration.";
+    } else if (normalizedPath === '/backlinks') {
+      title = "Backlinks Directory & Resource Hub - FreeToolsNoSignup";
+      description = "Explore our partner directory, resource links, and collaborative web tools directory.";
+    } else if (normalizedPath === '/partners') {
+      title = "Our Partners & Ecosystem - FreeToolsNoSignup";
+      description = "Discover our trusted technology partners, open-source libraries, and collaborative ecosystems.";
+    } else if (normalizedPath === '/launch') {
+      title = "Product Launch Kit - FreeToolsNoSignup";
+      description = "Launch your project with our free marketing templates, launch checklists, and PR tools.";
+    } else if (normalizedPath === '/blog') {
+      title = "Blog & Productivity Guides - FreeToolsNoSignup";
+      description = "Read expert guides on client-side web tools, PDF editing tips, developer utilities, and data privacy.";
+    } else if (normalizedPath.startsWith('/tools/') || normalizedPath.startsWith('/tool/')) {
+      const toolSlug = normalizedPath.replace(/^\/tools?\//, '').trim();
+      const foundTool = TOOLS_DATABASE.find(t => t.id === toolSlug);
+      if (foundTool) {
+        title = `${foundTool.name} - Free Online Tool | FreeToolsNoSignup`;
+        description = foundTool.description;
+      }
+    }
+
+    document.title = title;
+    let metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute('content', description);
+    }
+  }, [normalizedPath]);
+
   const navigateTo = (path: string) => {
     if (typeof window !== 'undefined') {
       window.history.pushState({}, '', path);
@@ -240,19 +321,19 @@ export default function App() {
   // Routing Views: About, Privacy Policy, Contact, Terms, Disclaimer, Category Pages, Extension, Stats
   const renderCurrentPage = () => {
     if (normalizedPath === '/about') {
-      return <AboutPage onNavigateHome={() => navigateTo('/')} />;
+      return <AboutUs onNavigateHome={() => navigateTo('/')} />;
     }
 
     if (normalizedPath === '/privacy-policy') {
-      return <PrivacyPolicyPage onNavigateHome={() => navigateTo('/')} />;
+      return <PrivacyPolicy onNavigateHome={() => navigateTo('/')} />;
     }
 
     if (normalizedPath === '/contact') {
-      return <ContactPage onNavigateHome={() => navigateTo('/')} />;
+      return <ContactUs onNavigateHome={() => navigateTo('/')} />;
     }
 
-    if (normalizedPath === '/terms-of-service') {
-      return <TermsPage onNavigateHome={() => navigateTo('/')} />;
+    if (normalizedPath === '/terms' || normalizedPath === '/terms-of-service') {
+      return <TermsOfService onNavigateHome={() => navigateTo('/')} />;
     }
 
     if (normalizedPath === '/disclaimer') {
@@ -607,11 +688,12 @@ export default function App() {
           />
 
           {/* Small SEO H1 */}
-          <div className="px-2 py-4 mb-2">
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2 leading-tight">
+          <div className="px-2 py-6 mb-2 text-center">
+            <h1 className="text-2xl md:text-3xl font-bold text-green-600 md:text-green-700 mb-3 leading-tight text-center flex items-center justify-center gap-2">
+              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
               4753 Free Tools - No Signup - 100% Private in Your Browser
             </h1>
-            <p className="text-sm md:text-base text-gray-600">
+            <p className="text-sm md:text-base text-gray-600 text-center max-w-3xl mx-auto">
               PDF, Image, Calculators, ATS, AI - All 100% offline - No API - 4,753 working utilities
             </p>
           </div>

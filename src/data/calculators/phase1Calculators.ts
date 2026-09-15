@@ -1,0 +1,4 @@
+import { GLOBAL_CALCULATORS_SUITE } from './globalCalculators';
+
+export const PHASE1_CALCULATORS_SUITE = GLOBAL_CALCULATORS_SUITE;
+export { GLOBAL_CALCULATORS_SUITE };

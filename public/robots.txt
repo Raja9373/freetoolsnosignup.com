@@ -1,17 +1,9 @@
 User-agent: *
 Allow: /
 
-User-agent: Googlebot
-Allow: /
+# Sitemap location
+Sitemap: https://freetoolsnosignup.com/sitemap.xml
 
-User-agent: AdsBot-Google
-Allow: /
-
-User-agent: Mediapartners-Google
-Allow: /
-
-User-agent: Google-Display-Ads-Bot
-Allow: /
-
-Sitemap: https://www.freetoolsnosignup.com/sitemap.xml
-Sitemap: https://www.freetoolsnosignup.com/sitemap-index.xml
+# Disallow private areas if any
+Disallow: /api/
+Disallow: /admin/

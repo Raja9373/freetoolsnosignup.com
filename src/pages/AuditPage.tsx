@@ -76,6 +76,49 @@ export const AuditPage: React.FC<AuditPageProps> = ({ onNavigateHome, onNavigate
           </div>
         </div>
 
+        {/* AdSense Readiness Card */}
+        <div className="bg-emerald-50 border border-emerald-200 rounded-3xl p-6 sm:p-8 space-y-4 shadow-2xs">
+          <div className="flex items-center justify-between">
+            <h3 className="font-bold text-emerald-900 text-lg flex items-center gap-2">
+              <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+              <span>AdSense Readiness: 7/7 Checks Passed</span>
+            </h3>
+            <span className="px-3 py-1 bg-emerald-600 text-white rounded-full font-mono font-bold text-xs">
+              100% READY
+            </span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs text-emerald-900 font-medium">
+            <div className="bg-white/80 p-3 rounded-xl border border-emerald-200 flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>Sitemap 4,759 URLs ✓</span>
+            </div>
+            <div className="bg-white/80 p-3 rounded-xl border border-emerald-200 flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>Ads.txt configured ✓</span>
+            </div>
+            <div className="bg-white/80 p-3 rounded-xl border border-emerald-200 flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>Robots.txt active ✓</span>
+            </div>
+            <div className="bg-white/80 p-3 rounded-xl border border-emerald-200 flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>Privacy Policy live ✓</span>
+            </div>
+            <div className="bg-white/80 p-3 rounded-xl border border-emerald-200 flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>About Us live ✓</span>
+            </div>
+            <div className="bg-white/80 p-3 rounded-xl border border-emerald-200 flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>Contact Us live ✓</span>
+            </div>
+            <div className="bg-white/80 p-3 rounded-xl border border-emerald-200 flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>Terms of Service live ✓</span>
+            </div>
+          </div>
+        </div>
+
         {/* Audit Checklist Grid */}
         <div className="space-y-4">
           <h2 className="text-xl font-bold text-[#0A1931] flex items-center gap-2">

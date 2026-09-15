@@ -9,6 +9,9 @@ export interface CalculatorDefinition {
   formula: string;
   formulaExplanation?: string;
   defaultInputs?: Record<string, any>;
+  currency?: string;
+  currencySymbol?: string;
+  country?: string;
   fields?: {
     id: string;
     label: string;
