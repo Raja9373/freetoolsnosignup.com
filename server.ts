@@ -235,6 +235,51 @@ async function startServer() {
     res.send(adsContent);
   });
 
+  // Explicit handler for manifest.json (PWA)
+  app.get('/manifest.json', (_req, res) => {
+    const manifestPath = process.env.NODE_ENV === 'production'
+      ? path.join(process.cwd(), 'dist', 'manifest.json')
+      : path.join(process.cwd(), 'public', 'manifest.json');
+    res.setHeader('Content-Type', 'application/manifest+json; charset=utf-8');
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    if (fs.existsSync(manifestPath)) {
+      res.sendFile(manifestPath);
+    } else {
+      res.sendFile(path.join(process.cwd(), 'public', 'manifest.json'));
+    }
+  });
+
+  // Explicit handler for sw.js (Service Worker)
+  app.get('/sw.js', (_req, res) => {
+    const swPath = process.env.NODE_ENV === 'production'
+      ? path.join(process.cwd(), 'dist', 'sw.js')
+      : path.join(process.cwd(), 'public', 'sw.js');
+    res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Service-Worker-Allowed', '/');
+    if (fs.existsSync(swPath)) {
+      res.sendFile(swPath);
+    } else {
+      res.sendFile(path.join(process.cwd(), 'public', 'sw.js'));
+    }
+  });
+
+  // Explicit handler for PWA icons
+  app.get(['/icon-192.png', '/icon-512.png', '/pwa-192x192.png', '/pwa-512x512.png'], (req, res) => {
+    const iconName = path.basename(req.path);
+    const iconPath = process.env.NODE_ENV === 'production'
+      ? path.join(process.cwd(), 'dist', iconName)
+      : path.join(process.cwd(), 'public', iconName);
+    res.setHeader('Content-Type', 'image/png');
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+    if (fs.existsSync(iconPath)) {
+      res.sendFile(iconPath);
+    } else {
+      res.sendFile(path.join(process.cwd(), 'public', iconName));
+    }
+  });
+
   // Vite middleware for development vs static asset serving for production
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({

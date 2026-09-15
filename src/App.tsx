@@ -41,6 +41,7 @@ import { LaunchPage } from './pages/LaunchPage';
 import { BlogPage } from './pages/BlogPage';
 import { ChromeExtensionPage } from './pages/ChromeExtensionPage';
 import { StatsPage } from './pages/StatsPage';
+import { AuditPage } from './pages/AuditPage';
 
 // Interactive Tool Modals
 import { NotionTemplateBuilder } from './components/tools/NotionTemplateBuilder';
@@ -263,6 +264,10 @@ export default function App() {
 
     if (normalizedPath === '/stats') {
       return <StatsPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+    }
+
+    if (normalizedPath === '/audit') {
+      return <AuditPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
     }
 
     if (normalizedPath === '/pdf-tools') {
