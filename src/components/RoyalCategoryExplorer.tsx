@@ -54,7 +54,7 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('pdf');
   
   // Subcategory state (Default selected: Convert)
-  const [selectedSubcategoryId, setSelectedSubcategoryId] = useState<string>('convert');
+  const [selectedSubcategoryId, setSelectedSubcategoryId] = useState<string>('pdf-convert');
 
   // Toast Notification state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -125,7 +125,7 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
   // Reset all filters
   const handleResetFilters = () => {
     setSelectedCategoryId('pdf');
-    setSelectedSubcategoryId('convert');
+    setSelectedSubcategoryId('pdf-convert');
     showToast('Filters reset to default PDF Suite');
   };
 
@@ -255,6 +255,9 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
                 <span className="bg-[#D4AF37] text-[#0A1931] text-xs font-black px-2.5 py-0.5 rounded-full font-mono uppercase shadow-sm">
                   NEW
                 </span>
+                <span className="bg-[#0A1931] text-[#D4AF37] text-xs font-bold px-2.5 py-0.5 rounded-full border border-[#D4AF37]/30 font-mono">
+                  233 tools
+                </span>
               </div>
               <p className="text-xs sm:text-sm text-gray-300 mt-2 max-w-3xl leading-relaxed">
                 Design custom Notion databases with Title, Multi-select, Status, Date, Rating, Progress & 18 column types. Interactive live table preview, instant dummy data, and 1-click CSV download ready to import into Notion.
@@ -371,7 +374,7 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
                 <h2 className="text-lg sm:text-2xl font-bold text-white flex items-center gap-2">
                   <span>{currentCategory.icon}</span>
                   <span>
-                    {currentCategory.name} Subcategories & Tool Operations - {currentCategory.id === 'pdf' ? 57 : (currentCategory.count || currentCategory.subcategories.reduce((acc, s) => acc + s.tools.length, 0))} Utilities Available
+                    {currentCategory.name} Subcategories & Tool Operations - {currentCategory.count} Utilities Available
                   </span>
                 </h2>
                 <p className="text-xs text-gray-300 mt-0.5">
@@ -512,7 +515,7 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
             <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
               <span>Tools in '{currentSubcategory.name}'</span>
               <span className="text-[#D4AF37] font-mono text-xs sm:text-sm bg-[#0A1931] border border-[#D4AF37]/40 px-2.5 py-0.5 rounded-full">
-                ({currentSubcategory.tools.length} Items)
+                ({currentSubcategory.tools.length} ITEMS)
               </span>
             </h3>
             <span className="text-xs text-gray-300">

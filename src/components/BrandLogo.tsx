@@ -13,7 +13,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
   onClick,
   showTagline = false
 }) => {
-  // Icon-only variant: renders the sharp vector brand mark (speed gear + wrench + cursor)
+  // Icon-only variant: renders the sharp vector brand mark
   if (variant === 'icon-only') {
     return (
       <div 
@@ -24,8 +24,8 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
       >
         <img
           src="/favicon.svg"
-          alt="FreeToolsNoSignup"
-          className="w-8 h-8 sm:w-9 sm:h-9 object-contain drop-shadow-xs"
+          alt="FreeTools NoSignup"
+          className="w-10 h-10 object-contain drop-shadow-xs"
           referrerPolicy="no-referrer"
           loading="eager"
         />
@@ -43,9 +43,9 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
         title="FreeToolsNoSignup.com — 100% Free Browser Utilities"
       >
         <img
-          src="/logo.svg"
-          alt="FreeToolsNoSignup.com"
-          className="h-11 sm:h-12 md:h-14 w-auto max-w-[240px] sm:max-w-[280px] object-contain drop-shadow-md"
+          src="/logo.png"
+          alt="FreeTools NoSignup - Fast Free Easy"
+          className="h-12 md:h-14 w-auto object-contain drop-shadow-[0_2px_8px_rgba(255,255,255,0.15)]"
           referrerPolicy="no-referrer"
           loading="eager"
         />
@@ -63,9 +63,9 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
         title="FreeToolsNoSignup.com"
       >
         <img
-          src="/logo.svg"
-          alt="FreeToolsNoSignup.com"
-          className="h-10 sm:h-11 md:h-12 w-auto max-w-full object-contain drop-shadow-xs"
+          src="/logo.png"
+          alt="FreeTools NoSignup - Fast Free Easy"
+          className="h-14 md:h-16 w-auto object-contain drop-shadow-[0_2px_8px_rgba(255,255,255,0.2)]"
           referrerPolicy="no-referrer"
           loading="eager"
         />
@@ -79,12 +79,12 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
       id="brand-logo-header"
       onClick={onClick}
       className={`inline-flex items-center select-none cursor-pointer group transition-opacity hover:opacity-95 ${className}`}
-      title="FreeToolsNoSignup.com"
+      title="FreeToolsNoSignup.com - Fast Free Easy"
     >
       <img
-        src="/logo.svg"
-        alt="FreeToolsNoSignup.com"
-        className="h-8 sm:h-9 md:h-10 w-auto max-w-[190px] sm:max-w-[230px] md:max-w-[270px] object-contain drop-shadow-xs"
+        src="/logo.png"
+        alt="FreeTools NoSignup - Fast Free Easy"
+        className="h-14 md:h-16 w-auto object-contain drop-shadow-[0_2px_8px_rgba(255,255,255,0.2)]"
         referrerPolicy="no-referrer"
         loading="eager"
       />

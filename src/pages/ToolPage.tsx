@@ -283,34 +283,39 @@ export const ToolPage: React.FC<ToolPageProps> = ({
         </div>
       )}
 
-      {/* TOP HEADER - STICKY ROYAL NAVY & GOLD BREADCRUMBS WITH BACK & CLOSE BUTTONS */}
-      <header className="sticky top-0 z-30 bg-[#0A1931]/95 backdrop-blur border-b border-[#D4AF37]/20 p-3 flex items-center justify-between">
-        <div className="flex items-center gap-2 text-sm text-gray-300 flex-wrap">
-          <button onClick={onNavigateHome} className="hover:text-[#D4AF37] transition-colors cursor-pointer font-medium">
-            Home
-          </button>
-          <span className="text-[#D4AF37]/60">&gt;</span>
-          <button 
-            onClick={() => onNavigateTo(getCategoryPath(seoData.category))} 
-            className="hover:text-[#D4AF37] transition-colors cursor-pointer font-medium"
-          >
-            {seoData.categoryName}
-          </button>
-          <span className="text-[#D4AF37]/60">&gt;</span>
-          <span className="text-gray-300">{subcategoryName}</span>
-          <span className="text-[#D4AF37]/60">&gt;</span>
-          <span className="text-[#D4AF37] font-bold">{seoData.name}</span>
+      {/* TOP HEADER - STICKY ROYAL NAVY & GOLD BREADCRUMBS WITH LOGO & CLOSE BUTTONS */}
+      <header className="sticky top-0 z-30 bg-[#0A1931] border-b border-[#D4AF37]/20 px-4 py-2 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3 overflow-hidden">
+          <a href="/" onClick={(e) => { e.preventDefault(); onNavigateHome(); }} className="shrink-0 flex items-center gap-2">
+            <img src="/logo.png" alt="FreeTools NoSignup" className="h-10 sm:h-12 w-auto object-contain drop-shadow-[0_2px_8px_rgba(255,255,255,0.2)]" />
+          </a>
+          <div className="hidden sm:flex items-center gap-1.5 text-xs text-gray-300 truncate">
+            <button onClick={onNavigateHome} className="hover:text-[#D4AF37] transition-colors cursor-pointer font-medium">
+              Home
+            </button>
+            <span className="text-[#D4AF37]/60">&gt;</span>
+            <button 
+              onClick={() => onNavigateTo(getCategoryPath(seoData.category))} 
+              className="hover:text-[#D4AF37] transition-colors cursor-pointer font-medium"
+            >
+              {seoData.categoryName}
+            </button>
+            <span className="text-[#D4AF37]/60">&gt;</span>
+            <span className="text-gray-300">{subcategoryName}</span>
+            <span className="text-[#D4AF37]/60">&gt;</span>
+            <span className="text-[#D4AF37] font-bold truncate">{seoData.name}</span>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <button 
             onClick={() => window.history.back()} 
-            className="px-3 py-1 border border-[#D4AF37]/30 text-white rounded hover:bg-[#0F2340] text-xs font-semibold transition-colors cursor-pointer"
+            className="px-3 py-1.5 border border-[#D4AF37]/30 text-white rounded-lg hover:bg-[#0F2340] text-xs font-semibold transition-colors cursor-pointer"
           >
             ← Back
           </button>
           <button 
             onClick={handleCloseTool} 
-            className="px-3 py-1 bg-[#D4AF37] hover:bg-[#E5C158] text-[#0A1931] font-bold rounded text-xs transition-colors cursor-pointer"
+            className="px-3 py-1.5 bg-[#D4AF37] hover:bg-[#E5C158] text-[#0A1931] font-bold rounded-lg text-xs transition-colors cursor-pointer shadow-sm"
           >
             ✕ Close (ESC)
           </button>

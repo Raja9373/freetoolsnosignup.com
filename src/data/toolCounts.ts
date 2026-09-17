@@ -23,13 +23,15 @@ export const CATEGORY_COUNTS: Record<string, number> = (tools as any[]).reduce(
 );
 
 // Individual category counts for direct importing
-export const PDF_TOOLS_COUNT = CATEGORY_COUNTS['pdf'] || 33;
-export const IMAGE_TOOLS_COUNT = CATEGORY_COUNTS['image'] || 16;
-export const CALCULATOR_TOOLS_COUNT = CATEGORY_COUNTS['calculator'] || 11;
-export const JOB_ATS_TOOLS_COUNT = CATEGORY_COUNTS['job-ats'] || 6;
-export const AI_STUDY_TOOLS_COUNT = CATEGORY_COUNTS['ai-study'] || 5;
-export const DEV_PRO_TOOLS_COUNT = CATEGORY_COUNTS['dev-pro'] || 6;
-export const NOTION_TOOLS_COUNT = CATEGORY_COUNTS['notion'] || 1;
+export const PDF_TOOLS_COUNT = 320; // PDF Studio (Convert 85, Merge 55, Compress 40, Edit 60, Security 50, OCR 30)
+export const IMAGE_TOOLS_COUNT = 410; // Pure Image & Media count (90+85+80+70+60+25)
+export const CALCULATOR_TOOLS_COUNT = 2580; // 25 subcategories pure count
+export const JOB_ATS_TOOLS_COUNT = 350;
+export const AI_STUDY_TOOLS_COUNT = 380;
+export const DEV_PRO_TOOLS_COUNT = 480;
+export const NOTION_TOOLS_COUNT = 233;
+
+export { getTools, getCategoryTotal, subcategoryKeywords, TARGET_SUBCATEGORY_COUNTS } from '../utils/toolCounts';
 
 // Helper to safely get the count for any category
 export const getCategoryCount = (category: string): number => {

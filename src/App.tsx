@@ -499,29 +499,34 @@ export default function App() {
       <div id="ftns-app-root" className="min-h-screen bg-[#F4F7FC] text-[#0B1F3A] flex flex-col font-sans selection:bg-[#D4AF37] selection:text-[#0A1931]">
       
         {/* SINGLE TOP AI SEARCH BAR HEADER */}
-        <header className="sticky top-0 z-30 bg-[#0A1931] border-b border-[#D4AF37]/20 shadow-lg">
-          <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-            {/* Logo and Status Badges */}
-            <div className="flex items-center gap-3 shrink-0">
-              <BrandLogo variant="header" onClick={() => navigateTo('/')} />
-              <div className="hidden sm:flex items-center gap-2 pl-3 border-l border-[#D4AF37]/20">
-                <span className="text-xs font-black text-[#D4AF37] tracking-wider uppercase bg-[#0F2340] px-2.5 py-1 rounded-md border border-[#D4AF37]/30">
-                  4753 Tools Active
-                </span>
-                <span className="text-[11px] font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded-md">
-                  NO SIGNUP
-                </span>
+        <header className="sticky top-0 z-30 bg-[#0A1931] border-b border-[#D4AF37]/20">
+          <div className="max-w-7xl mx-auto px-4 py-2 flex items-center gap-4">
+            {/* LOGO IMAGE - Use uploaded logo */}
+            <a 
+              href="/" 
+              onClick={(e) => { e.preventDefault(); navigateTo('/'); }} 
+              className="flex items-center gap-3 shrink-0 select-none group"
+            >
+              <img 
+                src="/logo.png" 
+                alt="FreeTools NoSignup - Fast Free Easy" 
+                className="h-14 md:h-16 w-auto object-contain drop-shadow-[0_2px_8px_rgba(255,255,255,0.2)]" 
+              />
+              <div className="hidden md:block">
+                <div className="text-xs text-[#D4AF37] font-bold tracking-widest font-mono uppercase">
+                  4753 Tools Active • NO SIGNUP • 100% Client-Side
+                </div>
               </div>
-            </div>
+            </a>
 
-            {/* SINGLE AI SEARCH BAR - CENTER - 1 ONLY */}
-            <div ref={searchContainerRef} className="flex-1 max-w-xl mx-auto relative">
+            {/* SINGLE AI SEARCH BAR TOP ONLY - As discussed - 1 only */}
+            <div ref={searchContainerRef} className="flex-1 max-w-xl mx-auto relative ml-4">
               <input 
                 id="top-ai-search-input"
                 type="text"
                 value={searchQuery}
                 placeholder="Search 4,753 tools or ask AI - e.g., 'pdf to word' or 'I need to merge PDFs'..."
-                className="w-full bg-[#0F2340] text-white placeholder-slate-400 border border-[#D4AF37]/30 rounded-full px-5 py-2.5 pr-12 text-sm focus:border-[#D4AF37] focus:shadow-[0_0_15px_rgba(212,175,55,0.3)] outline-none transition-all"
+                className="w-full bg-[#0F2340] border border-[#D4AF37]/30 rounded-full px-5 py-2.5 pr-12 text-sm text-white placeholder-gray-400 focus:border-[#D4AF37] focus:shadow-[0_0_15px_rgba(212,175,55,0.3)] outline-none"
                 onChange={handleAISearch}
                 onKeyDown={handleSearchKeyDown}
                 onFocus={() => { if (searchQuery.trim()) setIsSearchDropdownOpen(true); }}
@@ -530,7 +535,7 @@ export default function App() {
                 type="button"
                 onClick={handleSearchSubmit}
                 aria-label="Search with AI"
-                className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#D4AF37] hover:bg-[#E5C158] text-[#0A1931] rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm cursor-pointer shadow-md transition-all"
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#D4AF37] text-[#0A1931] rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm cursor-pointer shadow-md transition-all hover:bg-[#E5C158]"
               >
                 🔍
               </button>
