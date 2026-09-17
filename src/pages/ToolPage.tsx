@@ -268,90 +268,52 @@ export const ToolPage: React.FC<ToolPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F7FC] text-[#0B1F3A] flex flex-col selection:bg-[#FF7A00] selection:text-white relative">
+    <div className="min-h-screen bg-[#0A1931] text-[#FFFEF7] flex flex-col selection:bg-[#D4AF37] selection:text-[#0A1931] relative font-sans">
       <SEOHead
         title={seoData.title}
         description={seoData.description}
         canonicalUrl={`https://www.freetoolsnosignup.com/tools/${seoData.slug}`}
       />
       
-      {/* Floating Global Close Button for All Tools */}
-      <button
-        onClick={handleCloseTool}
-        className="fixed top-20 right-6 z-50 w-12 h-12 bg-[#0A1931] hover:bg-red-600 text-white rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110 active:scale-95 cursor-pointer pointer-events-auto border-2 border-white"
-        title="Close Tool & Return Home (ESC)"
-        aria-label="Close Tool"
-      >
-        <X className="w-6 h-6" strokeWidth={2.5} />
-      </button>
-      
       {/* Floating Toast Message */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-[#0A1931] text-white text-xs font-bold px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2 animate-in slide-in-from-bottom-5 border border-[#1E3A8A]">
+        <div className="fixed bottom-6 right-6 z-50 bg-[#0F2340] text-white text-xs font-bold px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2 animate-in slide-in-from-bottom-5 border border-[#D4AF37]/40">
           <CheckCircle2 className="w-4 h-4 text-emerald-400" />
           <span>{toastMessage}</span>
         </div>
       )}
 
-      {/* Top Header */}
-      <header className="bg-white border-b border-[#E2E8F0] sticky top-0 z-30 shadow-2xs">
-        <div className="max-w-6xl mx-auto px-4 py-3.5 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => onNavigateTo(getCategoryPath(seoData.category))}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F4F7FC] hover:bg-[#EBF3FF] hover:text-[#126BFF] text-[#0B1F3A] font-bold text-xs border border-[#E2E8F0] transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>{seoData.categoryName}</span>
-            </button>
-            <BrandLogo variant="header" onClick={onNavigateHome} />
-          </div>
-
-          {/* Top Right "Share & Get Backlink" Bar & Close Button */}
-          <div className="flex items-center gap-2">
-            <span className="hidden md:inline-block text-[11px] font-bold text-[#64748B] mr-1">
-              Share:
-            </span>
-            <button
-              onClick={() => handleShare('twitter')}
-              className="px-2.5 py-1.5 rounded-lg bg-[#F8FAFC] hover:bg-[#000000] hover:text-white text-[#0B1F3A] text-xs font-bold border border-[#E2E8F0] transition-colors"
-              title="Share on X (Twitter)"
-            >
-              X
-            </button>
-            <button
-              onClick={() => handleShare('reddit')}
-              className="px-2.5 py-1.5 rounded-lg bg-[#F8FAFC] hover:bg-[#FF4500] hover:text-white text-[#0B1F3A] text-xs font-bold border border-[#E2E8F0] transition-colors"
-              title="Share on Reddit"
-            >
-              Reddit
-            </button>
-            <button
-              onClick={() => handleShare('linkedin')}
-              className="px-2.5 py-1.5 rounded-lg bg-[#F8FAFC] hover:bg-[#0A66C2] hover:text-white text-[#0B1F3A] text-xs font-bold border border-[#E2E8F0] transition-colors"
-              title="Share on LinkedIn"
-            >
-              in
-            </button>
-            <button
-              onClick={() => onNavigateTo('/backlinks')}
-              className="hidden sm:flex items-center gap-1 px-3 py-1.5 rounded-xl bg-[#0A1931] hover:bg-[#126BFF] text-white text-xs font-bold transition-colors ml-1"
-            >
-              <Code className="w-3.5 h-3.5" />
-              <span>Embed</span>
-            </button>
-
-            {/* GLOBAL CLOSE X BUTTON */}
-            <button
-              onClick={handleCloseTool}
-              type="button"
-              aria-label="Close tool - Back to home"
-              className="ml-2 w-9 h-9 flex items-center justify-center bg-[#0A1931] text-white hover:bg-red-600 rounded-full transition-all duration-200 cursor-pointer shadow-md hover:scale-110 active:scale-95 pointer-events-auto"
-              title="Close Tool (ESC)"
-            >
-              <X className="w-5 h-5" strokeWidth={2.5} />
-            </button>
-          </div>
+      {/* TOP HEADER - STICKY ROYAL NAVY & GOLD BREADCRUMBS WITH BACK & CLOSE BUTTONS */}
+      <header className="sticky top-0 z-30 bg-[#0A1931]/95 backdrop-blur border-b border-[#D4AF37]/20 p-3 flex items-center justify-between">
+        <div className="flex items-center gap-2 text-sm text-gray-300 flex-wrap">
+          <button onClick={onNavigateHome} className="hover:text-[#D4AF37] transition-colors cursor-pointer font-medium">
+            Home
+          </button>
+          <span className="text-[#D4AF37]/60">&gt;</span>
+          <button 
+            onClick={() => onNavigateTo(getCategoryPath(seoData.category))} 
+            className="hover:text-[#D4AF37] transition-colors cursor-pointer font-medium"
+          >
+            {seoData.categoryName}
+          </button>
+          <span className="text-[#D4AF37]/60">&gt;</span>
+          <span className="text-gray-300">{subcategoryName}</span>
+          <span className="text-[#D4AF37]/60">&gt;</span>
+          <span className="text-[#D4AF37] font-bold">{seoData.name}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <button 
+            onClick={() => window.history.back()} 
+            className="px-3 py-1 border border-[#D4AF37]/30 text-white rounded hover:bg-[#0F2340] text-xs font-semibold transition-colors cursor-pointer"
+          >
+            ← Back
+          </button>
+          <button 
+            onClick={handleCloseTool} 
+            className="px-3 py-1 bg-[#D4AF37] hover:bg-[#E5C158] text-[#0A1931] font-bold rounded text-xs transition-colors cursor-pointer"
+          >
+            ✕ Close (ESC)
+          </button>
         </div>
       </header>
 
@@ -362,52 +324,39 @@ export const ToolPage: React.FC<ToolPageProps> = ({
 
       {/* Main Container - Centered max-w-4xl - No Sidebars - iLovePDF Clean Style */}
       <main className="max-w-4xl mx-auto px-4 py-6 flex-1 w-full space-y-8">
-        
-        {/* Breadcrumb Hierarchy: Home > Category > Subcategory > Tool */}
-        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-[#64748B] font-medium flex-wrap">
-          <a href="/" onClick={(e) => { e.preventDefault(); onNavigateHome(); }} className="hover:text-[#126BFF] transition-colors">Home</a>
-          <span>/</span>
-          <a href={getCategoryPath(seoData.category)} onClick={(e) => { e.preventDefault(); onNavigateTo(getCategoryPath(seoData.category)); }} className="hover:text-[#126BFF] transition-colors">
-            {seoData.categoryName}
-          </a>
-          <span>/</span>
-          <span className="text-[#64748B] font-semibold">{subcategoryName}</span>
-          <span>/</span>
-          <span className="text-[#0B1F3A] font-bold truncate max-w-xs">{seoData.name}</span>
-        </nav>
 
         {/* HERO TITLE & INTRO */}
         <div className="space-y-3">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="px-3 py-1 rounded-full bg-[#EBF3FF] text-[#126BFF] border border-[#C8DDFF] text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-[#FF7A00]" />
+            <span className="px-3 py-1 rounded-full bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/30 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
               {seoData.categoryName} • {subcategoryName}
             </span>
-            <span className="px-3 py-1 rounded-full bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0] text-xs font-bold flex items-center gap-1.5">
+            <span className="px-3 py-1 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-500/30 text-xs font-bold flex items-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5" />
               100% In-Browser Memory • Zero Server Uploads
             </span>
           </div>
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0A1931] tracking-tight leading-tight">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
               {seoData.name}
             </h1>
             <button
               onClick={handleToggleFavorite}
-              className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border text-xs font-bold transition-all shadow-2xs self-start sm:self-auto shrink-0 ${
+              className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border text-xs font-bold transition-all shadow-2xs self-start sm:self-auto shrink-0 cursor-pointer ${
                 isFavorite
-                  ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'
-                  : 'bg-white text-[#0A1931] border-[#CBD5E1] hover:border-[#C5A059]'
+                  ? 'bg-red-950 text-red-400 border-red-500/40 hover:bg-red-900/60'
+                  : 'bg-[#0F2340] text-gray-300 border-[#D4AF37]/30 hover:border-[#D4AF37] hover:text-[#D4AF37]'
               }`}
             >
-              <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current text-red-500' : 'text-slate-400'}`} />
+              <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current text-red-400' : 'text-slate-400'}`} />
               <span>{isFavorite ? 'Saved in Favorites' : 'Add to Favorites'}</span>
             </button>
           </div>
 
-          <p className="text-sm sm:text-base text-[#475569] leading-relaxed max-w-4xl">
-            {seoData.description} Runs 100% client-side in your device RAM. No file size uploads, no server storage, zero watermarks, and completely free.
+          <p className="text-sm sm:text-base text-gray-300 leading-relaxed max-w-4xl">
+            {seoData.description} - 100% client-side, zero server upload, works offline.
           </p>
         </div>
 
@@ -428,38 +377,25 @@ export const ToolPage: React.FC<ToolPageProps> = ({
         {/* COMPREHENSIVE CONTENT GUIDE (NO SIDEBARS - CENTERED MAX-W-4XL) */}
         <div className="space-y-8">
           
-          {/* Section 1: What is this Tool */}
-          <article className="bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs space-y-4">
-            <h2 className="text-xl sm:text-2xl font-black text-[#0B1F3A] tracking-tight flex items-center gap-2.5">
-              <FileText className="w-6 h-6 text-[#126BFF]" />
-              <span>What is Free {seoData.name}?</span>
-            </h2>
-            {seoData.whatIs.map((paragraph, idx) => (
-              <p key={idx} className="text-sm sm:text-base text-[#334155] leading-relaxed">
-                {paragraph}
-              </p>
-            ))}
-          </article>
-
-          {/* Section 2: How to Use (3 Steps) */}
-          <article className="bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs space-y-6">
-            <h2 className="text-xl sm:text-2xl font-black text-[#0B1F3A] tracking-tight flex items-center gap-2.5">
-              <Clock className="w-6 h-6 text-[#FF7A00]" />
+          {/* Section 1: How to Use (3 Steps) */}
+          <article className="bg-[#0F2340] rounded-3xl border border-[#D4AF37]/20 p-6 sm:p-8 shadow-xl space-y-6">
+            <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2.5">
+              <Clock className="w-6 h-6 text-[#D4AF37]" />
               <span>How to Use {seoData.name} in 3 Simple Steps</span>
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {seoData.howToUse.map((step) => (
-                <div key={step.step} className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-5 space-y-2.5 flex flex-col justify-between">
+                <div key={step.step} className="bg-[#0A1931] border border-[#D4AF37]/20 rounded-2xl p-5 space-y-2.5 flex flex-col justify-between hover:border-[#D4AF37]/50 transition-all">
                   <div className="space-y-2">
-                    <div className="w-8 h-8 rounded-xl bg-[#EBF3FF] text-[#126BFF] font-black text-sm flex items-center justify-center border border-[#C8DDFF]">
+                    <div className="w-8 h-8 rounded-xl bg-[#D4AF37]/10 text-[#D4AF37] font-black text-sm flex items-center justify-center border border-[#D4AF37]/30">
                       {step.step}
                     </div>
-                    <h3 className="text-sm font-black text-[#0B1F3A]">
+                    <h3 className="text-sm font-black text-white">
                       {step.title}
                     </h3>
                   </div>
-                  <p className="text-xs text-[#64748B] leading-relaxed">
+                  <p className="text-xs text-gray-300 leading-relaxed">
                     {step.desc}
                   </p>
                 </div>
@@ -467,28 +403,41 @@ export const ToolPage: React.FC<ToolPageProps> = ({
             </div>
           </article>
 
+          {/* Section 2: What is this Tool */}
+          <article className="bg-[#0F2340] rounded-3xl border border-[#D4AF37]/20 p-6 sm:p-8 shadow-xl space-y-4">
+            <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2.5">
+              <FileText className="w-6 h-6 text-[#D4AF37]" />
+              <span>What is Free {seoData.name}?</span>
+            </h2>
+            {seoData.whatIs.map((paragraph, idx) => (
+              <p key={idx} className="text-sm sm:text-base text-gray-300 leading-relaxed">
+                {paragraph}
+              </p>
+            ))}
+          </article>
+
           {/* Section 3: Frequently Asked Questions */}
-          <article className="bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs space-y-4">
-            <h2 className="text-xl sm:text-2xl font-black text-[#0B1F3A] tracking-tight">
+          <article className="bg-[#0F2340] rounded-3xl border border-[#D4AF37]/20 p-6 sm:p-8 shadow-xl space-y-4">
+            <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
               Frequently Asked Questions
             </h2>
 
             <div className="space-y-3">
               {seoData.faqs.map((faq, idx) => (
-                <div key={idx} className="border border-[#E2E8F0] rounded-2xl overflow-hidden transition-colors">
+                <div key={idx} className="border border-[#D4AF37]/20 rounded-2xl overflow-hidden transition-colors bg-[#0A1931]/80">
                   <button
                     onClick={() => setOpenFaqIndex(openFaqIndex === idx ? null : idx)}
-                    className="w-full p-4 text-left font-bold text-sm text-[#0B1F3A] hover:bg-[#F8FAFC] flex items-center justify-between gap-4 transition-colors cursor-pointer"
+                    className="w-full p-4 text-left font-bold text-sm text-white hover:text-[#D4AF37] flex items-center justify-between gap-4 transition-colors cursor-pointer"
                   >
                     <span>{faq.question}</span>
                     {openFaqIndex === idx ? (
-                      <ChevronUp className="w-4 h-4 text-[#126BFF] shrink-0" />
+                      <ChevronUp className="w-4 h-4 text-[#D4AF37] shrink-0" />
                     ) : (
-                      <ChevronDown className="w-4 h-4 text-[#94A3B8] shrink-0" />
+                      <ChevronDown className="w-4 h-4 text-gray-400 shrink-0" />
                     )}
                   </button>
                   {openFaqIndex === idx && (
-                    <div className="p-4 pt-0 text-xs sm:text-sm text-[#475569] leading-relaxed bg-[#F8FAFC]/50 border-t border-[#E2E8F0]/60">
+                    <div className="p-4 pt-0 text-xs sm:text-sm text-gray-300 leading-relaxed border-t border-[#D4AF37]/20">
                       {faq.answer}
                     </div>
                   )}
@@ -496,6 +445,44 @@ export const ToolPage: React.FC<ToolPageProps> = ({
               ))}
             </div>
           </article>
+
+          {/* Section 4: Related Tools in Same Category */}
+          {relatedTools.length > 0 && (
+            <article className="bg-[#0F2340] rounded-3xl border border-[#D4AF37]/20 p-6 sm:p-8 shadow-xl space-y-4">
+              <h3 className="text-lg sm:text-xl font-bold text-white flex items-center justify-between">
+                <span>Related {seoData.categoryName} Tools</span>
+                <button
+                  onClick={() => onNavigateTo(getCategoryPath(seoData.category))}
+                  className="text-xs text-[#D4AF37] hover:underline font-semibold flex items-center gap-1 cursor-pointer"
+                >
+                  <span>View all</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </h3>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {relatedTools.map((rt) => (
+                  <div
+                    key={rt.id}
+                    onClick={() => onNavigateTo(`/tools/${rt.slug}`)}
+                    className="p-4 rounded-2xl bg-[#0A1931] border border-[#D4AF37]/20 hover:border-[#D4AF37] transition-all cursor-pointer flex flex-col justify-between group shadow-md"
+                  >
+                    <div>
+                      <h4 className="text-sm font-bold text-white group-hover:text-[#D4AF37] transition-colors line-clamp-1">
+                        {rt.name}
+                      </h4>
+                      <p className="text-xs text-gray-400 mt-1 line-clamp-2">
+                        {rt.description}
+                      </p>
+                    </div>
+                    <span className="text-xs text-[#D4AF37] font-semibold mt-3 flex items-center gap-1">
+                      Open Tool <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </article>
+          )}
 
         </div>
       </main>

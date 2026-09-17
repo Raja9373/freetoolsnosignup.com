@@ -217,7 +217,7 @@ export const MASTER_CATEGORIES: MasterCategory[] = [
     name: 'Calculators',
     icon: '🧮',
     count: 2000,
-    countDisplay: '2000 tools (25 subcategories)',
+    countDisplay: '2,000 tools (25 subcategories)',
     description: '25 subcategories covering Loan, EMI, SIP, Tax, Health, Math, and Unit converters.',
     subcategories: [
       {
@@ -244,6 +244,24 @@ export const MASTER_CATEGORIES: MasterCategory[] = [
         ]
       },
       {
+        id: 'fd-deposit',
+        name: 'FD (Fixed Deposit)',
+        count: 80,
+        chips: ['Bank FD Maturity', 'Cumulative FD', 'Non-Cumulative FD', 'Senior Citizen FD'],
+        tools: [
+          { id: 'fd-calculator', slug: 'fd-calculator', name: 'Fixed Deposit (FD) Maturity Calculator', description: 'Calculate quarterly compounding interest on bank fixed deposits.', category: 'calculator', subcategory: 'FD (Fixed Deposit)', categoryName: 'Calculators', isFlagship: true }
+        ]
+      },
+      {
+        id: 'interest-compound',
+        name: 'Interest & Compound Growth',
+        count: 60,
+        chips: ['Compound Interest', 'Simple Interest', 'Daily Compounding', 'Rule of 72'],
+        tools: [
+          { id: 'compound-interest-calc', slug: 'compound-interest-calc', name: 'Compound Interest Calculator', description: 'Calculate daily, monthly, or quarterly compounding interest growth.', category: 'calculator', subcategory: 'Interest & Compound Growth', categoryName: 'Calculators', isFlagship: true }
+        ]
+      },
+      {
         id: 'tax-gst',
         name: 'Tax & GST',
         count: 140,
@@ -254,23 +272,58 @@ export const MASTER_CATEGORIES: MasterCategory[] = [
         ]
       },
       {
-        id: 'fd-rd-savings',
-        name: 'FD & RD & Savings',
-        count: 80,
-        chips: ['Fixed Deposit (FD)', 'Recurring Deposit (RD)', 'Compound Interest', 'Simple Interest'],
+        id: 'salary-payroll',
+        name: 'Salary & Payroll',
+        count: 60,
+        chips: ['Take-Home Pay', 'Hourly to Salary', 'Overtime Pay', 'Bonus Tax'],
         tools: [
-          { id: 'compound-interest-calc', slug: 'compound-interest-calc', name: 'Compound Interest Calculator', description: 'Calculate daily, monthly, or quarterly compounding interest growth.', category: 'calculator', subcategory: 'FD & RD & Savings', categoryName: 'Calculators', isFlagship: true },
-          { id: 'fd-calculator', slug: 'fd-calculator', name: 'Fixed Deposit (FD) Maturity Calculator', description: 'Calculate quarterly compounding interest on bank fixed deposits.', category: 'calculator', subcategory: 'FD & RD & Savings', categoryName: 'Calculators' }
+          { id: 'salary-takehome-calc', slug: 'salary-takehome-calc', name: 'Net Take-Home Salary Calculator', description: 'Calculate monthly in-hand paycheck after standard deductions and tax.', category: 'calculator', subcategory: 'Salary & Payroll', categoryName: 'Calculators', isFlagship: true }
+        ]
+      },
+      {
+        id: 'retirement-pension',
+        name: 'Retirement & Pension',
+        count: 50,
+        chips: ['401(k) Projection', 'FIRE Calculator', 'Pension Annuity', 'Corpus Estimator'],
+        tools: [
+          { id: 'retirement-calculator', slug: 'retirement-calculator', name: 'Retirement Corpus & Pension Planner', description: 'Estimate nest-egg corpus required for post-retirement financial freedom.', category: 'calculator', subcategory: 'Retirement & Pension', categoryName: 'Calculators', isFlagship: true }
+        ]
+      },
+      {
+        id: 'profit-margin',
+        name: 'Profit & Margin',
+        count: 80,
+        chips: ['Gross Margin %', 'Markup Calculator', 'Break-Even Point', 'ROI Calculator'],
+        tools: [
+          { id: 'profit-margin-calc', slug: 'profit-margin-calc', name: 'Profit Margin & Markup Calculator', description: 'Compute net profit, gross margin percentage, and revenue markup.', category: 'calculator', subcategory: 'Profit & Margin', categoryName: 'Calculators', isFlagship: true }
         ]
       },
       {
         id: 'math-percentage',
         name: 'Math & Percentage',
         count: 160,
-        chips: ['Percentage Increase', 'Fraction Solver', 'Algebra Solver', 'Discount Calc'],
+        chips: ['Percentage Increase', 'Fraction Solver', 'Scientific Calc', 'Discount Calc'],
         tools: [
           { id: 'percentage-calculator', slug: 'percentage-calculator', name: 'Percentage Difference & Change', description: 'Quickly find what percentage X is of Y, percentage increase, and discount.', category: 'calculator', subcategory: 'Math & Percentage', categoryName: 'Calculators', isFlagship: true },
           { id: 'discount-calculator', slug: 'discount-calculator', name: 'Discount & Sale Price Calculator', description: 'Calculate final price after double discounts and clearance tags.', category: 'calculator', subcategory: 'Math & Percentage', categoryName: 'Calculators' }
+        ]
+      },
+      {
+        id: 'algebra-equations',
+        name: 'Algebra & Equations',
+        count: 80,
+        chips: ['Quadratic Formula', 'Linear System', 'Matrix Determinant', 'Polynomial Roots'],
+        tools: [
+          { id: 'quadratic-equation-solver', slug: 'quadratic-equation-solver', name: 'Quadratic Equation Solver', description: 'Find real and complex roots with step-by-step discriminant evaluation.', category: 'calculator', subcategory: 'Algebra & Equations', categoryName: 'Calculators', isFlagship: true }
+        ]
+      },
+      {
+        id: 'binary-hex',
+        name: 'Binary & Hexadecimal',
+        count: 40,
+        chips: ['Binary to Decimal', 'Hex to ASCII', 'Bitwise AND/OR', 'Two\'s Complement'],
+        tools: [
+          { id: 'binary-hex-calc', slug: 'binary-hex-calc', name: 'Binary, Hex & Decimal Converter', description: 'Convert numbers across base-2, base-8, base-10, and base-16 in real-time.', category: 'calculator', subcategory: 'Binary & Hexadecimal', categoryName: 'Calculators', isFlagship: true }
         ]
       },
       {
@@ -284,6 +337,24 @@ export const MASTER_CATEGORIES: MasterCategory[] = [
         ]
       },
       {
+        id: 'fitness-calorie',
+        name: 'Fitness & Calories',
+        count: 60,
+        chips: ['TDEE Calculator', 'Macro Split (Protein/Carb)', 'Running Pace', 'Heart Rate Zone'],
+        tools: [
+          { id: 'tdee-macro-calc', slug: 'tdee-macro-calc', name: 'TDEE & Macro Nutrition Calculator', description: 'Calculate total daily energy expenditure and target macronutrient grams.', category: 'calculator', subcategory: 'Fitness & Calories', categoryName: 'Calculators', isFlagship: true }
+        ]
+      },
+      {
+        id: 'pregnancy-due-date',
+        name: 'Pregnancy & Due Date',
+        count: 50,
+        chips: ['Estimated Due Date', 'Conception Date', 'Trimester Timeline', 'Ovulation Calendar'],
+        tools: [
+          { id: 'pregnancy-due-calc', slug: 'pregnancy-due-calc', name: 'Pregnancy Due Date & Trimester Calculator', description: 'Calculate expected delivery date based on last menstrual period (LMP).', category: 'calculator', subcategory: 'Pregnancy & Due Date', categoryName: 'Calculators', isFlagship: true }
+        ]
+      },
+      {
         id: 'date-age',
         name: 'Date & Age',
         count: 120,
@@ -294,30 +365,93 @@ export const MASTER_CATEGORIES: MasterCategory[] = [
         ]
       },
       {
-        id: 'unit-length',
-        name: 'Unit & Length',
+        id: 'time-zone',
+        name: 'Time Zone & World Clock',
+        count: 80,
+        chips: ['UTC Converter', 'Meeting Time Planner', 'PST to EST', 'Epoch Timestamp'],
+        tools: [
+          { id: 'timezone-converter', slug: 'timezone-converter', name: 'Global Time Zone Meeting Planner', description: 'Coordinate meetings across global timezones with daylight savings adjustments.', category: 'calculator', subcategory: 'Time Zone & World Clock', categoryName: 'Calculators', isFlagship: true }
+        ]
+      },
+      {
+        id: 'unit-converter',
+        name: 'Unit & Measurement',
         count: 70,
         chips: ['Length & Distance', 'Weight & Mass', 'Temperature', 'Area & Volume'],
         tools: [
-          { id: 'unit-converter', slug: 'unit-converter', name: 'Universal Metric & Imperial Unit Converter', description: 'Convert length, weight, volume, speed, and temperature.', category: 'calculator', subcategory: 'Unit & Length', categoryName: 'Calculators', isFlagship: true }
+          { id: 'unit-converter', slug: 'unit-converter', name: 'Universal Metric & Imperial Unit Converter', description: 'Convert length, weight, volume, speed, and temperature.', category: 'calculator', subcategory: 'Unit & Measurement', categoryName: 'Calculators', isFlagship: true }
         ]
       },
       {
-        id: 'salary-hr',
-        name: 'Salary & HR',
-        count: 60,
-        chips: ['Take-Home Pay', 'Hourly to Salary', 'Overtime Pay', 'Bonus Tax'],
+        id: 'currency-forex',
+        name: 'Currency & Forex',
+        count: 40,
+        chips: ['USD to EUR', 'Live Exchange Rates', 'Crypto Value', 'Travel Budget FX'],
         tools: [
-          { id: 'salary-takehome-calc', slug: 'salary-takehome-calc', name: 'Net Take-Home Salary Calculator', description: 'Calculate monthly in-hand paycheck after standard deductions and tax.', category: 'calculator', subcategory: 'Salary & HR', categoryName: 'Calculators', isFlagship: true }
+          { id: 'currency-calculator', slug: 'currency-calculator', name: 'Multi-Currency Exchange Rate Calculator', description: 'Convert major fiat currencies and calculate foreign transaction fees.', category: 'calculator', subcategory: 'Currency & Forex', categoryName: 'Calculators', isFlagship: true }
         ]
       },
       {
-        id: 'credit-debt',
+        id: 'construction-estimator',
+        name: 'Construction & Materials',
+        count: 70,
+        chips: ['Concrete Volume (Yards)', 'Paint Coverage', 'Tile & Grout Calc', 'Drywall Sheets'],
+        tools: [
+          { id: 'concrete-calc', slug: 'concrete-calc', name: 'Concrete Slab & Footing Volume Calculator', description: 'Calculate cubic yards and premixed bags needed for slabs and columns.', category: 'calculator', subcategory: 'Construction & Materials', categoryName: 'Calculators', isFlagship: true }
+        ]
+      },
+      {
+        id: 'automotive-fuel',
+        name: 'Automotive & Fuel',
+        count: 40,
+        chips: ['MPG / Fuel Economy', 'Trip Gas Cost', 'EV Charging Cost', 'Tire Size Compare'],
+        tools: [
+          { id: 'fuel-cost-calc', slug: 'fuel-cost-calc', name: 'Trip Gas Cost & Fuel Consumption', description: 'Calculate total trip fuel expense based on distance and vehicle MPG.', category: 'calculator', subcategory: 'Automotive & Fuel', categoryName: 'Calculators', isFlagship: true }
+        ]
+      },
+      {
+        id: 'real-estate-mortgage',
+        name: 'Real Estate & Mortgage',
+        count: 60,
+        chips: ['Rent vs Buy', 'Cap Rate', 'Cash on Cash Return', 'Property Tax'],
+        tools: [
+          { id: 'rent-vs-buy-calc', slug: 'rent-vs-buy-calc', name: 'Rent vs Buy Property Calculator', description: 'Compare true financial cost of home ownership vs renting and investing.', category: 'calculator', subcategory: 'Real Estate & Mortgage', categoryName: 'Calculators', isFlagship: true }
+        ]
+      },
+      {
+        id: 'education-gpa',
+        name: 'Education & GPA',
+        count: 40,
+        chips: ['4.0 GPA Scale', 'Weighted High School GPA', 'Final Exam Target', 'Letter Grade %'],
+        tools: [
+          { id: 'gpa-calculator', slug: 'gpa-calculator', name: 'Cumulative College & High School GPA', description: 'Calculate semester and cumulative grade point average across course credits.', category: 'calculator', subcategory: 'Education & GPA', categoryName: 'Calculators', isFlagship: true }
+        ]
+      },
+      {
+        id: 'invoice-billing',
+        name: 'Invoice & Billing',
+        count: 40,
+        chips: ['Freelance Hourly Rate', 'Client Invoice Total', 'Early Payment Discount', 'Late Fee %'],
+        tools: [
+          { id: 'freelance-rate-calc', slug: 'freelance-rate-calc', name: 'Freelance Billable Hourly Rate Calculator', description: 'Compute hourly billing rate to achieve target annual salary after overhead.', category: 'calculator', subcategory: 'Invoice & Billing', categoryName: 'Calculators', isFlagship: true }
+        ]
+      },
+      {
+        id: 'credit-card-debt',
         name: 'Credit Card & Debt',
         count: 60,
         chips: ['Credit Card Payoff', 'Debt Snowball', 'Balance Transfer', 'Minimum Payment Trap'],
         tools: [
-          { id: 'credit-card-payoff', slug: 'credit-card-payoff', name: 'Credit Card Payoff & Interest Calculator', description: 'See how long it takes to clear card balance with fixed monthly repayments.', category: 'calculator', subcategory: 'Credit Card & Debt', categoryName: 'Calculators' }
+          { id: 'credit-card-payoff', slug: 'credit-card-payoff', name: 'Credit Card Payoff & Interest Calculator', description: 'See how long it takes to clear card balance with fixed monthly repayments.', category: 'calculator', subcategory: 'Credit Card & Debt', categoryName: 'Calculators', isFlagship: true }
+        ]
+      },
+      {
+        id: 'science-physics',
+        name: 'Science & Physics',
+        count: 40,
+        chips: ['Velocity & Acceleration', 'Ohm\'s Law (V=IR)', 'Ideal Gas Law (PV=nRT)', 'Density & Mass'],
+        tools: [
+          { id: 'ohms-law-calc', slug: 'ohms-law-calc', name: 'Ohm\'s Law Electrical Calculator (V, I, R, P)', description: 'Calculate voltage, current, resistance, and wattage with instant circuit values.', category: 'calculator', subcategory: 'Science & Physics', categoryName: 'Calculators', isFlagship: true }
         ]
       }
     ]

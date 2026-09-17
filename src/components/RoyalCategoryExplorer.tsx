@@ -56,8 +56,19 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
   // Subcategory state (Default selected: Convert)
   const [selectedSubcategoryId, setSelectedSubcategoryId] = useState<string>('convert');
 
+  // Toast Notification state
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
   // Dedicated single tool modal state
   const [activeSingleTool, setActiveSingleTool] = useState<MasterToolItem | null>(null);
+
+  // Show toast helper
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => {
+      setToastMessage(null);
+    }, 3500);
+  };
 
   // Active Category Object
   const currentCategory = useMemo(() => {
@@ -82,24 +93,66 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
     }
   };
 
-  // Handler for category selection
-  const handleSelectCategory = (catId: string) => {
-    setSelectedCategoryId(catId);
+  // 1. CATEGORY SELECTION UX FIX: Auto-scroll + Active highlight + Toast
+  const handleCategorySelect = (catId: string) => {
     const cat = MASTER_CATEGORIES.find(c => c.id === catId);
-    if (cat && cat.subcategories.length > 0) {
+    if (!cat) return;
+    setSelectedCategoryId(catId);
+    if (cat.subcategories.length > 0) {
       setSelectedSubcategoryId(cat.subcategories[0].id);
     }
+    // Visual feedback toast
+    showToast(`${cat.name} selected - ${cat.subcategories.length} subcategories loaded below ↓`);
+    // Auto-scroll after 300ms to subcategory section
+    setTimeout(() => {
+      document.getElementById('subcategory-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 300);
+  };
+
+  // 3. SUBCATEGORY SELECTION UX FIX: Auto-scroll + Active highlight + Toast
+  const handleSubcategorySelect = (subId: string) => {
+    setSelectedSubcategoryId(subId);
+    const sub = currentCategory.subcategories.find(s => s.id === subId);
+    if (sub) {
+      showToast(`${sub.name} selected - ${sub.tools.length} tools loaded below ↓`);
+    }
+    // Auto-scroll after 300ms to tools section
+    setTimeout(() => {
+      document.getElementById('tools-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 300);
   };
 
   // Reset all filters
   const handleResetFilters = () => {
     setSelectedCategoryId('pdf');
     setSelectedSubcategoryId('convert');
+    showToast('Filters reset to default PDF Suite');
   };
 
   return (
     <div className="w-full space-y-10 my-6 font-sans">
       
+      {/* ======================================================== */}
+      {/* 5. STEPPER PROGRESS BAR - TOP BELOW HEADER               */}
+      {/* ======================================================== */}
+      <div className="w-full bg-[#0A1931]/95 border border-[#D4AF37]/30 rounded-xl px-4 py-3 flex items-center gap-2 sm:gap-4 text-xs sm:text-sm overflow-x-auto shadow-md">
+        <span className={currentCategory ? 'text-green-400 font-bold flex items-center gap-1.5 whitespace-nowrap' : 'text-gray-400 flex items-center gap-1.5 whitespace-nowrap'}>
+          <span>●</span> Step 1: Category {currentCategory ? `✓ ${currentCategory.name}` : ''}
+        </span>
+        <span className="text-[#D4AF37]/60">→</span>
+        <span className={currentSubcategory ? 'text-green-400 font-bold flex items-center gap-1.5 whitespace-nowrap' : 'text-gray-400 flex items-center gap-1.5 whitespace-nowrap'}>
+          <span>●</span> Step 2: Subcategory {currentSubcategory ? `✓ ${currentSubcategory.name}` : ''}
+        </span>
+        <span className="text-[#D4AF37]/60">→</span>
+        <span className="text-[#D4AF37] font-bold flex items-center gap-1.5 whitespace-nowrap animate-pulse">
+          <span>○</span> Step 3: Choose Tool
+        </span>
+        <span className="text-[#D4AF37]/60">→</span>
+        <span className="text-gray-400 flex items-center gap-1.5 whitespace-nowrap">
+          <span>○</span> Step 4: Use Tool
+        </span>
+      </div>
+
       {/* ======================================================== */}
       {/* SECTION 1 - 6 CATEGORY BOXES (2 Rows x 3 Columns)       */}
       {/* ======================================================== */}
@@ -128,16 +181,18 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
             return (
               <div
                 key={cat.id}
-                onClick={() => handleSelectCategory(cat.id)}
+                onClick={() => handleCategorySelect(cat.id)}
                 className={`min-h-[180px] rounded-xl p-6 transition-all duration-200 cursor-pointer flex flex-col justify-between group relative overflow-hidden ${
                   isSelected 
-                    ? 'bg-[#0A1931] border-2 border-[#D4AF37] shadow-[0_0_25px_rgba(212,175,55,0.3)] ring-1 ring-[#D4AF37]' 
+                    ? 'border-[#D4AF37] border-2 shadow-[0_0_30px_rgba(212,175,55,0.4)] bg-[#D4AF37]/10 relative ring-2 ring-[#D4AF37]' 
                     : 'bg-[#0F2340] border border-[#D4AF37]/20 hover:border-[#D4AF37]/60 hover:shadow-[0_0_20px_rgba(212,175,55,0.18)] hover:-translate-y-0.5'
                 }`}
               >
-                {/* Subtle corner badge / glow */}
+                {/* Checkmark in top-right when selected */}
                 {isSelected && (
-                  <div className="absolute top-0 right-0 w-16 h-16 bg-[#D4AF37]/10 rounded-bl-full pointer-events-none" />
+                  <span className="absolute top-2 right-2 bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs shadow-md z-10">
+                    ✓
+                  </span>
                 )}
 
                 <div>
@@ -145,9 +200,16 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
                     <div className="w-12 h-12 rounded-xl bg-[#0A1931] border border-[#D4AF37]/30 flex items-center justify-center text-2xl shadow-sm group-hover:scale-105 transition-transform">
                       {cat.icon}
                     </div>
-                    <span className="bg-[#0A1931] text-[#D4AF37] text-xs font-bold px-2.5 py-1 rounded-full border border-[#D4AF37]/30 font-mono">
-                      {cat.countDisplay}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      {isSelected && (
+                        <span className="bg-[#D4AF37] text-[#0A1931] text-xs font-bold px-2 py-0.5 rounded shadow-sm">
+                          SELECTED
+                        </span>
+                      )}
+                      <span className="bg-[#0A1931] text-[#D4AF37] text-xs font-bold px-2.5 py-1 rounded-full border border-[#D4AF37]/30 font-mono">
+                        {cat.countDisplay}
+                      </span>
+                    </div>
                   </div>
 
                   <h3 className={`text-xl font-bold transition-colors ${
@@ -161,10 +223,16 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
                   </p>
                 </div>
 
-                <div className="pt-4 border-t border-[#D4AF37]/15 flex items-center justify-between text-xs font-bold text-[#D4AF37]">
-                  <span>{isSelected ? 'Active Suite Selected' : 'Browse Tools'}</span>
-                  <ArrowRight className={`w-4 h-4 transition-transform ${isSelected ? 'translate-x-1' : 'group-hover:translate-x-1'}`} />
-                </div>
+                {isSelected ? (
+                  <div className="mt-3 text-[#D4AF37] text-xs font-bold animate-bounce flex items-center gap-1.5 pt-3 border-t border-[#D4AF37]/20">
+                    <span>▼ {cat.subcategories.length} subcategories below ↓</span>
+                  </div>
+                ) : (
+                  <div className="pt-4 border-t border-[#D4AF37]/15 flex items-center justify-between text-xs font-bold text-[#D4AF37]">
+                    <span>Browse Tools</span>
+                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                  </div>
+                )}
               </div>
             );
           })}
@@ -288,29 +356,40 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
       </section>
 
       {/* ======================================================== */}
-      {/* SECTION 3 - SUBCATEGORIES (Shown BELOW Notion box)       */}
+      {/* 2. SUBCATEGORY SECTION - ADD ID AND HIGHLIGHT            */}
       {/* ======================================================== */}
       {currentCategory && (
-        <section className="space-y-5 pt-2">
-          {/* Subcategory Header with Reset Button */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#0F2340] border border-[#D4AF37]/30 rounded-xl p-4">
-            <div>
-              <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
-                <span>{currentCategory.icon}</span>
-                <span>{currentCategory.name} Subcategories & Tool Operations</span>
-              </h3>
-              <p className="text-xs text-gray-300 mt-0.5">
-                {currentCategory.countDisplay} available • Click any subcategory card or click individual preview chips for iLovePDF-style single tool pages.
-              </p>
+        <section id="subcategory-section" className="mt-8 scroll-mt-24 space-y-5 pt-2">
+          {/* Connecting line from category */}
+          <div className="w-0.5 h-8 bg-gradient-to-b from-[#D4AF37] to-transparent mx-auto -mt-4 mb-4"></div>
+
+          {/* Subcategory Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#0F2340] border border-[#D4AF37]/40 rounded-xl p-4 shadow-lg">
+            <div className="flex items-center gap-3">
+              <div className="w-1.5 h-8 bg-[#D4AF37] rounded-full shrink-0"></div>
+              <div>
+                <h2 className="text-lg sm:text-2xl font-bold text-white flex items-center gap-2">
+                  <span>{currentCategory.icon}</span>
+                  <span>{currentCategory.name} Subcategories & Tool Operations - {currentCategory.countDisplay} Available</span>
+                </h2>
+                <p className="text-xs text-gray-300 mt-0.5">
+                  Click any subcategory card below to view its single tools or open individual tools directly.
+                </p>
+              </div>
             </div>
 
-            <button
-              onClick={handleResetFilters}
-              className="px-3.5 py-1.5 rounded-lg bg-[#0A1931] border border-[#D4AF37]/30 hover:border-[#D4AF37] text-xs font-semibold text-[#D4AF37] hover:text-white transition-colors flex items-center gap-1.5 self-start sm:self-auto cursor-pointer"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              Reset All Filters
-            </button>
+            <div className="flex items-center gap-3 self-start sm:self-auto">
+              <div className="flex items-center gap-1 text-[#D4AF37] animate-pulse text-xs font-bold">
+                <span>↓ Scroll down - Subcategories loaded</span>
+              </div>
+              <button
+                onClick={handleResetFilters}
+                className="px-3.5 py-1.5 rounded-lg bg-[#0A1931] border border-[#D4AF37]/30 hover:border-[#D4AF37] text-xs font-semibold text-[#D4AF37] hover:text-white transition-colors flex items-center gap-1.5 cursor-pointer"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                Reset Filters
+              </button>
+            </div>
           </div>
 
           {/* Grid: 3 columns subcategory cards */}
@@ -320,15 +399,22 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
               return (
                 <div
                   key={sub.id}
-                  onClick={() => setSelectedSubcategoryId(sub.id)}
-                  className={`rounded-xl p-4 transition-all duration-200 cursor-pointer flex flex-col justify-between ${
+                  onClick={() => handleSubcategorySelect(sub.id)}
+                  className={`rounded-xl p-4 transition-all duration-200 cursor-pointer flex flex-col justify-between relative ${
                     isSubSelected
-                      ? 'bg-[#0A1931] border-2 border-[#D4AF37] shadow-[0_0_20px_rgba(212,175,55,0.25)] ring-1 ring-[#D4AF37]'
+                      ? 'border-[#D4AF37] border-2 shadow-[0_0_20px_rgba(212,175,55,0.3)] bg-[#D4AF37]/15 ring-1 ring-[#D4AF37]'
                       : 'bg-[#0A1931] border border-[#D4AF37]/25 hover:border-[#D4AF37]/60 hover:bg-[#0F2340]'
                   }`}
                 >
+                  {/* Top-right checkmark when active */}
+                  {isSubSelected && (
+                    <span className="absolute top-2 right-2 bg-green-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold shadow-md z-10">
+                      ✓
+                    </span>
+                  )}
+
                   <div>
-                    {/* Header: Title + Dynamic Badge (e.g. 28 tools, 15 tools - NEVER 320!) */}
+                    {/* Header: Title + Dynamic Badge */}
                     <div className="flex items-center justify-between mb-3">
                       <h4 className={`text-base font-bold transition-colors ${
                         isSubSelected ? 'text-[#D4AF37]' : 'text-white'
@@ -376,8 +462,19 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
 
                   {/* Footer button */}
                   <div className="pt-3 border-t border-[#D4AF37]/15 flex items-center justify-between text-xs font-bold text-[#D4AF37]">
-                    <span>Select Subcategory ({sub.count})</span>
-                    <ChevronRight className={`w-4 h-4 transition-transform ${isSubSelected ? 'translate-x-1' : ''}`} />
+                    {isSubSelected ? (
+                      <div className="flex items-center justify-between w-full">
+                        <span className="bg-[#D4AF37] text-[#0A1931] px-2 py-0.5 rounded text-xs font-bold">
+                          ACTIVE - Tools below ↓
+                        </span>
+                        <span className="text-[#D4AF37] animate-bounce text-sm">↓</span>
+                      </div>
+                    ) : (
+                      <>
+                        <span>Select Subcategory ({sub.count})</span>
+                        <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                      </>
+                    )}
                   </div>
                 </div>
               );
@@ -387,25 +484,31 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
       )}
 
       {/* ======================================================== */}
-      {/* SECTION 4 - TOOLS LIST (When subcategory clicked)         */}
+      {/* 4. TOOLS SECTION - ADD ID & STICKY BREADCRUMB           */}
       {/* ======================================================== */}
       {currentSubcategory && (
-        <section className="space-y-4 pt-2">
-          <div className="flex items-center justify-between border-b border-[#D4AF37]/20 pb-3">
-            <div>
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                <span>Tools in '{currentSubcategory.name}'</span>
-                <span className="text-xs font-mono text-[#D4AF37] bg-[#0A1931] border border-[#D4AF37]/30 px-2 py-0.5 rounded-full">
-                  {currentSubcategory.tools.length} Items
-                </span>
-              </h3>
-              <p className="text-xs text-gray-300 mt-0.5">
-                Every tool opens in its own dedicated single page with working client-side processing.
-              </p>
+        <section id="tools-section" className="mt-8 scroll-mt-24 space-y-4 pt-2">
+          {/* Sticky Breadcrumb */}
+          <div className="sticky top-14 z-20 bg-[#0A1931]/95 backdrop-blur p-3 rounded-xl mb-4 border border-[#D4AF37]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-lg">
+            <div className="flex items-center gap-2 text-xs sm:text-sm">
+              <span className="text-gray-400">Home</span>
+              <span className="text-gray-500">&gt;</span>
+              <span className="text-[#D4AF37] font-semibold">{currentCategory.name}</span>
+              <span className="text-gray-500">&gt;</span>
+              <span className="text-white font-bold">{currentSubcategory.name}</span>
+              <span className="text-xs font-mono text-[#D4AF37] bg-[#0F2340] border border-[#D4AF37]/30 px-2 py-0.5 rounded-full ml-1">
+                {currentSubcategory.tools.length} Tools
+              </span>
             </div>
+            <span className="text-emerald-400 font-mono font-bold text-[11px] bg-emerald-950/80 px-2.5 py-0.5 rounded border border-emerald-500/40 self-start sm:self-auto">
+              Single Tool Pages Active
+            </span>
           </div>
 
-          {/* Grid: 3 columns tool cards */}
+          {/* Connecting line */}
+          <div className="w-0.5 h-8 bg-gradient-to-b from-[#D4AF37] to-transparent mx-auto -mt-4 mb-4"></div>
+
+          {/* Tools Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {currentSubcategory.tools.map((tool) => (
               <div
@@ -442,6 +545,15 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
             ))}
           </div>
         </section>
+      )}
+
+      {/* ======================================================== */}
+      {/* 6. TOAST NOTIFICATION                                    */}
+      {/* ======================================================== */}
+      {toastMessage && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#D4AF37] text-[#0A1931] px-6 py-3 rounded-full shadow-2xl z-50 animate-bounce font-bold text-sm flex items-center gap-2 border-2 border-[#0A1931]">
+          <span>{toastMessage}</span>
+        </div>
       )}
 
       {/* ======================================================== */}
