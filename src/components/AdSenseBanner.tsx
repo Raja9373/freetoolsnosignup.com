@@ -2,12 +2,13 @@ import React from 'react';
 import { Info, ExternalLink } from 'lucide-react';
 
 interface AdSenseBannerProps {
-  format: '728x90' | '300x600' | '300x250';
+  format?: '728x90' | '300x600' | '300x250';
+  slotType?: string;
   className?: string;
   slotName?: string;
 }
 
-export const AdSenseBanner: React.FC<AdSenseBannerProps> = ({ format, className = '', slotName = 'Default' }) => {
+export const AdSenseBanner: React.FC<AdSenseBannerProps> = ({ format = '728x90', className = '', slotName = 'Default' }) => {
   if (format === '728x90') {
     return (
       <div 

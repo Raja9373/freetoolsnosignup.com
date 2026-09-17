@@ -83,7 +83,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({ categoryKey, onNavig
           </h1>
 
           <p className="text-sm sm:text-base text-[#475569] leading-relaxed max-w-3xl">
-            {meta.description} All tools run 100% locally in your browser with zero signups, zero file uploads, and zero subscriptions.
+            {meta.desc || (meta as any).description} All tools run 100% locally in your browser with zero signups, zero file uploads, and zero subscriptions.
           </p>
 
           <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-[#64748B] pt-2">

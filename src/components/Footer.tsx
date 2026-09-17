@@ -2,13 +2,15 @@ import React from 'react';
 
 interface FooterProps {
   onNavigate?: (route: string) => void;
+  onNavigateTo?: (route: string) => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
+export const Footer: React.FC<FooterProps> = ({ onNavigate, onNavigateTo }) => {
+  const navigateFn = onNavigate || onNavigateTo;
   const handleLink = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
-    if (onNavigate) {
+    if (navigateFn) {
       e.preventDefault();
-      onNavigate(path);
+      navigateFn(path);
     }
   };
 

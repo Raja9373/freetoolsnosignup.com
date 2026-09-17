@@ -575,22 +575,22 @@ export const DedicatedSingleToolModal: React.FC<DedicatedSingleToolModalProps> =
 
     // 7. General Fallback for other tools (PDF Suite, Image, Calculator, ATS, Dev)
     if (tool.category === 'pdf') {
-      return <PDFToolsModal initialToolId={tool.id} onClose={onClose} />;
+      return <PDFToolsModal initialToolId={tool.id} onClose={onClose} onRecordUse={() => {}} />;
     }
     if (tool.category === 'image') {
-      return <ImageToolsModal initialToolId={tool.id} onClose={onClose} />;
+      return <ImageToolsModal initialToolId={tool.id} onClose={onClose} onRecordUse={() => {}} />;
     }
     if (tool.category === 'calculator') {
-      return <CalculatorModal initialToolId={tool.id} onClose={onClose} />;
+      return <CalculatorModal initialToolId={tool.id} onClose={onClose} onRecordUse={() => {}} />;
     }
     if (tool.category === 'job-ats') {
-      return <ATSToolsSuite initialToolId={tool.id} onClose={onClose} />;
+      return <ATSToolsSuite initialToolId={tool.id} onClose={onClose} onRecordUse={() => {}} />;
     }
     if (tool.category === 'ai-study') {
-      return <AIStudySuite initialToolId={tool.id} onClose={onClose} />;
+      return <AIStudySuite initialToolId={tool.id} onClose={onClose} onRecordUse={() => {}} />;
     }
     if (tool.category === 'dev-pro') {
-      return <DevToolsSuite initialToolId={tool.id} onClose={onClose} />;
+      return <DevToolsSuite initialToolId={tool.id} onClose={onClose} onRecordUse={() => {}} />;
     }
 
     // Ultimate fallback

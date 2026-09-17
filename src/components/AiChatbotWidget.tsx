@@ -10,7 +10,13 @@ interface ChatMessage {
   timestamp: number;
 }
 
-export default function AiChatbotWidget() {
+interface AiChatbotWidgetProps {
+  onOpenTool?: (slug: string) => void;
+  favorites?: string[];
+  onToggleFavorite?: (toolId: string) => void;
+}
+
+export default function AiChatbotWidget({ onOpenTool, favorites, onToggleFavorite }: AiChatbotWidgetProps = {}) {
   const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');

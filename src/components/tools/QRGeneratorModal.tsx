@@ -52,10 +52,15 @@ export const QRGeneratorModal: React.FC<QRGeneratorProps> = ({
   // Input states
   const [urlInput, setUrlInput] = useState('https://freetoolsnosignup.com');
   const [textInput, setTextInput] = useState('Welcome to FreeToolsNoSignup.com! 100% Free & Private Online Utilities.');
-  const [wifiConfig, setWifiConfig] = useState({
+  const [wifiConfig, setWifiConfig] = useState<{
+    ssid: string;
+    password: string;
+    encryption: 'WPA' | 'WEP' | 'nopass';
+    hidden: boolean;
+  }>({
     ssid: 'Home_HighSpeed_5G',
     password: 'SecurePassword123',
-    encryption: 'WPA' as const,
+    encryption: 'WPA',
     hidden: false
   });
   const [emailConfig, setEmailConfig] = useState({

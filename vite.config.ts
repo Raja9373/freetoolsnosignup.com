@@ -1,25 +1,15 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
-import obfuscator from 'vite-plugin-javascript-obfuscator';
 import path from 'path';
-import {defineConfig} from 'vite';
+import { defineConfig } from 'vite';
 
 export default defineConfig(() => {
   return {
+    base: '/',
     publicDir: 'public',
     plugins: [
       react(),
       tailwindcss(),
-      obfuscator({
-        apply: 'build',
-        options: {
-          compact: true,
-          controlFlowFlattening: true,
-          stringArray: true,
-          stringArrayThreshold: 0.8,
-          simplify: true,
-        },
-      }),
     ],
     resolve: {
       alias: {
@@ -30,8 +20,8 @@ export default defineConfig(() => {
       outDir: 'dist',
       emptyOutDir: true,
       sourcemap: false,
-      minify: true,
-      chunkSizeWarningLimit: 1500,
+      minify: 'esbuild',
+      chunkSizeWarningLimit: 2000,
       rollupOptions: {
         output: {
           manualChunks(id) {
@@ -50,9 +40,7 @@ export default defineConfig(() => {
     },
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
-      // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',
-      // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
       watch: process.env.DISABLE_HMR === 'true' ? null : {},
     },
   };
