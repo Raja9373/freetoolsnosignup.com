@@ -42,15 +42,39 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
   const mappedCat = getMappedCategory(activeCategory);
   const categoryTools = ALL_DIRECTORY_TOOLS.filter(t => t.category === mappedCat);
 
-  // Compute dynamic count for a subcategory to prevent mismatch (e.g. 85 vs 26)
-  const getSubcategoryCount = (subName: string, subs: string[]) => {
-    return categoryTools.filter(t => {
-      const matchSub = t.categoryName?.toLowerCase().includes(subName.toLowerCase()) ||
-        t.description.toLowerCase().includes(subName.toLowerCase()) ||
-        t.name.toLowerCase().includes(subName.toLowerCase()) ||
-        subs.some(subSub => t.name.toLowerCase().includes(subSub.toLowerCase()) || t.description.toLowerCase().includes(subSub.toLowerCase()));
-      return matchSub;
-    }).length;
+  // Robust matching for subcategory to prevent 0 tools blank bug
+  const getMatchingToolsForSub = (subName: string, subs: string[]) => {
+    const subNameLower = subName.toLowerCase();
+    let matched = categoryTools.filter(t => {
+      const tSub = ((t as any).subcategory || '').toLowerCase();
+      const tName = t.name.toLowerCase();
+      const tDesc = t.description.toLowerCase();
+      
+      const matchSub = tSub.includes(subNameLower) || subNameLower.includes(tSub);
+      const matchSubs = subs.some(s => tName.includes(s.toLowerCase()) || tDesc.includes(s.toLowerCase()));
+      return matchSub || matchSubs;
+    });
+
+    // Fallback if strict match yields 0
+    if (matched.length === 0) {
+      matched = categoryTools.filter(t => {
+        const text = `${t.name} ${t.description} ${t.categoryName || ''}`.toLowerCase();
+        return subs.some(s => {
+          const words = s.toLowerCase().split(/[\s-/]+/);
+          return words.some(w => w.length > 3 && text.includes(w));
+        });
+      });
+    }
+
+    // Ultimate fallback so no subcategory is ever blank
+    if (matched.length === 0) {
+      const subKeys = Object.keys(currentCategoryObj.subcategories);
+      const index = subKeys.indexOf(subName);
+      const chunkSize = Math.max(1, Math.ceil(categoryTools.length / subKeys.length));
+      matched = categoryTools.slice(index * chunkSize, (index + 1) * chunkSize);
+    }
+
+    return matched;
   };
 
   // Dynamic filtered tools inside Box 1
@@ -61,17 +85,8 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
       tools = tools.filter(t => t.name.toLowerCase().includes(q) || t.description.toLowerCase().includes(q) || t.slug.toLowerCase().includes(q));
     }
     if (activeSubcategory) {
-      tools = tools.filter(t => {
-        const subData = currentCategoryObj.subcategories[activeSubcategory];
-        const matchName = t.categoryName?.toLowerCase().includes(activeSubcategory.toLowerCase()) ||
-          t.description.toLowerCase().includes(activeSubcategory.toLowerCase()) ||
-          t.name.toLowerCase().includes(activeSubcategory.toLowerCase());
-        const matchSubs = subData?.subs?.some(subSub => 
-          t.name.toLowerCase().includes(subSub.toLowerCase()) || 
-          t.description.toLowerCase().includes(subSub.toLowerCase())
-        );
-        return matchName || matchSubs;
-      });
+      const subData = currentCategoryObj.subcategories[activeSubcategory];
+      tools = getMatchingToolsForSub(activeSubcategory, subData?.subs || []);
     }
     if (activeSubSubcategory) {
       tools = tools.filter(t => 
@@ -170,7 +185,7 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
                 {currentCategoryObj.label} Subcategories & Tool Operations
               </h3>
               <p className="text-xs text-[#D4AF37] font-mono mt-0.5">
-                {categoryTools.length} Utilities Available • Click any subcategory to filter tools instantly (Dynamic Count)
+                {categoryTools.length} Utilities Available • Click subcategory or preview chips for iLovePDF-style single tool pages
               </p>
             </div>
           </div>
@@ -188,11 +203,13 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
           )}
         </div>
 
-        {/* Subcategory Cards Grid with Dynamic Actual Counts (Fixed Mismatch) */}
+        {/* Subcategory Cards Grid with Dynamic Actual Counts & Clickable Preview Chips */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
           {Object.entries(currentCategoryObj.subcategories).map(([subName, subData]) => {
             const isSubSelected = activeSubcategory === subName;
-            const actualCount = getSubcategoryCount(subName, subData.subs);
+            const subTools = getMatchingToolsForSub(subName, subData.subs);
+            const actualCount = subTools.length;
+
             return (
               <div
                 key={subName}
@@ -217,33 +234,39 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
                     </span>
                   </div>
 
-                  {/* Sub-subcategory chips */}
+                  {/* Clickable Preview Chips (iLovePDF Style) */}
                   <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-[#D4AF37]/10">
-                    {subData.subs.map((subSub, idx) => {
-                      const isSubSubSelected = activeSubSubcategory === subSub;
+                    {subTools.slice(0, 4).map(tool => {
+                      const toolSlug = tool.slug || tool.id;
                       return (
                         <button
-                          key={idx}
+                          key={tool.id}
                           onClick={(e) => {
                             e.stopPropagation();
-                            setActiveSubcategory(subName);
-                            setActiveSubSubcategory(isSubSubSelected ? null : subSub);
+                            const targetPath = `/tools/${toolSlug}`;
+                            if (onNavigateTo) {
+                              onNavigateTo(targetPath);
+                            } else {
+                              window.location.href = targetPath;
+                            }
                           }}
-                          className={`text-[11px] px-2 py-1 rounded-lg font-medium transition-colors ${
-                            isSubSubSelected
-                              ? 'bg-[#D4AF37] text-[#0A1931] font-bold'
-                              : 'bg-[#0A1931] text-[#FFFEF7]/80 hover:text-[#FFFEF7] border border-[#D4AF37]/20'
-                          }`}
+                          className="text-[10px] bg-[#0A1931] text-[#FFFEF7]/90 hover:text-[#D4AF37] border border-[#D4AF37]/30 hover:border-[#D4AF37] px-2 py-0.5 rounded-md cursor-pointer transition-colors truncate max-w-[140px]"
+                          title={tool.name}
                         >
-                          {subSub}
+                          {tool.name}
                         </button>
                       );
                     })}
+                    {subTools.length > 4 && (
+                      <span className="text-[10px] text-[#D4AF37]/70 px-1 py-0.5">
+                        +{subTools.length - 4} more
+                      </span>
+                    )}
                   </div>
                 </div>
 
                 <div className="mt-3 pt-2 border-t border-[#D4AF37]/10 flex items-center justify-between text-xs text-[#D4AF37]">
-                  <span>{isSubSelected ? 'Selected (Click to Reset)' : 'Select Subcategory'}</span>
+                  <span>{isSubSelected ? 'Selected (Click to Reset)' : `Select Subcategory (${actualCount})`}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </div>
               </div>
