@@ -716,13 +716,7 @@ export default function App() {
 
           {/* ROYAL ELEGANT 3-LEVEL CATEGORY SYSTEM */}
           <RoyalCategoryExplorer 
-            onSelectCategory={(catKey) => setSelectedCategory(catKey as ToolCategory)}
-            onSelectSubcategory={(catKey, subName) => {
-              setSelectedCategory(catKey as ToolCategory);
-            }}
-            onSelectSubSubcategory={(catKey, subName, subSub) => {
-              setSelectedCategory(catKey as ToolCategory);
-            }}
+            onSelectTool={handleOpenTool}
           />
 
           {/* THE 7 DABBA GRID (2 Rows x 3 Columns + 1 Full Width Notion Builder) */}
