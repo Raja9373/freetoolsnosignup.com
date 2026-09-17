@@ -8,6 +8,7 @@ import { ToolCategory, RecentTool } from './types';
 import { LeftSidebar } from './components/LeftSidebar';
 import { RightSidebar } from './components/RightSidebar';
 import { DabbaGrid } from './components/DabbaGrid';
+import { RoyalCategoryExplorer } from './components/RoyalCategoryExplorer';
 import { CommandKSearch } from './components/CommandKSearch';
 import { AdSenseBanner } from './components/AdSenseBanner';
 import { AdUnitTopBanner, AdUnitInFeed, AdUnitAuto } from './components/AdUnits';
@@ -712,6 +713,17 @@ export default function App() {
           />
 
 
+
+          {/* ROYAL ELEGANT 3-LEVEL CATEGORY SYSTEM */}
+          <RoyalCategoryExplorer 
+            onSelectCategory={(catKey) => setSelectedCategory(catKey as ToolCategory)}
+            onSelectSubcategory={(catKey, subName) => {
+              setSelectedCategory(catKey as ToolCategory);
+            }}
+            onSelectSubSubcategory={(catKey, subName, subSub) => {
+              setSelectedCategory(catKey as ToolCategory);
+            }}
+          />
 
           {/* THE 7 DABBA GRID (2 Rows x 3 Columns + 1 Full Width Notion Builder) */}
           <section className="space-y-4">
