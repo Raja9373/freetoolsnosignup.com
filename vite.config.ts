@@ -1,12 +1,26 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
+import obfuscator from 'vite-plugin-javascript-obfuscator';
 import path from 'path';
 import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
     publicDir: 'public',
-    plugins: [react(), tailwindcss()],
+    plugins: [
+      react(),
+      tailwindcss(),
+      obfuscator({
+        apply: 'build',
+        options: {
+          compact: true,
+          controlFlowFlattening: true,
+          stringArray: true,
+          stringArrayThreshold: 0.8,
+          simplify: true,
+        },
+      }),
+    ],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
@@ -15,7 +29,9 @@ export default defineConfig(() => {
     build: {
       outDir: 'dist',
       emptyOutDir: true,
-      chunkSizeWarningLimit: 1000,
+      sourcemap: false,
+      minify: true,
+      chunkSizeWarningLimit: 1500,
       rollupOptions: {
         output: {
           manualChunks(id) {

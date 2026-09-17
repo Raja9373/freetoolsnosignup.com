@@ -5,8 +5,6 @@ import {
   Clock, Chrome, BarChart3
 } from 'lucide-react';
 import { ToolCategory, RecentTool } from './types';
-import { LeftSidebar } from './components/LeftSidebar';
-import { RightSidebar } from './components/RightSidebar';
 import { RoyalCategoryExplorer } from './components/RoyalCategoryExplorer';
 import { CommandKSearch } from './components/CommandKSearch';
 import { AdSenseBanner } from './components/AdSenseBanner';
@@ -44,21 +42,8 @@ import { ChromeExtensionPage } from './pages/ChromeExtensionPage';
 import { StatsPage } from './pages/StatsPage';
 import { AuditPage } from './pages/AuditPage';
 
-// Interactive Tool Modals
-import { NotionTemplateBuilder } from './components/tools/NotionTemplateBuilder';
-import { ATSToolsSuite } from './components/tools/ATSToolsSuite';
-import { ALL_JOB_ATS_TOOLS } from './components/tools/atsToolsCatalog';
-import { AIStudySuite } from './components/tools/AIStudySuite';
-import { ALL_AI_STUDY_TOOLS } from './components/tools/aiStudyCatalog';
-import { PDFToolsModal } from './components/tools/PDFToolsModal';
-import { ImageCompressorModal } from './components/tools/ImageCompressorModal';
-import { ImageToolsModal, IMAGE_TOOLS_LIST } from './components/tools/ImageToolsModal';
-import { CalculatorModal } from './components/tools/CalculatorModal';
-import { JSONFormatterModal } from './components/tools/JSONFormatterModal';
-import { QRGeneratorModal } from './components/tools/QRGeneratorModal';
-import { DevToolsSuite } from './components/tools/DevToolsSuite';
-import { ALL_DEV_PRO_TOOLS } from './components/tools/devToolsCatalog';
 import { TOOLS_DATABASE } from './data/toolsData';
+import { ALL_DIRECTORY_TOOLS } from './data/allToolsDirectory';
 import { BrandLogo } from './components/BrandLogo';
 import { 
   TOTAL_TOOLS_COUNT, 
@@ -85,11 +70,9 @@ export default function App() {
   });
 
   const [isCmdKOpen, setIsCmdKOpen] = useState(false);
-  const [selectedToolId, setSelectedToolId] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<ToolCategory | null>(null);
   const [searchFilter, setSearchFilter] = useState('');
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>('all');
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   // Derive normalized route regardless of language prefix like /ja/about or /es/pdf-tools
   const normalizedPath = React.useMemo(() => {
@@ -294,8 +277,10 @@ export default function App() {
 
   const handleOpenTool = (toolId: string) => {
     recordToolUse(toolId);
-    setSelectedToolId(toolId);
-    setIsMobileSidebarOpen(false);
+    const found = ALL_DIRECTORY_TOOLS.find(t => t.id === toolId || t.slug === toolId) ||
+                  TOOLS_DATABASE.find(t => t.id === toolId || (t as any).slug === toolId);
+    const slug = (found as any)?.slug || (found as any)?.id || toolId;
+    navigateTo(`/tools/${slug}`);
   };
 
   const toggleFavorite = (toolId: string) => {
@@ -444,126 +429,88 @@ export default function App() {
 
     // Default: Homepage view
     return (
-      <div id="ftns-app-root" className="min-h-screen bg-[#F4F7FC] text-[#0B1F3A] flex flex-col font-sans selection:bg-[#FF7A00] selection:text-white">
+      <div id="ftns-app-root" className="min-h-screen bg-[#F4F7FC] text-[#0B1F3A] flex flex-col font-sans selection:bg-[#D4AF37] selection:text-[#0A1931]">
       
-      {/* Top Mobile Bar */}
-      <header className="lg:hidden bg-white border-b border-[#E2E8F0] p-3 sticky top-0 z-30 flex items-center justify-between shadow-2xs">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setIsMobileSidebarOpen(prev => !prev)}
-            className="p-2 rounded-xl bg-[#F4F7FC] text-[#071A3D] hover:bg-[#EBF3FF] hover:text-[#126BFF] border border-[#E2E8F0] transition-colors"
-          >
-            {isMobileSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
-          <BrandLogo variant="header" onClick={() => navigateTo('/')} />
-        </div>
+        {/* SIMPLE CLEAN ROYAL NAVY HEADER */}
+        <header className="w-full bg-[#0A1931] border-b border-[#D4AF37]/20 sticky top-0 z-40 shadow-md">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <BrandLogo variant="header" onClick={() => navigateTo('/')} />
+              <div className="hidden sm:flex items-center gap-2 pl-3 border-l border-[#D4AF37]/20">
+                <span className="text-xs font-black text-[#D4AF37] tracking-wider uppercase bg-[#0F2340] px-2.5 py-1 rounded-md border border-[#D4AF37]/30">
+                  4753 Tools Active
+                </span>
+                <span className="text-[11px] font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded-md">
+                  NO SIGNUP
+                </span>
+              </div>
+            </div>
 
-        <div className="flex items-center gap-1.5">
-          <button
-            onClick={() => setIsMobileSidebarOpen(true)}
-            className="p-2 rounded-xl bg-red-50 text-red-600 border border-red-200 font-bold text-xs flex items-center gap-1 shadow-2xs"
-            title="Favorites & Recent in Left Menu"
-          >
-            <Heart className="w-3.5 h-3.5 fill-current text-red-500" />
-            <span className="text-[11px] font-bold">{favorites.length}</span>
-          </button>
-          <GeoFlagSwitcher />
-          <LanguageSwitcher />
-          <button
-            onClick={() => setIsCmdKOpen(true)}
-            className="p-2 rounded-xl bg-[#FFF4EB] text-[#FF7A00] hover:bg-[#FFE8D6] border border-[#FFD4B2] font-bold text-xs flex items-center gap-1 shadow-2xs transition-colors"
-            title="Search tools"
-          >
-            <Search className="w-4 h-4" />
-          </button>
-        </div>
-      </header>
-
-      {/* Mobile Drawer */}
-      {isMobileSidebarOpen && (
-        <div className="lg:hidden fixed inset-0 z-40 bg-[#071A3D]/70 backdrop-blur-xs flex">
-          <div className="w-4/5 max-w-xs bg-[#F4F7FC] h-full overflow-y-auto p-4 flex flex-col shadow-2xl border-r border-[#E2E8F0]">
-            <div className="flex justify-between items-center pb-3 border-b border-[#E2E8F0]">
-              <span className="font-extrabold text-sm text-[#071A3D]">Navigation & History</span>
-              <button onClick={() => setIsMobileSidebarOpen(false)} className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition-colors">
-                <X className="w-5 h-5" />
+            {/* Quick Search trigger button */}
+            <div className="flex-1 max-w-md hidden md:block">
+              <button
+                onClick={() => setIsCmdKOpen(true)}
+                className="w-full py-2 px-3.5 bg-[#0F2340] hover:bg-[#142646] border border-[#D4AF37]/30 hover:border-[#D4AF37]/60 rounded-xl text-xs text-slate-300 flex items-center justify-between transition-all cursor-pointer shadow-inner"
+              >
+                <div className="flex items-center gap-2">
+                  <Search className="w-4 h-4 text-[#D4AF37]" />
+                  <span className="text-slate-300">Search all 4,753 free tools...</span>
+                </div>
+                <span className="px-1.5 py-0.5 rounded bg-[#0A1931] border border-[#D4AF37]/30 text-[10px] font-mono text-[#D4AF37] font-bold">
+                  ⌘K
+                </span>
               </button>
             </div>
-            <LeftSidebar
-              recentTools={recentTools}
-              favorites={favorites}
-              onToggleFavorite={toggleFavorite}
-              onSelectTool={handleOpenTool}
-              onClearRecent={clearRecent}
-            />
+
+            {/* Right Actions */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsCmdKOpen(true)}
+                className="md:hidden p-2 rounded-xl bg-[#0F2340] text-[#D4AF37] border border-[#D4AF37]/30"
+                title="Search tools"
+              >
+                <Search className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => navigateTo('/chrome-extension')}
+                className="hidden lg:flex px-3 py-1.5 rounded-xl bg-[#0F2340] hover:bg-[#152e54] text-[#FFFEF7] hover:text-[#D4AF37] border border-[#D4AF37]/20 text-xs font-bold items-center gap-1.5 transition cursor-pointer"
+                title="Install Chrome Extension"
+              >
+                <Chrome className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <span>Extension</span>
+              </button>
+              <button
+                onClick={() => navigateTo('/stats')}
+                className="hidden sm:flex px-2.5 py-1.5 rounded-xl bg-[#0F2340] hover:bg-[#152e54] text-slate-300 hover:text-white border border-[#D4AF37]/20 text-xs font-bold items-center gap-1 shadow-2xs transition cursor-pointer"
+                title="Platform Analytics"
+              >
+                <BarChart3 className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <span>Stats</span>
+              </button>
+              <GeoFlagSwitcher />
+              <LanguageSwitcher />
+            </div>
           </div>
-          <div className="flex-1" onClick={() => setIsMobileSidebarOpen(false)} />
-        </div>
-      )}
+        </header>
 
-      {/* 3-COLUMN MAIN LAYOUT */}
-      <div className="flex-1 w-full max-w-[1720px] mx-auto flex flex-col lg:flex-row items-stretch">
-        
-        {/* COLUMN 1: LEFT SIDEBAR (20% Width, Sticky, light cool background #F4F7FC) */}
-        <div className="hidden lg:block lg:w-[20%] xl:w-[20%] shrink-0 sticky top-0 h-screen overflow-y-auto border-r border-[#E2E8F0] bg-[#F4F7FC]">
-          <LeftSidebar
-            recentTools={recentTools}
-            favorites={favorites}
-            onToggleFavorite={toggleFavorite}
-            onSelectTool={handleOpenTool}
-            onClearRecent={clearRecent}
-          />
-        </div>
-
-        {/* COLUMN 2: CENTER MAIN CONTENT (60% Width, Light Cool Tinted Container with White Cards) */}
-        <main className="w-full lg:w-[60%] xl:w-[60%] bg-[#F4F7FC] px-4 sm:px-8 py-6 flex flex-col gap-7">
+        {/* CENTERED MAIN LAYOUT - NO SIDEBARS - CLEAN LIKE iLovePDF */}
+        <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
           
-          {/* Top Header Row with AdSense, Navigation Buttons and Language Switcher */}
+          {/* Top Header Row with Browser-Native Badge and Leaderboard AdSense */}
           <div className="w-full flex flex-col gap-3">
-            <div className="hidden lg:flex items-center justify-between">
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-emerald-50 text-emerald-800 border border-emerald-200/80 shadow-2xs">
                   ● 100% {t('privateInBrowser', 'Browser-Native')}
                 </span>
-                <span className="text-xs text-[#64748B] font-medium">
+                <span className="text-xs text-[#64748B] font-medium hidden sm:inline">
                   {t('heroSubtitle', 'Zero signup walls. Client-side execution.')}
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setIsCmdKOpen(true)}
-                  className="px-3 py-1.5 rounded-xl bg-white border border-[#E2E8F0] hover:border-red-300 text-xs font-bold text-[#0A1931] flex items-center gap-1.5 shadow-2xs transition hover:bg-red-50/30"
-                  title="View your favorite tools in left sidebar"
-                >
-                  <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500" />
-                  <span>Favorites ({favorites.length})</span>
-                </button>
-                <button
-                  onClick={() => setIsCmdKOpen(true)}
-                  className="px-3 py-1.5 rounded-xl bg-white border border-[#E2E8F0] hover:border-[#C5A059] text-xs font-bold text-[#0A1931] flex items-center gap-1.5 shadow-2xs transition hover:bg-amber-50/30"
-                  title="View recent tools in left sidebar"
-                >
-                  <Clock className="w-3.5 h-3.5 text-[#C5A059]" />
-                  <span>Recent ({recentTools.length})</span>
-                </button>
-                <button
-                  onClick={() => navigateTo('/chrome-extension')}
-                  className="px-3 py-1.5 rounded-xl bg-[#0A1931] hover:bg-[#142646] text-[#E8DCBE] hover:text-white text-xs font-bold flex items-center gap-1.5 shadow-2xs transition"
-                  title="Install Chrome Extension"
-                >
-                  <Chrome className="w-3.5 h-3.5 text-[#C5A059]" />
-                  <span>Extension</span>
-                </button>
-                <button
-                  onClick={() => navigateTo('/stats')}
-                  className="px-2.5 py-1.5 rounded-xl bg-white border border-[#E2E8F0] hover:border-[#0A1931] text-xs font-bold text-[#475569] hover:text-[#0A1931] flex items-center gap-1 shadow-2xs transition"
-                  title="Platform Analytics"
-                >
-                  <BarChart3 className="w-3.5 h-3.5" />
-                  <span>Stats</span>
-                </button>
-                <GeoFlagSwitcher />
-                <LanguageSwitcher />
+                <span className="text-xs font-bold text-[#0A1931]">
+                  4,753 Utilities Ready
+                </span>
               </div>
             </div>
 
@@ -571,7 +518,7 @@ export default function App() {
             <AdSenseBanner format="728x90" slotName="TopHeader" />
           </div>
 
-          {/* Search Box Card with Cmd+K Shortcut - Royal Premium */}
+          {/* Search Box Card with Cmd+K Shortcut */}
           <div className="w-full bg-white border border-[#E2E8F0] p-5 sm:p-6 rounded-3xl shadow-sm space-y-4">
             <div className="relative flex items-center">
               <Search className="w-5 h-5 text-[#475569] absolute left-4 pointer-events-none" />
@@ -585,7 +532,7 @@ export default function App() {
               />
               <button
                 onClick={() => setIsCmdKOpen(true)}
-                className="absolute right-3.5 px-3 py-1.5 bg-white border border-[#E2E8F0] hover:border-[#0A1931] hover:text-[#0A1931] rounded-xl text-xs font-mono font-bold text-[#64748B] flex items-center gap-1.5 shadow-2xs transition-all"
+                className="absolute right-3.5 px-3 py-1.5 bg-white border border-[#E2E8F0] hover:border-[#0A1931] hover:text-[#0A1931] rounded-xl text-xs font-mono font-bold text-[#64748B] flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer"
               >
                 <Command className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">K</span>
@@ -643,7 +590,7 @@ export default function App() {
             <div className="bg-white border border-[#CBD5E1] rounded-2xl p-5 shadow-xl space-y-3.5 animate-in fade-in">
               <div className="flex items-center justify-between text-xs font-bold uppercase text-[#64748B]">
                 <span className="text-[#071A3D] font-extrabold">{t('matchingTools', 'Matching Tools')} ({filteredTools.length})</span>
-                <button onClick={() => setSearchFilter('')} className="text-[#FF7A00] hover:text-[#E66A00] font-bold hover:underline">
+                <button onClick={() => setSearchFilter('')} className="text-[#FF7A00] hover:text-[#E66A00] font-bold hover:underline cursor-pointer">
                   {t('clearSearch', 'Clear search')}
                 </button>
               </div>
@@ -653,7 +600,7 @@ export default function App() {
                   {t('noToolsFound', 'No tools found. Try another keyword.')}
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-h-80 overflow-y-auto pr-1">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5 max-h-80 overflow-y-auto pr-1">
                   {filteredTools.map(tool => (
                     <div
                       key={tool.id}
@@ -687,14 +634,14 @@ export default function App() {
             }} 
           />
 
-          {/* Small SEO H1 */}
+          {/* Hero Section */}
           <div className="px-2 py-6 mb-2 text-center">
-            <h1 className="text-2xl md:text-3xl font-bold text-green-600 md:text-green-700 mb-3 leading-tight text-center flex items-center justify-center gap-2">
-              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-              4753 Free Tools - No Signup - 100% Private in Your Browser
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-[#0A1931] mb-3 leading-tight text-center flex items-center justify-center gap-2">
+              <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span>
+              <span>4,753 Free Online Tools • No Signup • 100% Client-Side</span>
             </h1>
-            <p className="text-sm md:text-base text-gray-600 text-center max-w-3xl mx-auto">
-              PDF, Image, Calculators, ATS, AI - All 100% offline - No API - 4,753 working utilities
+            <p className="text-sm md:text-base text-[#475569] text-center max-w-3xl mx-auto">
+              PDF Studio, Image Processing, Financial &amp; Loan Calculators, ATS Resume Optimization, and Developer Tools — Runs directly in your browser RAM with zero file uploads.
             </p>
           </div>
 
@@ -710,8 +657,6 @@ export default function App() {
               navigateTo(`/tools/${slug}`);
             }} 
           />
-
-
 
           {/* ROYAL ELEGANT 3-LEVEL CATEGORY SYSTEM: 6 BOXES + BIG NOTION BOX + SUBCATEGORIES + TOOLS */}
           <RoyalCategoryExplorer 
@@ -735,13 +680,6 @@ export default function App() {
 
         </main>
 
-        {/* COLUMN 3: RIGHT SIDEBAR (20% Width, Sticky, Light Cool Gray #F4F7FC) */}
-        <div className="hidden lg:block lg:w-[20%] xl:w-[20%] shrink-0 sticky top-0 h-screen overflow-y-auto border-l border-[#E2E8F0] bg-[#F4F7FC]">
-          <RightSidebar />
-        </div>
-
-      </div>
-
       {/* ----------------- MODALS ----------------- */}
 
       {/* Command+K Omnisearch Dialog */}
@@ -757,149 +695,6 @@ export default function App() {
           category={selectedCategory}
           onClose={() => setSelectedCategory(null)}
           onSelectTool={handleOpenTool}
-        />
-      )}
-
-      {/* 0. Custom Notion Template & Database Builder Suite */}
-      {selectedToolId && (
-        selectedToolId === 'notion-template-builder' ||
-        selectedToolId.startsWith('preset-') ||
-        selectedToolId.includes('notion')
-      ) && (
-        <NotionTemplateBuilder
-          initialPresetId={selectedToolId}
-          onClose={() => setSelectedToolId(null)}
-          onRecordUse={recordToolUse}
-        />
-      )}
-
-      {/* 1. Complete 50 Job & ATS Pro Tools Suite */}
-      {selectedToolId && (
-        ALL_JOB_ATS_TOOLS.some(t => t.id === selectedToolId) ||
-        selectedToolId === 'ats-checker' || 
-        selectedToolId === 'resume-builder' || 
-        selectedToolId === 'cover-letter-gen' ||
-        selectedToolId === 'salary-negotiator' ||
-        selectedToolId === 'interview-prep-coach' ||
-        selectedToolId === 'linkedin-optimizer' ||
-        selectedToolId.startsWith('job-') ||
-        selectedToolId.startsWith('ats-') ||
-        selectedToolId.startsWith('resume-') ||
-        selectedToolId.startsWith('career-') ||
-        selectedToolId.includes('salary') ||
-        selectedToolId.includes('cover-letter')
-      ) && (
-        <ATSToolsSuite
-          initialToolId={selectedToolId}
-          onClose={() => setSelectedToolId(null)}
-          onRecordUse={recordToolUse}
-        />
-      )}
-
-      {/* 2. Complete 50 AI Study & Content Detection Tools Suite */}
-      {selectedToolId && (
-        ALL_AI_STUDY_TOOLS.some(t => t.id === selectedToolId) ||
-        selectedToolId === 'ai-detector' || 
-        selectedToolId === 'ai-humanizer' ||
-        selectedToolId === 'essay-paraphraser' || 
-        selectedToolId === 'plagiarism-remover' ||
-        selectedToolId === 'citation-generator' ||
-        selectedToolId === 'thesis-statement-builder' ||
-        selectedToolId.startsWith('ai-') ||
-        selectedToolId.startsWith('essay-') ||
-        selectedToolId.startsWith('study-') ||
-        selectedToolId.includes('citation') ||
-        selectedToolId.includes('detector') ||
-        selectedToolId.includes('humanizer') ||
-        selectedToolId.includes('flashcard') ||
-        selectedToolId.includes('paraphraser')
-      ) && (
-        <AIStudySuite
-          initialToolId={selectedToolId}
-          onClose={() => setSelectedToolId(null)}
-          onRecordUse={recordToolUse}
-        />
-      )}
-
-      {/* 3. Fake Data & Card Generator */}
-      {(selectedToolId === 'fake-data-generator') && (
-        <DevToolsSuite
-          initialToolId="fake-user-profile-gen"
-          onClose={() => setSelectedToolId(null)}
-          onRecordUse={recordToolUse}
-        />
-      )}
-
-      {/* 3.5. Complete 100 Dev Pro Tools Suite */}
-      {selectedToolId && (
-        ALL_DEV_PRO_TOOLS.some(t => t.id === selectedToolId) ||
-        selectedToolId === 'base64-converter' ||
-        selectedToolId === 'hash-generator' ||
-        selectedToolId === 'regex-tester' ||
-        selectedToolId.startsWith('dev-') ||
-        selectedToolId.endsWith('-generator') ||
-        selectedToolId.includes('yaml') ||
-        selectedToolId.includes('encoder') ||
-        selectedToolId.includes('decoder') ||
-        selectedToolId.includes('crypto')
-      ) && (
-        <DevToolsSuite
-          initialToolId={selectedToolId}
-          onClose={() => setSelectedToolId(null)}
-          onRecordUse={recordToolUse}
-        />
-      )}
-
-      {/* 4. Complete 54-in-1 PDF Tools Suite */}
-      {selectedToolId && (selectedToolId.startsWith('pdf-') || selectedToolId === 'jpg-to-pdf' || selectedToolId === 'png-to-pdf' || selectedToolId === 'text-to-pdf' || selectedToolId === 'word-to-pdf' || selectedToolId === 'excel-to-pdf' || selectedToolId === 'ppt-to-pdf') && (
-        <PDFToolsModal
-          initialToolId={selectedToolId}
-          onClose={() => setSelectedToolId(null)}
-          onRecordUse={recordToolUse}
-        />
-      )}
-
-      {/* 5. Complete 40-in-1 Image Processing Studio */}
-      {selectedToolId && (IMAGE_TOOLS_LIST.some(t => t.id === selectedToolId) || selectedToolId.startsWith('image-') || selectedToolId === 'bg-remover' || selectedToolId === 'color-palette-extractor' || selectedToolId === 'favicon-generator' || selectedToolId === 'svg-to-png' || selectedToolId === 'jpg-to-png' || selectedToolId === 'png-to-jpg' || selectedToolId === 'webp-to-jpg' || selectedToolId === 'jpg-to-webp' || selectedToolId === 'meme-generator') && (
-        <ImageToolsModal
-          initialToolId={selectedToolId}
-          onClose={() => setSelectedToolId(null)}
-          onRecordUse={recordToolUse}
-        />
-      )}
-
-      {/* 6. Complete 201-in-1 Working Calculators Suite */}
-      {selectedToolId && (
-        selectedToolId === 'emi-calculator' || 
-        selectedToolId === 'compound-interest-calc' || 
-        selectedToolId === 'bmi-calculator' || 
-        selectedToolId === 'salary-takehome-calc' ||
-        selectedToolId === 'gst-vat-calc' ||
-        selectedToolId.endsWith('-calc') ||
-        selectedToolId.startsWith('calc-') ||
-        selectedToolId.includes('calculator') ||
-        selectedToolId.includes('converter')
-      ) && (
-        <CalculatorModal
-          initialToolId={selectedToolId}
-          onClose={() => setSelectedToolId(null)}
-          onRecordUse={recordToolUse}
-        />
-      )}
-
-      {/* 7. JSON Formatter & Tree */}
-      {(selectedToolId === 'json-formatter') && (
-        <JSONFormatterModal
-          onClose={() => setSelectedToolId(null)}
-          onRecordUse={recordToolUse}
-        />
-      )}
-
-      {/* 8. QR Code Studio */}
-      {(selectedToolId === 'qr-generator') && (
-        <QRGeneratorModal
-          onClose={() => setSelectedToolId(null)}
-          onRecordUse={recordToolUse}
         />
       )}
 

@@ -4,6 +4,18 @@ import JSZip from 'jszip';
 import download from 'downloadjs';
 import { Document, Packer, Paragraph, TextRun, HeadingLevel } from 'docx';
 
+// Enforce Producer = FreeToolsNoSignup.com - 4753 Free Tools on all generated and saved PDF files
+try {
+  const origUpdate = (PDFDocument.prototype as any).updateInfoDict;
+  if (origUpdate) {
+    (PDFDocument.prototype as any).updateInfoDict = function () {
+      origUpdate.call(this);
+      this.setProducer('FreeToolsNoSignup.com - 4753 Free Tools');
+      this.setCreator('FreeToolsNoSignup.com');
+    };
+  }
+} catch {}
+
 // Setup pdfjs worker safely for client-side rendering
 if (typeof window !== 'undefined') {
   try {
@@ -25,10 +37,22 @@ export interface PDFFileInfo {
 }
 
 /**
+ * Standardizes metadata for generated PDFs with FreeToolsNoSignup.com attribution
+ */
+export function setPdfProducer(doc: PDFDocument, title?: string) {
+  try {
+    doc.setProducer('FreeToolsNoSignup.com - 4753 Free Tools');
+    doc.setCreator('FreeToolsNoSignup.com');
+    if (title) doc.setTitle(title);
+  } catch {}
+}
+
+/**
  * Creates a sample demo PDF in browser memory for instant testing
  */
 export async function createSamplePdf(title: string = 'Sample_Document', pageCount: number = 3): Promise<PDFFileInfo> {
   const doc = await PDFDocument.create();
+  setPdfProducer(doc, title);
   const font = await doc.embedFont(StandardFonts.HelveticaBold);
   const regularFont = await doc.embedFont(StandardFonts.Helvetica);
 
@@ -167,6 +191,7 @@ export async function mergePdfs(
   }
 
   onProgress?.(`Finalizing merged document with ${totalProcessed} pages...`);
+  setPdfProducer(mergedPdf);
   return await mergedPdf.save();
 }
 
@@ -220,6 +245,7 @@ export async function splitPdf(
       const singleDoc = await PDFDocument.create();
       const [copiedPage] = await singleDoc.copyPages(sourceDoc, [idx]);
       singleDoc.addPage(copiedPage);
+      setPdfProducer(singleDoc);
       const bytes = await singleDoc.save();
       zip.file(`${baseName}_page_${idx + 1}.pdf`, bytes);
     }
@@ -231,6 +257,7 @@ export async function splitPdf(
     const targetDoc = await PDFDocument.create();
     const copiedPages = await targetDoc.copyPages(sourceDoc, targetIndices);
     copiedPages.forEach(p => targetDoc.addPage(p));
+    setPdfProducer(targetDoc);
     const bytes = await targetDoc.save();
     return { data: new Blob([bytes], { type: 'application/pdf' }), filename: `${baseName}_extracted.pdf` };
   }
@@ -252,8 +279,8 @@ export async function compressPdf(
   doc.setAuthor('');
   doc.setSubject('');
   doc.setKeywords([]);
-  doc.setProducer('FreeToolsNoSignup.com PDF Compressor');
-  doc.setCreator('FreeToolsNoSignup Optimizer Engine');
+  doc.setProducer('FreeToolsNoSignup.com - 4753 Free Tools');
+  doc.setCreator('FreeToolsNoSignup.com');
 
   onProgress?.('Re-compressing stream objects with standard deflate...');
   const compressedBytes = await doc.save({ useObjectStreams: true });

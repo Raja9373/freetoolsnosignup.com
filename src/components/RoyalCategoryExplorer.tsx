@@ -70,11 +70,15 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
     return found || currentCategory.subcategories[0] || null;
   }, [currentCategory, selectedSubcategoryId]);
 
-  // Handler to open single tool
+  // Handler to open single tool - Navigates directly to dedicated single tool page
   const openSingleTool = (tool: MasterToolItem) => {
-    setActiveSingleTool(tool);
-    if (onSelectTool) {
+    const slug = tool.slug || tool.id;
+    if (onNavigateTo) {
+      onNavigateTo(`/tools/${slug}`);
+    } else if (onSelectTool) {
       onSelectTool(tool.id);
+    } else {
+      setActiveSingleTool(tool);
     }
   };
 

@@ -1,3 +1,5 @@
+import './utils/antiClone';
+
 // Ensure window.fetch has both getter and setter so injected scripts don't throw TypeError
 if (typeof window !== 'undefined') {
   try {

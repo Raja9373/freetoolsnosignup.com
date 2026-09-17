@@ -399,6 +399,8 @@ export async function generateRealResumePDF(data: ResumeFormData): Promise<Uint8
     }
   }
 
+  pdfDoc.setProducer('FreeToolsNoSignup.com - 4753 Free Tools');
+  pdfDoc.setCreator('FreeToolsNoSignup.com');
   return await pdfDoc.save();
 }
 

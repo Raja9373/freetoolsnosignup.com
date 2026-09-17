@@ -1,24 +1,16 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
-  ArrowLeft, ShieldCheck, Zap, Sparkles, ChevronDown, ChevronUp, 
-  CheckCircle2, ArrowRight, ExternalLink, Laptop, Lock, Clock, 
-  FileText, Layers, Play, Share2, Copy, Check, Code, Globe, Heart, X
+  ArrowLeft, ShieldCheck, Sparkles, ChevronDown, ChevronUp, 
+  CheckCircle2, ArrowRight, Clock, FileText, Layers, Code, Heart, X
 } from 'lucide-react';
 import { BrandLogo } from '../components/BrandLogo';
 import { AdUnitTopBanner, AdUnitInFeed } from '../components/AdUnits';
 import { Footer } from '../components/Footer';
 import { getToolSEOData, ToolSEOData } from '../data/toolSEOContent';
 import { ALL_DIRECTORY_TOOLS } from '../data/allToolsDirectory';
+import { MASTER_CATEGORIES } from '../data/masterCategoryData';
 import { SEOHead } from '../components/SEOHead';
-
-// Interactive Tool Engines for Top UI
-import { PDFToolsModal } from '../components/tools/PDFToolsModal';
-import { ImageToolsModal } from '../components/tools/ImageToolsModal';
-import { CalculatorModal } from '../components/tools/CalculatorModal';
-import { ATSToolsSuite } from '../components/tools/ATSToolsSuite';
-import { AIStudySuite } from '../components/tools/AIStudySuite';
-import { DevToolsSuite } from '../components/tools/DevToolsSuite';
-import { NotionTemplateBuilder } from '../components/tools/NotionTemplateBuilder';
+import { SingleToolWorkspace } from '../components/tools/SingleToolWorkspace';
 
 interface ToolPageProps {
   toolSlug: string;
@@ -31,16 +23,21 @@ export const ToolPage: React.FC<ToolPageProps> = ({
   toolSlug,
   onNavigateHome,
   onNavigateTo,
-  onOpenToolModal
 }) => {
   // Find tool in directory metadata if available
   const directoryTool = ALL_DIRECTORY_TOOLS.find(t => t.slug === toolSlug || t.id === toolSlug);
   const seoData: ToolSEOData = getToolSEOData(toolSlug, directoryTool);
 
+  // Match subcategory from MASTER_CATEGORIES
+  const masterTool = useMemo(() => {
+    return MASTER_CATEGORIES.flatMap(c => c.subcategories.flatMap(s => s.tools))
+      .find(t => t.slug === toolSlug || t.id === toolSlug || t.slug === seoData.slug || t.id === seoData.id);
+  }, [toolSlug, seoData.slug, seoData.id]);
+
+  const subcategoryName = masterTool?.subcategory || (directoryTool as any)?.subcategory || 'Convert';
+
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
-  const [isInteractiveModalOpen, setIsInteractiveModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [isEmbedCopied, setIsEmbedCopied] = useState(false);
 
   const [isFavorite, setIsFavorite] = useState<boolean>(() => {
     try {
@@ -133,7 +130,6 @@ export const ToolPage: React.FC<ToolPageProps> = ({
 
     const toolUrl = `https://www.freetoolsnosignup.com/tools/${seoData.slug}`;
     const categoryUrl = `https://www.freetoolsnosignup.com${getCategoryPath(seoData.category)}`;
-
     const currentDate = new Date().toISOString().split('T')[0];
 
     const schemaData = {
@@ -177,6 +173,12 @@ export const ToolPage: React.FC<ToolPageProps> = ({
             {
               '@type': 'ListItem',
               'position': 3,
+              'name': subcategoryName,
+              'item': `${categoryUrl}?sub=${encodeURIComponent(subcategoryName)}`
+            },
+            {
+              '@type': 'ListItem',
+              'position': 4,
               'name': seoData.name,
               'item': toolUrl
             }
@@ -213,9 +215,9 @@ export const ToolPage: React.FC<ToolPageProps> = ({
       const tag = document.getElementById(scriptId);
       if (tag) tag.remove();
     };
-  }, [seoData]);
+  }, [seoData, subcategoryName]);
 
-  // Global Close Handler & ESC key listener for all 4753 tools
+  // Global Close Handler & ESC key listener for all tools
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -237,16 +239,16 @@ export const ToolPage: React.FC<ToolPageProps> = ({
     onNavigateHome();
   };
 
-  // Guaranteed 6 related tools in same category
+  // Strictly 3 related tools in same category as requested
   const relatedTools = ALL_DIRECTORY_TOOLS
     .filter(t => t.category === seoData.category && t.slug !== seoData.slug && !t.id.includes('-engine-') && !t.id.includes('job-career-tool-') && !t.id.includes('study-academic-tool-') && !t.id.includes('dev-coder-tool-'))
-    .slice(0, 6);
+    .slice(0, 3);
 
   // Social Share Handlers
   const toolUrl = `https://www.freetoolsnosignup.com/tools/${seoData.slug}`;
   const shareText = `Check out this 100% free, zero-signup ${seoData.name}! Private in-browser execution with zero watermarks:`;
 
-  const handleShare = (platform: 'twitter' | 'reddit' | 'linkedin' | 'producthunt' | 'devto' | 'hashnode') => {
+  const handleShare = (platform: 'twitter' | 'reddit' | 'linkedin') => {
     let url = '';
     switch (platform) {
       case 'twitter':
@@ -258,44 +260,10 @@ export const ToolPage: React.FC<ToolPageProps> = ({
       case 'linkedin':
         url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(toolUrl)}`;
         break;
-      case 'producthunt':
-        url = `https://www.producthunt.com/posts/new`;
-        break;
-      case 'devto':
-      case 'hashnode':
-        // Copy Markdown syndication snippet to clipboard
-        if (navigator.clipboard) {
-          const md = `I just found this completely free, in-browser **[${seoData.name}](${toolUrl})** on FreeToolsNoSignup. Zero uploads, zero signups, and runs in RAM. Highly recommended!`;
-          navigator.clipboard.writeText(md);
-          showToast(`Copied ${platform.toUpperCase()} markdown snippet to clipboard!`);
-          return;
-        }
-        break;
     }
     if (url) {
       window.open(url, '_blank', 'noopener,noreferrer');
       showToast(`Opening ${platform}...`);
-    }
-  };
-
-  const embedCodeSnippet = `<!-- FreeToolsNoSignup Embed Widget -->
-<iframe 
-  src="https://www.freetoolsnosignup.com/embed/${seoData.slug}" 
-  width="100%" 
-  height="520" 
-  frameborder="0"
-  style="border: 1px solid #e2e8f0; border-radius: 12px; width: 100%; max-width: 800px;">
-</iframe>
-<p style="font-size: 12px; color: #64748b; margin-top: 6px;">
-  Powered by <a href="https://www.freetoolsnosignup.com/tools/${seoData.slug}" target="_blank" rel="noopener noreferrer" style="color: #2563eb; font-weight: bold; text-decoration: none;">Free ${seoData.name} - No Signup</a>
-</p>`;
-
-  const handleCopyEmbed = () => {
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(embedCodeSnippet);
-      setIsEmbedCopied(true);
-      showToast('Embed code copied! Paste directly into your blog or site HTML.');
-      setTimeout(() => setIsEmbedCopied(false), 2500);
     }
   };
 
@@ -305,57 +273,9 @@ export const ToolPage: React.FC<ToolPageProps> = ({
         title={seoData.title}
         description={seoData.description}
         canonicalUrl={`https://www.freetoolsnosignup.com/tools/${seoData.slug}`}
-        jsonLd={{
-          '@context': 'https://schema.org',
-          '@graph': [
-            {
-              '@type': 'SoftwareApplication',
-              'name': seoData.name,
-              'url': `https://www.freetoolsnosignup.com/tools/${seoData.slug}`,
-              'description': seoData.description,
-              'applicationCategory': 'UtilitiesApplication',
-              'operatingSystem': 'Any',
-              'datePublished': new Date().toISOString().split('T')[0],
-              'version': '1.0.0',
-              'author': {
-                '@type': 'Organization',
-                'name': 'FreeToolsNoSignup',
-                'url': 'https://www.freetoolsnosignup.com'
-              },
-              'offers': {
-                '@type': 'Offer',
-                'price': '0',
-                'priceCurrency': 'USD'
-              }
-            },
-            {
-              '@type': 'BreadcrumbList',
-              'itemListElement': [
-                {
-                  '@type': 'ListItem',
-                  'position': 1,
-                  'name': 'Home',
-                  'item': 'https://www.freetoolsnosignup.com/'
-                },
-                {
-                  '@type': 'ListItem',
-                  'position': 2,
-                  'name': seoData.categoryName,
-                  'item': `https://www.freetoolsnosignup.com${getCategoryPath(seoData.category)}`
-                },
-                {
-                  '@type': 'ListItem',
-                  'position': 3,
-                  'name': seoData.name,
-                  'item': `https://www.freetoolsnosignup.com/tools/${seoData.slug}`
-                }
-              ]
-            }
-          ]
-        }}
       />
       
-      {/* Floating Global Close Button for All 4753 Tools */}
+      {/* Floating Global Close Button for All Tools */}
       <button
         onClick={handleCloseTool}
         className="fixed top-20 right-6 z-50 w-12 h-12 bg-[#0A1931] hover:bg-red-600 text-white rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110 active:scale-95 cursor-pointer pointer-events-auto border-2 border-white"
@@ -390,7 +310,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
           {/* Top Right "Share & Get Backlink" Bar & Close Button */}
           <div className="flex items-center gap-2">
             <span className="hidden md:inline-block text-[11px] font-bold text-[#64748B] mr-1">
-              Share &amp; Get Backlink:
+              Share:
             </span>
             <button
               onClick={() => handleShare('twitter')}
@@ -414,13 +334,6 @@ export const ToolPage: React.FC<ToolPageProps> = ({
               in
             </button>
             <button
-              onClick={() => handleShare('devto')}
-              className="px-2.5 py-1.5 rounded-lg bg-[#F8FAFC] hover:bg-[#0B1F3A] hover:text-white text-[#0B1F3A] text-xs font-bold border border-[#E2E8F0] transition-colors"
-              title="Copy Dev.to / Hashnode snippet"
-            >
-              Dev.to
-            </button>
-            <button
               onClick={() => onNavigateTo('/backlinks')}
               className="hidden sm:flex items-center gap-1 px-3 py-1.5 rounded-xl bg-[#0A1931] hover:bg-[#126BFF] text-white text-xs font-bold transition-colors ml-1"
             >
@@ -428,7 +341,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
               <span>Embed</span>
             </button>
 
-            {/* GLOBAL CLOSE X BUTTON (For all 4753 tools) */}
+            {/* GLOBAL CLOSE X BUTTON */}
             <button
               onClick={handleCloseTool}
               type="button"
@@ -443,39 +356,41 @@ export const ToolPage: React.FC<ToolPageProps> = ({
       </header>
 
       {/* Top AdSense Banner (Responsive 728x90) */}
-      <div className="max-w-6xl mx-auto px-4 pt-4 w-full">
+      <div className="max-w-4xl mx-auto px-4 pt-4 w-full">
         <AdUnitTopBanner />
       </div>
 
-      {/* Main Container */}
-      <main className="max-w-6xl mx-auto px-4 py-6 flex-1 w-full space-y-8">
+      {/* Main Container - Centered max-w-4xl - No Sidebars - iLovePDF Clean Style */}
+      <main className="max-w-4xl mx-auto px-4 py-6 flex-1 w-full space-y-8">
         
-        {/* Breadcrumb Hierarchy */}
-        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-[#64748B] font-medium">
+        {/* Breadcrumb Hierarchy: Home > Category > Subcategory > Tool */}
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-[#64748B] font-medium flex-wrap">
           <a href="/" onClick={(e) => { e.preventDefault(); onNavigateHome(); }} className="hover:text-[#126BFF] transition-colors">Home</a>
           <span>/</span>
           <a href={getCategoryPath(seoData.category)} onClick={(e) => { e.preventDefault(); onNavigateTo(getCategoryPath(seoData.category)); }} className="hover:text-[#126BFF] transition-colors">
             {seoData.categoryName}
           </a>
           <span>/</span>
+          <span className="text-[#64748B] font-semibold">{subcategoryName}</span>
+          <span>/</span>
           <span className="text-[#0B1F3A] font-bold truncate max-w-xs">{seoData.name}</span>
         </nav>
 
-        {/* HERO TITLE & INTRO WITH 3 TARGET KEYWORDS */}
+        {/* HERO TITLE & INTRO */}
         <div className="space-y-3">
           <div className="flex flex-wrap items-center gap-2">
             <span className="px-3 py-1 rounded-full bg-[#EBF3FF] text-[#126BFF] border border-[#C8DDFF] text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-[#FF7A00]" />
-              {seoData.categoryName}
+              {seoData.categoryName} • {subcategoryName}
             </span>
             <span className="px-3 py-1 rounded-full bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0] text-xs font-bold flex items-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5" />
-              Zero Cloud Uploads • 100% In-Browser Privacy
+              100% In-Browser Memory • Zero Server Uploads
             </span>
           </div>
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <h1 className="font-serif-royal text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0A1931] tracking-tight leading-tight">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0A1931] tracking-tight leading-tight">
               {seoData.name}
             </h1>
             <button
@@ -491,485 +406,107 @@ export const ToolPage: React.FC<ToolPageProps> = ({
             </button>
           </div>
 
-          {/* First 100 words naturally incorporating 3 target keywords */}
           <p className="text-sm sm:text-base text-[#475569] leading-relaxed max-w-4xl">
-            Welcome to the definitive <strong>free online tools no login</strong> workstation for {seoData.name}. As part of our verified catalog of <strong>free tools no signup</strong>, this utility runs as one of our modern <strong>private browser tools</strong> directly inside your device memory using WebAssembly. Enjoy lightning-fast local performance, zero daily conversion caps, and zero watermarks.
+            {seoData.description} Runs 100% client-side in your device RAM. No file size uploads, no server storage, zero watermarks, and completely free.
           </p>
         </div>
 
-        {/* INTERACTIVE TOOL WORKSPACE (THE WORKING APP LAUNCHER) */}
-        <section className="bg-white rounded-3xl border border-[#CBD5E1] p-4 sm:p-6 shadow-sm overflow-hidden">
-          <div className="border-b border-[#E2E8F0] pb-4 mb-4 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider">
-                Active Interactive Engine
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handleCopyEmbed}
-                className="text-xs text-[#126BFF] hover:underline font-bold flex items-center gap-1"
-              >
-                <Code className="w-3.5 h-3.5" />
-                <span>Embed On Your Site</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Embedded Interactive Components */}
-          <div className="min-h-[420px] flex flex-col justify-center">
-            {seoData.category === 'pdf' && (
-              <PDFToolsModal
-                initialToolId={seoData.id}
-                onClose={() => onNavigateHome()}
-                onRecordUse={() => {}}
-              />
-            )}
-
-            {seoData.category === 'image' && (
-              <ImageToolsModal
-                initialToolId={seoData.id}
-                onClose={() => onNavigateHome()}
-                onRecordUse={() => {}}
-              />
-            )}
-
-            {seoData.category === 'calculator' && (
-              <CalculatorModal
-                initialToolId={seoData.id}
-                onClose={() => onNavigateHome()}
-                onRecordUse={() => {}}
-              />
-            )}
-
-            {seoData.category === 'job-ats' && (
-              <ATSToolsSuite
-                initialToolId={seoData.id}
-                onClose={() => onNavigateHome()}
-                onRecordUse={() => {}}
-              />
-            )}
-
-            {seoData.category === 'ai-study' && (
-              <AIStudySuite
-                initialToolId={seoData.id}
-                onClose={() => onNavigateHome()}
-                onRecordUse={() => {}}
-              />
-            )}
-
-            {seoData.category === 'dev-pro' && (
-              <DevToolsSuite
-                initialToolId={seoData.id}
-                onClose={() => onNavigateHome()}
-                onRecordUse={() => {}}
-              />
-            )}
-
-            {seoData.category === 'notion' && (
-              <NotionTemplateBuilder
-                initialPresetId={seoData.id}
-                onClose={() => onNavigateHome()}
-                onRecordUse={() => {}}
-              />
-            )}
-
-            {/* If tool doesn't match a direct suite, show high-converting interactive launcher */}
-            {!['pdf', 'image', 'calculator', 'job-ats', 'ai-study', 'dev-pro', 'notion'].includes(seoData.category) && (
-              <div className="py-12 text-center space-y-4 max-w-lg mx-auto">
-                <div className="w-16 h-16 rounded-2xl bg-[#EBF3FF] text-[#126BFF] flex items-center justify-center mx-auto shadow-xs">
-                  <Play className="w-8 h-8 fill-[#126BFF]" />
-                </div>
-                <h3 className="text-xl font-bold text-[#0B1F3A]">Ready to use {seoData.name}?</h3>
-                <p className="text-xs sm:text-sm text-[#64748B]">{seoData.description}</p>
-                <button
-                  onClick={() => {
-                    if (onOpenToolModal) {
-                      onOpenToolModal(seoData.id);
-                    } else {
-                      setIsInteractiveModalOpen(true);
-                    }
-                  }}
-                  className="px-6 py-3 rounded-xl bg-[#0A1931] hover:bg-[#126BFF] text-white font-bold text-xs transition-colors flex items-center gap-2 mx-auto shadow-md"
-                >
-                  <Zap className="w-4 h-4 text-[#FF7A00]" />
-                  <span>Launch Interactive Workspace</span>
-                </button>
-              </div>
-            )}
-          </div>
+        {/* DEDICATED WORKING TOOL WORKSPACE (SINGLE TOOL ONLY - NO TABS - iLovePDF STYLE) */}
+        <section className="w-full">
+          <SingleToolWorkspace
+            toolSlug={seoData.slug || toolSlug}
+            toolName={seoData.name}
+            toolCategory={seoData.category}
+            toolDescription={seoData.description}
+            onNavigateTo={onNavigateTo}
+          />
         </section>
 
         {/* In-Feed Ad Unit */}
         <AdUnitInFeed />
 
-        {/* 500-WORD COMPREHENSIVE SEO CONTENT GUIDE & INTERNAL LINKING */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* COMPREHENSIVE CONTENT GUIDE (NO SIDEBARS - CENTERED MAX-W-4XL) */}
+        <div className="space-y-8">
           
-          {/* Main Content (2 Columns on Large Screens) */}
-          <div className="lg:col-span-2 space-y-8">
-            
-            {/* Section 1: What is this Tool */}
-            <article className="bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs space-y-4">
-              <h2 className="text-xl sm:text-2xl font-black text-[#0B1F3A] tracking-tight flex items-center gap-2.5">
-                <FileText className="w-6 h-6 text-[#126BFF]" />
-                <span>What is Free {seoData.name}?</span>
-              </h2>
-              {seoData.whatIs.map((paragraph, idx) => (
-                <p key={idx} className="text-sm sm:text-base text-[#334155] leading-relaxed">
-                  {paragraph}
-                </p>
-              ))}
-            </article>
+          {/* Section 1: What is this Tool */}
+          <article className="bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs space-y-4">
+            <h2 className="text-xl sm:text-2xl font-black text-[#0B1F3A] tracking-tight flex items-center gap-2.5">
+              <FileText className="w-6 h-6 text-[#126BFF]" />
+              <span>What is Free {seoData.name}?</span>
+            </h2>
+            {seoData.whatIs.map((paragraph, idx) => (
+              <p key={idx} className="text-sm sm:text-base text-[#334155] leading-relaxed">
+                {paragraph}
+              </p>
+            ))}
+          </article>
 
-            {/* Section 2: How to Use (3 Steps) */}
-            <article className="bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs space-y-6">
-              <h2 className="text-xl sm:text-2xl font-black text-[#0B1F3A] tracking-tight flex items-center gap-2.5">
-                <Clock className="w-6 h-6 text-[#FF7A00]" />
-                <span>How to Use {seoData.name} in 3 Simple Steps</span>
-              </h2>
+          {/* Section 2: How to Use (3 Steps) */}
+          <article className="bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs space-y-6">
+            <h2 className="text-xl sm:text-2xl font-black text-[#0B1F3A] tracking-tight flex items-center gap-2.5">
+              <Clock className="w-6 h-6 text-[#FF7A00]" />
+              <span>How to Use {seoData.name} in 3 Simple Steps</span>
+            </h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {seoData.howToUse.map((step) => (
-                  <div key={step.step} className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-5 space-y-2.5 flex flex-col justify-between">
-                    <div className="space-y-2">
-                      <div className="w-8 h-8 rounded-xl bg-[#EBF3FF] text-[#126BFF] font-black text-sm flex items-center justify-center border border-[#C8DDFF]">
-                        {step.step}
-                      </div>
-                      <h3 className="text-sm font-black text-[#0B1F3A]">
-                        {step.title}
-                      </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {seoData.howToUse.map((step) => (
+                <div key={step.step} className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-5 space-y-2.5 flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <div className="w-8 h-8 rounded-xl bg-[#EBF3FF] text-[#126BFF] font-black text-sm flex items-center justify-center border border-[#C8DDFF]">
+                      {step.step}
                     </div>
-                    <p className="text-xs text-[#64748B] leading-relaxed">
-                      {step.desc}
-                    </p>
+                    <h3 className="text-sm font-black text-[#0B1F3A]">
+                      {step.title}
+                    </h3>
                   </div>
-                ))}
-              </div>
-            </article>
-
-            {/* Section 3: Why No Signup & Privacy Benefits */}
-            <article className="bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs space-y-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                
-                {/* Why No Signup */}
-                <div className="space-y-3">
-                  <h3 className="text-base sm:text-lg font-black text-[#0B1F3A] flex items-center gap-2">
-                    <Lock className="w-5 h-5 text-[#126BFF]" />
-                    <span>Why Zero Signup is Required</span>
-                  </h3>
-                  {Array.isArray(seoData.whyNoSignup) ? (
-                    seoData.whyNoSignup.map((p, i) => (
-                      <p key={i} className="text-xs sm:text-sm text-[#475569] leading-relaxed">
-                        {p}
-                      </p>
-                    ))
-                  ) : (
-                    <p className="text-xs sm:text-sm text-[#475569] leading-relaxed">
-                      {seoData.whyNoSignup}
-                    </p>
-                  )}
-                </div>
-
-                {/* Privacy & Security Benefits */}
-                <div className="space-y-3">
-                  <h3 className="text-base sm:text-lg font-black text-[#0B1F3A] flex items-center gap-2">
-                    <ShieldCheck className="w-5 h-5 text-[#059669]" />
-                    <span>In-Browser Privacy Benefits</span>
-                  </h3>
-                  {Array.isArray(seoData.privacyBenefits) ? (
-                    seoData.privacyBenefits.map((p, i) => (
-                      <p key={i} className="text-xs sm:text-sm text-[#475569] leading-relaxed">
-                        {p}
-                      </p>
-                    ))
-                  ) : (
-                    <p className="text-xs sm:text-sm text-[#475569] leading-relaxed">
-                      {seoData.privacyBenefits}
-                    </p>
-                  )}
-                </div>
-
-              </div>
-            </article>
-
-            {/* Section 4: Key Features & Advantages */}
-            <article className="bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs space-y-6">
-              <h2 className="text-xl sm:text-2xl font-black text-[#0B1F3A] tracking-tight flex items-center gap-2.5">
-                <Sparkles className="w-6 h-6 text-[#059669]" />
-                <span>Key Features &amp; Advantages</span>
-              </h2>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {seoData.features.map((feature, idx) => (
-                  <div key={idx} className="p-4 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-1.5">
-                    <div className="flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-[#059669] shrink-0" />
-                      <h3 className="text-sm font-black text-[#0B1F3A]">
-                        {feature.title}
-                      </h3>
-                    </div>
-                    <p className="text-xs text-[#64748B] leading-relaxed pl-6">
-                      {feature.desc}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </article>
-
-            {/* Section 5: 5 Frequently Asked Questions (FAQs) */}
-            <article className="bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs space-y-6">
-              <div className="space-y-1">
-                <h2 className="text-xl sm:text-2xl font-black text-[#0B1F3A] tracking-tight">
-                  Frequently Asked Questions (5 FAQs)
-                </h2>
-                <p className="text-xs sm:text-sm text-[#64748B]">
-                  Answers to common questions about privacy, usage, compatibility, and file support for {seoData.name}.
-                </p>
-              </div>
-
-              <div className="space-y-3">
-                {seoData.faqs.map((faq, idx) => {
-                  const isOpen = openFaqIndex === idx;
-                  return (
-                    <div 
-                      key={idx} 
-                      className="border border-[#E2E8F0] rounded-2xl overflow-hidden transition-colors bg-[#F8FAFC]"
-                    >
-                      <button
-                        onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
-                        className="w-full px-5 py-4 text-left flex items-center justify-between gap-4 font-bold text-sm text-[#0B1F3A] hover:text-[#126BFF] transition-colors"
-                      >
-                        <span className="flex items-center gap-2">
-                          <span className="text-xs font-mono font-bold text-[#126BFF]">Q{idx + 1}.</span>
-                          <span>{faq.question}</span>
-                        </span>
-                        {isOpen ? (
-                          <ChevronUp className="w-4 h-4 text-[#126BFF] shrink-0" />
-                        ) : (
-                          <ChevronDown className="w-4 h-4 text-[#94A3B8] shrink-0" />
-                        )}
-                      </button>
-
-                      {isOpen && (
-                        <div className="px-5 pb-4 text-xs sm:text-sm text-[#475569] leading-relaxed border-t border-[#E2E8F0] pt-3 bg-white">
-                          {faq.answer}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </article>
-
-            {/* Section 6: EMBED THIS TOOL - FREE BACKLINK WIDGET */}
-            <article className="bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <h3 className="text-base sm:text-lg font-black text-[#0B1F3A] flex items-center gap-2">
-                    <Code className="w-5 h-5 text-[#126BFF]" />
-                    <span>Embed This Tool on Your Website (Free Backlink)</span>
-                  </h3>
-                  <p className="text-xs text-[#64748B]">
-                    Copy and paste this clean, responsive iframe widget into your blog, documentation, or WordPress site:
+                  <p className="text-xs text-[#64748B] leading-relaxed">
+                    {step.desc}
                   </p>
                 </div>
-              </div>
-
-              <div className="relative">
-                <textarea
-                  readOnly
-                  rows={4}
-                  value={embedCodeSnippet}
-                  className="w-full p-3 font-mono text-xs text-[#475569] bg-[#F8FAFC] border border-[#CBD5E1] rounded-2xl focus:outline-none select-all"
-                />
-              </div>
-
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-[11px] text-[#64748B]">
-                  Includes built-in responsive sizing and client-side execution.
-                </span>
-                <button
-                  onClick={handleCopyEmbed}
-                  className="px-4 py-2 rounded-xl bg-[#0A1931] hover:bg-[#126BFF] text-white font-bold text-xs shadow-2xs transition-colors flex items-center gap-1.5"
-                >
-                  {isEmbedCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                  <span>{isEmbedCopied ? 'Copied Code!' : 'Copy Embed HTML'}</span>
-                </button>
-              </div>
-            </article>
-
-          </div>
-
-          {/* Sidebar / Related Category Tools (1 Column) */}
-          <div className="space-y-6">
-            
-            {/* Quick Action Card */}
-            <div className="bg-gradient-to-br from-[#0A1931] to-[#126BFF] rounded-3xl p-6 text-white space-y-4 shadow-md">
-              <div className="space-y-1">
-                <span className="text-2xl">⚡</span>
-                <h3 className="text-lg font-black tracking-tight">
-                  100% Free &amp; Unlimited
-                </h3>
-                <p className="text-xs text-[#EBF3FF] leading-relaxed">
-                  Never pay for basic file manipulation or calculators. FreeToolsNoSignup.com is always free.
-                </p>
-              </div>
-
-              <button
-                onClick={() => {
-                  if (onOpenToolModal) {
-                    onOpenToolModal(seoData.id);
-                  } else {
-                    setIsInteractiveModalOpen(true);
-                  }
-                }}
-                className="w-full py-3 rounded-xl bg-white text-[#0A1931] hover:bg-[#F4F7FC] font-black text-xs shadow-xs transition-colors flex items-center justify-center gap-2"
-              >
-                <span>Launch Tool Workspace</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+              ))}
             </div>
+          </article>
 
-            {/* 6 Related Tools in Category (Internal Linking) */}
-            {relatedTools.length > 0 && (
-              <div className="bg-white rounded-3xl border border-[#E2E8F0] p-6 shadow-xs space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-black text-[#0B1F3A] uppercase tracking-wider">
-                    Related {seoData.categoryName} ({relatedTools.length})
-                  </h3>
-                  <a
-                    href={getCategoryPath(seoData.category)}
-                    onClick={(e) => { e.preventDefault(); onNavigateTo(getCategoryPath(seoData.category)); }}
-                    className="text-xs text-[#126BFF] font-bold hover:underline normal-case"
+          {/* Section 3: Frequently Asked Questions */}
+          <article className="bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs space-y-4">
+            <h2 className="text-xl sm:text-2xl font-black text-[#0B1F3A] tracking-tight">
+              Frequently Asked Questions
+            </h2>
+
+            <div className="space-y-3">
+              {seoData.faqs.map((faq, idx) => (
+                <div key={idx} className="border border-[#E2E8F0] rounded-2xl overflow-hidden transition-colors">
+                  <button
+                    onClick={() => setOpenFaqIndex(openFaqIndex === idx ? null : idx)}
+                    className="w-full p-4 text-left font-bold text-sm text-[#0B1F3A] hover:bg-[#F8FAFC] flex items-center justify-between gap-4 transition-colors cursor-pointer"
                   >
-                    View All
-                  </a>
+                    <span>{faq.question}</span>
+                    {openFaqIndex === idx ? (
+                      <ChevronUp className="w-4 h-4 text-[#126BFF] shrink-0" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4 text-[#94A3B8] shrink-0" />
+                    )}
+                  </button>
+                  {openFaqIndex === idx && (
+                    <div className="p-4 pt-0 text-xs sm:text-sm text-[#475569] leading-relaxed bg-[#F8FAFC]/50 border-t border-[#E2E8F0]/60">
+                      {faq.answer}
+                    </div>
+                  )}
                 </div>
-
-                <div className="space-y-2.5">
-                  {relatedTools.map((relTool) => (
-                    <a
-                      key={relTool.id}
-                      href={`/tools/${relTool.slug}`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        onNavigateTo(`/tools/${relTool.slug}`);
-                      }}
-                      className="block p-3 rounded-2xl bg-[#F8FAFC] hover:bg-[#EBF3FF] border border-[#E2E8F0] hover:border-[#C8DDFF] transition-all group"
-                    >
-                      <div className="text-xs font-bold text-[#0B1F3A] group-hover:text-[#126BFF] flex items-center justify-between">
-                        <span>{relTool.name}</span>
-                        <ArrowRight className="w-3.5 h-3.5 text-[#94A3B8] group-hover:text-[#126BFF] transition-transform group-hover:translate-x-0.5" />
-                      </div>
-                      <p className="text-[11px] text-[#64748B] line-clamp-1 mt-0.5">
-                        {relTool.description}
-                      </p>
-                    </a>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Trust & Guarantee Box */}
-            <div className="bg-white rounded-3xl border border-[#E2E8F0] p-6 shadow-xs space-y-3">
-              <h3 className="text-xs font-black text-[#0B1F3A] uppercase tracking-wider">
-                Why FreeToolsNoSignup?
-              </h3>
-              <ul className="space-y-2.5 text-xs text-[#475569]">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#059669] shrink-0 mt-0.5" />
-                  <span>No login, signups, or email capture</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#059669] shrink-0 mt-0.5" />
-                  <span>No watermarks stamped on your exports</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#059669] shrink-0 mt-0.5" />
-                  <span>100% private in-browser RAM execution</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#059669] shrink-0 mt-0.5" />
-                  <span>Unlimited usage with zero daily caps</span>
-                </li>
-              </ul>
+              ))}
             </div>
-
-          </div>
+          </article>
 
         </div>
       </main>
 
       {/* Bottom AdSense Banner */}
-      <div className="max-w-6xl mx-auto px-4 py-4 w-full">
+      <div className="max-w-4xl mx-auto px-4 py-4 w-full">
         <AdUnitTopBanner />
       </div>
 
       {/* Global Footer */}
       <Footer onNavigate={(path) => onNavigateTo(path)} />
-
-      {/* DIRECT MODAL LAUNCHER FALLBACK */}
-      {isInteractiveModalOpen && (
-        <>
-          {seoData.category === 'pdf' && (
-            <PDFToolsModal
-              initialToolId={seoData.id}
-              onClose={() => { setIsInteractiveModalOpen(false); onNavigateHome(); }}
-              onRecordUse={() => {}}
-            />
-          )}
-
-          {seoData.category === 'image' && (
-            <ImageToolsModal
-              initialToolId={seoData.id}
-              onClose={() => { setIsInteractiveModalOpen(false); onNavigateHome(); }}
-              onRecordUse={() => {}}
-            />
-          )}
-
-          {seoData.category === 'calculator' && (
-            <CalculatorModal
-              initialToolId={seoData.id}
-              onClose={() => { setIsInteractiveModalOpen(false); onNavigateHome(); }}
-              onRecordUse={() => {}}
-            />
-          )}
-
-          {seoData.category === 'job-ats' && (
-            <ATSToolsSuite
-              initialToolId={seoData.id}
-              onClose={() => { setIsInteractiveModalOpen(false); onNavigateHome(); }}
-              onRecordUse={() => {}}
-            />
-          )}
-
-          {seoData.category === 'ai-study' && (
-            <AIStudySuite
-              initialToolId={seoData.id}
-              onClose={() => { setIsInteractiveModalOpen(false); onNavigateHome(); }}
-              onRecordUse={() => {}}
-            />
-          )}
-
-          {seoData.category === 'dev-pro' && (
-            <DevToolsSuite
-              initialToolId={seoData.id}
-              onClose={() => { setIsInteractiveModalOpen(false); onNavigateHome(); }}
-              onRecordUse={() => {}}
-            />
-          )}
-
-          {seoData.category === 'notion' && (
-            <NotionTemplateBuilder
-              initialPresetId={seoData.id}
-              onClose={() => { setIsInteractiveModalOpen(false); onNavigateHome(); }}
-              onRecordUse={() => {}}
-            />
-          )}
-        </>
-      )}
     </div>
   );
 };
