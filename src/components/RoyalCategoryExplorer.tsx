@@ -1,346 +1,460 @@
-import React, { useState } from 'react';
-import { CATEGORY_TREE, CategoryNode } from '../data/categoryTree';
-import { ALL_DIRECTORY_TOOLS, DirectoryTool } from '../data/allToolsDirectory';
-import { ChevronRight, ArrowRight, Sparkles, Layers, Search, Flame, FolderTree, Compass, CheckCircle2 } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { 
+  ArrowRight, ShieldCheck, Sparkles, CheckCircle2, 
+  RotateCcw, Database, Table, Zap, Layers, ExternalLink,
+  ChevronRight, ArrowUpRight
+} from 'lucide-react';
+import { 
+  MASTER_CATEGORIES, 
+  MasterCategory, 
+  MasterSubcategory, 
+  MasterToolItem 
+} from '../data/masterCategoryData';
+import { DedicatedSingleToolModal } from './DedicatedSingleToolModal';
 
 interface RoyalCategoryExplorerProps {
-  onSelectTool: (toolId: string) => void;
-  onSelectCategory?: (categoryKey: string) => void;
+  onSelectTool?: (toolId: string) => void;
   onNavigateTo?: (path: string) => void;
 }
 
+// 25 Notion Presets as specified
+const NOTION_PRESET_CHIPS = [
+  { id: 'preset-content-calendar', label: '📅 Content Calendar' },
+  { id: 'preset-product-roadmap', label: '🚀 Product Roadmap' },
+  { id: 'preset-habit-tracker', label: '⚡ Habit Tracker' },
+  { id: 'preset-job-crm', label: '💼 Job CRM' },
+  { id: 'preset-budget-log', label: '💰 Budget Log' },
+  { id: 'preset-reading-list', label: '📚 Reading List' },
+  { id: 'preset-goal-tracker', label: '🎯 Goal Tracker' },
+  { id: 'preset-task-manager', label: '✅ Task Manager' },
+  { id: 'preset-idea-bank', label: '💡 Idea Bank' },
+  { id: 'preset-meeting-notes', label: '📝 Meeting Notes' },
+  { id: 'preset-client-database', label: '👥 Client Database' },
+  { id: 'preset-inventory-tracker', label: '📦 Inventory Tracker' },
+  { id: 'preset-editorial-calendar', label: '🗓️ Editorial Calendar' },
+  { id: 'preset-real-estate-crm', label: '🏠 Real Estate CRM' },
+  { id: 'preset-student-dashboard', label: '🎓 Student Dashboard' },
+  { id: 'preset-fitness-tracker', label: '💪 Fitness Tracker' },
+  { id: 'preset-meal-planner', label: '🍽️ Meal Planner' },
+  { id: 'preset-travel-planner', label: '✈️ Travel Planner' },
+  { id: 'preset-expense-tracker', label: '💸 Expense Tracker' },
+  { id: 'preset-email-campaign', label: '📧 Email Campaign Tracker' },
+  { id: 'preset-movie-watchlist', label: '🎬 Movie Watchlist' },
+  { id: 'preset-music-library', label: '🎵 Music Library' },
+  { id: 'preset-recipe-book', label: '🍳 Recipe Book' },
+  { id: 'preset-okr-tracker', label: '📊 OKR Tracker' },
+  { id: 'preset-knowledge-base', label: '🧠 Knowledge Base' },
+];
+
 export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
   onSelectTool,
-  onSelectCategory,
   onNavigateTo
 }) => {
-  const [activeCategory, setActiveCategory] = useState<string>('calculators');
-  const [activeSubcategory, setActiveSubcategory] = useState<string | null>(null);
-  const [activeSubSubcategory, setActiveSubSubcategory] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  // Category state (Default selected: PDF Suite)
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>('pdf');
+  
+  // Subcategory state (Default selected: Convert)
+  const [selectedSubcategoryId, setSelectedSubcategoryId] = useState<string>('convert');
 
-  const handleCategoryClick = (categoryId: string) => {
-    setActiveCategory(categoryId);
-    setActiveSubcategory(null);
-    setActiveSubSubcategory(null);
-    if (onSelectCategory) {
-      onSelectCategory(categoryId);
+  // Dedicated single tool modal state
+  const [activeSingleTool, setActiveSingleTool] = useState<MasterToolItem | null>(null);
+
+  // Active Category Object
+  const currentCategory = useMemo(() => {
+    return MASTER_CATEGORIES.find(c => c.id === selectedCategoryId) || MASTER_CATEGORIES[0];
+  }, [selectedCategoryId]);
+
+  // Active Subcategory Object
+  const currentSubcategory = useMemo(() => {
+    const found = currentCategory.subcategories.find(s => s.id === selectedSubcategoryId);
+    return found || currentCategory.subcategories[0] || null;
+  }, [currentCategory, selectedSubcategoryId]);
+
+  // Handler to open single tool
+  const openSingleTool = (tool: MasterToolItem) => {
+    setActiveSingleTool(tool);
+    if (onSelectTool) {
+      onSelectTool(tool.id);
     }
   };
 
-  const currentCategoryObj = CATEGORY_TREE[activeCategory] || CATEGORY_TREE['calculators'];
-
-  // Map category key to ALL_DIRECTORY_TOOLS category
-  const getMappedCategory = (catKey: string) => {
-    if (catKey === 'calculators') return 'calculator';
-    if (catKey === 'ai-writing') return 'ai-study';
-    if (catKey === 'career-ats') return 'job-ats';
-    if (catKey === 'developer') return 'dev-pro';
-    return catKey;
+  // Handler for category selection
+  const handleSelectCategory = (catId: string) => {
+    setSelectedCategoryId(catId);
+    const cat = MASTER_CATEGORIES.find(c => c.id === catId);
+    if (cat && cat.subcategories.length > 0) {
+      setSelectedSubcategoryId(cat.subcategories[0].id);
+    }
   };
 
-  const mappedCat = getMappedCategory(activeCategory);
-  const categoryTools = ALL_DIRECTORY_TOOLS.filter(t => t.category === mappedCat);
-
-  // Robust matching for subcategory to prevent 0 tools blank bug
-  const getMatchingToolsForSub = (subName: string, subs: string[]) => {
-    const subNameLower = subName.toLowerCase();
-    let matched = categoryTools.filter(t => {
-      const tSub = ((t as any).subcategory || '').toLowerCase();
-      const tName = t.name.toLowerCase();
-      const tDesc = t.description.toLowerCase();
-      
-      const matchSub = tSub.includes(subNameLower) || subNameLower.includes(tSub);
-      const matchSubs = subs.some(s => tName.includes(s.toLowerCase()) || tDesc.includes(s.toLowerCase()));
-      return matchSub || matchSubs;
-    });
-
-    // Fallback if strict match yields 0
-    if (matched.length === 0) {
-      matched = categoryTools.filter(t => {
-        const text = `${t.name} ${t.description} ${t.categoryName || ''}`.toLowerCase();
-        return subs.some(s => {
-          const words = s.toLowerCase().split(/[\s-/]+/);
-          return words.some(w => w.length > 3 && text.includes(w));
-        });
-      });
-    }
-
-    // Ultimate fallback so no subcategory is ever blank
-    if (matched.length === 0) {
-      const subKeys = Object.keys(currentCategoryObj.subcategories);
-      const index = subKeys.indexOf(subName);
-      const chunkSize = Math.max(1, Math.ceil(categoryTools.length / subKeys.length));
-      matched = categoryTools.slice(index * chunkSize, (index + 1) * chunkSize);
-    }
-
-    return matched;
+  // Reset all filters
+  const handleResetFilters = () => {
+    setSelectedCategoryId('pdf');
+    setSelectedSubcategoryId('convert');
   };
-
-  // Dynamic filtered tools inside Box 1
-  const getFilteredTools = () => {
-    let tools = categoryTools;
-    if (searchTerm) {
-      const q = searchTerm.toLowerCase();
-      tools = tools.filter(t => t.name.toLowerCase().includes(q) || t.description.toLowerCase().includes(q) || t.slug.toLowerCase().includes(q));
-    }
-    if (activeSubcategory) {
-      const subData = currentCategoryObj.subcategories[activeSubcategory];
-      tools = getMatchingToolsForSub(activeSubcategory, subData?.subs || []);
-    }
-    if (activeSubSubcategory) {
-      tools = tools.filter(t => 
-        t.name.toLowerCase().includes(activeSubSubcategory.toLowerCase()) || 
-        t.description.toLowerCase().includes(activeSubSubcategory.toLowerCase())
-      );
-    }
-    return tools;
-  };
-
-  const filteredTools = getFilteredTools();
 
   return (
-    <div className="w-full bg-white border border-[#E2E8F0] rounded-3xl p-6 sm:p-8 shadow-sm my-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-[#F1F5F9]">
-        <div>
+    <div className="w-full space-y-10 my-6 font-sans">
+      
+      {/* ======================================================== */}
+      {/* SECTION 1 - 6 CATEGORY BOXES (2 Rows x 3 Columns)       */}
+      {/* ======================================================== */}
+      <section className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#D4AF37] animate-pulse"></span>
+              Select Category Suite
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-300 mt-1">
+              Click any category box below to explore its subcategories and single tool pages.
+            </p>
+          </div>
           <div className="flex items-center gap-2">
-            <span className="bg-[#0A1931] text-[#C5A059] text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest font-mono">
-              3-Level Royal Directory
+            <span className="bg-[#0F2340] text-[#D4AF37] border border-[#D4AF37]/30 text-xs font-bold px-3 py-1 rounded-full font-mono">
+              4,753 Tools Active
             </span>
-            <span className="text-xs text-slate-500 font-medium">{categoryTools.length} Browser-Native Tools in Category</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-serif-royal font-bold text-[#0A1931] mt-2">
-            Explore by Category, Subcategory & Operation
-          </h2>
-          <p className="text-sm text-slate-600 mt-1">
-            Crystal-clear organization designed to help you find your exact tool in seconds with zero clutter. Click any category to filter instantly below.
-          </p>
         </div>
 
-        {/* Quick Search */}
-        <div className="relative w-full md:w-72">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search tools & subcategories..."
-            className="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl outline-none focus:ring-2 focus:ring-[#0A1931] text-slate-800 font-medium"
-          />
-        </div>
-      </div>
-
-      {/* LEVEL 1: PRIMARY CATEGORIES (6 CARDS - 100% CLICKABLE WITH POINTER-EVENTS-NONE ON BADGES) */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">
-        {Object.entries(CATEGORY_TREE).map(([key, cat]) => {
-          const isSelected = activeCategory === key;
-          return (
-            <div
-              key={key}
-              onClick={() => handleCategoryClick(key)}
-              className={`p-4 rounded-2xl border text-left flex flex-col justify-between transition-all duration-300 relative overflow-hidden group cursor-pointer ${
-                isSelected
-                  ? 'bg-[#0A1931] text-white border-[#0A1931] shadow-lg scale-[1.02]'
-                  : 'bg-[#F8FAFC] hover:bg-white text-[#0A1931] border-[#E2E8F0] hover:border-[#0A1931]/60 shadow-xs hover:shadow-md'
-              }`}
-            >
-              {cat.highlight && (
-                <div className="absolute top-2 right-2 bg-[#C5A059] text-[#0A1931] text-[9px] font-bold px-2 py-0.5 rounded-full pointer-events-none z-10 shadow-xs uppercase tracking-wider">
-                  Most Popular
-                </div>
-              )}
-
-              <div className="pointer-events-none">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-2xl group-hover:scale-110 transition-transform inline-block">{cat.icon}</span>
-                  <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full ${
-                    isSelected ? 'bg-white/20 text-[#C5A059]' : 'bg-slate-200/70 text-slate-700'
-                  }`}>
-                    {cat.count}+
-                  </span>
-                </div>
-                <div>
-                  <h4 className={`text-xs sm:text-sm font-bold font-serif-royal leading-snug ${isSelected ? 'text-white' : 'text-[#0A1931]'}`}>
-                    {cat.label}
-                  </h4>
-                </div>
-              </div>
-
-              <div className="mt-3 pt-2 border-t border-slate-200/20 flex items-center justify-between text-[10px] font-bold pointer-events-none opacity-80 group-hover:opacity-100">
-                <span className={isSelected ? 'text-[#C5A059]' : 'text-[#0A1931]'}>Browse Tools</span>
-                <ArrowRight className="w-3 h-3" />
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* SINGLE UNIFIED BOX (BOX 1 ONLY - NO BOX 2) */}
-      <div id="tools-grid-section" className="bg-[#0F2340] border border-[#D4AF37]/25 rounded-2xl p-6 sm:p-8 text-[#FFFEF7] shadow-xl">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-[#D4AF37]/20">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">{currentCategoryObj.icon}</span>
-            <div>
-              <h3 className="text-xl sm:text-2xl font-bold font-serif-royal text-[#FFFEF7]">
-                {currentCategoryObj.label} Subcategories & Tool Operations
-              </h3>
-              <p className="text-xs text-[#D4AF37] font-mono mt-0.5">
-                {categoryTools.length} Utilities Available • Click subcategory or preview chips for iLovePDF-style single tool pages
-              </p>
-            </div>
-          </div>
-          {(activeSubcategory || activeSubSubcategory || searchTerm) && (
-            <button
-              onClick={() => {
-                setActiveSubcategory(null);
-                setActiveSubSubcategory(null);
-                setSearchTerm('');
-              }}
-              className="text-xs font-bold bg-[#D4AF37] text-[#0A1931] px-4 py-2 rounded-xl hover:bg-[#FFFEF7] transition-colors shadow-xs"
-            >
-              Reset All Filters
-            </button>
-          )}
-        </div>
-
-        {/* Subcategory Cards Grid with Dynamic Actual Counts & Clickable Preview Chips */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
-          {Object.entries(currentCategoryObj.subcategories).map(([subName, subData]) => {
-            const isSubSelected = activeSubcategory === subName;
-            const subTools = getMatchingToolsForSub(subName, subData.subs);
-            const actualCount = subTools.length;
-
+        {/* 6 Category Grid: 3 columns desktop, 2 cols tablet, 1 col mobile */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {MASTER_CATEGORIES.map((cat) => {
+            const isSelected = selectedCategoryId === cat.id;
             return (
               <div
-                key={subName}
-                onClick={() => {
-                  setActiveSubcategory(isSubSelected ? null : subName);
-                  setActiveSubSubcategory(null);
-                }}
-                className={`border rounded-xl p-4 cursor-pointer transition-all flex flex-col justify-between ${
-                  isSubSelected 
-                    ? 'bg-[#0A1931] border-[#D4AF37] shadow-lg ring-1 ring-[#D4AF37]' 
-                    : 'bg-[#0A1931]/60 border-[#D4AF37]/20 hover:border-[#D4AF37]/60'
+                key={cat.id}
+                onClick={() => handleSelectCategory(cat.id)}
+                className={`min-h-[180px] rounded-xl p-6 transition-all duration-200 cursor-pointer flex flex-col justify-between group relative overflow-hidden ${
+                  isSelected 
+                    ? 'bg-[#0A1931] border-2 border-[#D4AF37] shadow-[0_0_25px_rgba(212,175,55,0.3)] ring-1 ring-[#D4AF37]' 
+                    : 'bg-[#0F2340] border border-[#D4AF37]/20 hover:border-[#D4AF37]/60 hover:shadow-[0_0_20px_rgba(212,175,55,0.18)] hover:-translate-y-0.5'
                 }`}
               >
+                {/* Subtle corner badge / glow */}
+                {isSelected && (
+                  <div className="absolute top-0 right-0 w-16 h-16 bg-[#D4AF37]/10 rounded-bl-full pointer-events-none" />
+                )}
+
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="text-sm font-bold text-[#FFFEF7] flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-[#D4AF37]" />
-                      {subName}
-                    </h4>
-                    <span className="text-[10px] font-mono font-bold bg-[#0A1931] text-[#D4AF37] px-2 py-0.5 rounded border border-[#D4AF37]/30">
-                      {actualCount} tools
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="w-12 h-12 rounded-xl bg-[#0A1931] border border-[#D4AF37]/30 flex items-center justify-center text-2xl shadow-sm group-hover:scale-105 transition-transform">
+                      {cat.icon}
+                    </div>
+                    <span className="bg-[#0A1931] text-[#D4AF37] text-xs font-bold px-2.5 py-1 rounded-full border border-[#D4AF37]/30 font-mono">
+                      {cat.countDisplay}
                     </span>
                   </div>
 
-                  {/* Clickable Preview Chips (iLovePDF Style) */}
-                  <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-[#D4AF37]/10">
-                    {subTools.slice(0, 4).map(tool => {
-                      const toolSlug = tool.slug || tool.id;
-                      return (
-                        <button
-                          key={tool.id}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const targetPath = `/tools/${toolSlug}`;
-                            if (onNavigateTo) {
-                              onNavigateTo(targetPath);
-                            } else {
-                              window.location.href = targetPath;
-                            }
-                          }}
-                          className="text-[10px] bg-[#0A1931] text-[#FFFEF7]/90 hover:text-[#D4AF37] border border-[#D4AF37]/30 hover:border-[#D4AF37] px-2 py-0.5 rounded-md cursor-pointer transition-colors truncate max-w-[140px]"
-                          title={tool.name}
-                        >
-                          {tool.name}
-                        </button>
-                      );
-                    })}
-                    {subTools.length > 4 && (
-                      <span className="text-[10px] text-[#D4AF37]/70 px-1 py-0.5">
-                        +{subTools.length - 4} more
-                      </span>
-                    )}
-                  </div>
+                  <h3 className={`text-xl font-bold transition-colors ${
+                    isSelected ? 'text-[#D4AF37]' : 'text-white group-hover:text-[#D4AF37]'
+                  }`}>
+                    {cat.name}
+                  </h3>
+
+                  <p className="text-xs text-gray-300 mt-2 line-clamp-2 leading-relaxed">
+                    {cat.description}
+                  </p>
                 </div>
 
-                <div className="mt-3 pt-2 border-t border-[#D4AF37]/10 flex items-center justify-between text-xs text-[#D4AF37]">
-                  <span>{isSubSelected ? 'Selected (Click to Reset)' : `Select Subcategory (${actualCount})`}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                <div className="pt-4 border-t border-[#D4AF37]/15 flex items-center justify-between text-xs font-bold text-[#D4AF37]">
+                  <span>{isSelected ? 'Active Suite Selected' : 'Browse Tools'}</span>
+                  <ArrowRight className={`w-4 h-4 transition-transform ${isSelected ? 'translate-x-1' : 'group-hover:translate-x-1'}`} />
                 </div>
               </div>
             );
           })}
         </div>
+      </section>
 
-        {/* TOOLS GRID INSIDE THE SAME UNIFIED BOX (SINGLE TOOL SINGLE PAGE NAVIGATION) */}
-        <div className="mt-6 pt-6 border-t border-[#D4AF37]/25">
-          <div className="flex items-center justify-between mb-4">
-            <h4 className="text-base font-bold font-serif-royal text-[#FFFEF7] flex items-center gap-2">
-              <span>{activeSubcategory ? `Tools in "${activeSubcategory}"` : `All Tools in ${currentCategoryObj.label}`}</span>
-              <span className="text-xs font-mono font-normal text-[#D4AF37]">({filteredTools.length} items)</span>
-            </h4>
-          </div>
+      {/* ======================================================== */}
+      {/* SECTION 2 - BIG NOTION BOX (3 BOXES WIDTH - FULL ROW)    */}
+      {/* ======================================================== */}
+      <section className="w-full">
+        <div className="w-full min-h-[300px] bg-[#0A1931] border-2 border-[#D4AF37]/40 rounded-2xl p-6 sm:p-8 relative overflow-hidden shadow-[0_0_30px_rgba(212,175,55,0.25)] border-l-4 border-l-[#D4AF37]">
+          {/* Header Row */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-[#D4AF37]/20 pb-5">
+            <div>
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">⚡</span>
+                <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                  Custom Notion Template & Database Builder
+                </h3>
+                <span className="bg-[#D4AF37] text-[#0A1931] text-xs font-black px-2.5 py-0.5 rounded-full font-mono uppercase shadow-sm">
+                  NEW
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm text-gray-300 mt-2 max-w-3xl leading-relaxed">
+                Design custom Notion databases with Title, Multi-select, Status, Date, Rating, Progress & 18 column types. Interactive live table preview, instant dummy data, and 1-click CSV download ready to import into Notion.
+              </p>
+            </div>
 
-          {filteredTools.length === 0 ? (
-            <div className="text-center py-10 bg-[#0A1931] rounded-xl border border-[#D4AF37]/20">
-              <p className="text-sm font-bold text-[#FFFEF7]">No tools found matching your selection.</p>
+            {/* Quick Action Buttons */}
+            <div className="flex items-center gap-3 shrink-0">
               <button
-                onClick={() => { setActiveSubcategory(null); setActiveSubSubcategory(null); setSearchTerm(''); }}
-                className="mt-3 text-xs text-[#0A1931] bg-[#D4AF37] font-bold px-4 py-2 rounded-xl"
+                onClick={() => {
+                  if (onNavigateTo) onNavigateTo('/tools/notion-template-builder');
+                  else if (onSelectTool) onSelectTool('notion-template-builder');
+                }}
+                className="bg-[#D4AF37] hover:bg-[#E5C158] text-[#0A1931] font-bold px-5 py-2.5 rounded-xl text-xs sm:text-sm transition-all shadow-lg flex items-center gap-2 cursor-pointer"
               >
-                Reset Filters
+                <span>Launch Custom Builder</span>
+                <ArrowRight className="w-4 h-4" />
               </button>
             </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {filteredTools.map(tool => {
-                const toolSlug = tool.slug || tool.id;
-                return (
-                  <div
-                    key={tool.id}
-                    onClick={() => {
-                      const targetPath = `/tools/${toolSlug}`;
-                      if (onNavigateTo) {
-                        onNavigateTo(targetPath);
-                      } else {
-                        window.location.href = targetPath;
-                      }
-                    }}
-                    className="bg-[#0A1931] border border-[#D4AF37]/20 hover:border-[#D4AF37]/85 rounded-xl p-4 cursor-pointer flex flex-col justify-between shadow-xs hover:shadow-md transition-all group"
-                  >
-                    <div>
-                      <div className="flex items-center justify-between gap-2 mb-1.5">
-                        <h5 className="text-xs sm:text-sm font-bold text-[#FFFEF7] group-hover:text-[#D4AF37] transition-colors leading-snug">
-                          {tool.name}
-                        </h5>
-                        {tool.isFlagship && (
-                          <span className="bg-[#D4AF37]/20 text-[#D4AF37] text-[9px] font-bold px-1.5 py-0.5 rounded border border-[#D4AF37]/30 shrink-0">
-                            FLAGSHIP
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-[11px] text-[#FFFEF7]/70 line-clamp-2 leading-relaxed">
-                        {tool.description}
-                      </p>
+          </div>
+
+          {/* Features Highlights */}
+          <div className="py-4 flex flex-wrap items-center gap-2 text-xs font-mono text-[#D4AF37]">
+            <span className="bg-[#0F2340] px-3 py-1 rounded-lg border border-[#D4AF37]/20">18 Column Types</span>
+            <span className="text-gray-500">•</span>
+            <span className="bg-[#0F2340] px-3 py-1 rounded-lg border border-[#D4AF37]/20">Live Table Preview</span>
+            <span className="text-gray-500">•</span>
+            <span className="bg-[#0F2340] px-3 py-1 rounded-lg border border-[#D4AF37]/20">Instant Dummy Data</span>
+            <span className="text-gray-500">•</span>
+            <span className="bg-[#0F2340] px-3 py-1 rounded-lg border border-[#D4AF37]/20">1-Click CSV Download</span>
+            <span className="text-gray-500">•</span>
+            <span className="bg-[#0F2340] px-3 py-1 rounded-lg border border-[#D4AF37]/20 text-emerald-400">Zero Signup</span>
+          </div>
+
+          {/* Mini Live Preview: Small table 3 rows x 4 cols */}
+          <div className="my-4 bg-[#0F2340] border border-[#D4AF37]/30 rounded-xl overflow-hidden shadow-inner">
+            <div className="bg-[#0A1931] px-4 py-2 border-b border-[#D4AF37]/20 flex items-center justify-between text-xs text-gray-300">
+              <span className="font-mono text-[#D4AF37] flex items-center gap-1.5 font-bold">
+                <Table className="w-3.5 h-3.5" /> Live Notion Database Preview
+              </span>
+              <span className="text-[11px] text-gray-400">Sample: Content Calendar</span>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="border-b border-[#D4AF37]/20 bg-[#0A1931]/60 text-gray-300">
+                    <th className="p-2.5 font-semibold">Title</th>
+                    <th className="p-2.5 font-semibold">Status</th>
+                    <th className="p-2.5 font-semibold">Due Date</th>
+                    <th className="p-2.5 font-semibold">Priority</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#D4AF37]/10 text-gray-200">
+                  <tr>
+                    <td className="p-2.5 font-medium text-white">Q3 Product Launch Video</td>
+                    <td className="p-2.5"><span className="bg-emerald-950 text-emerald-300 px-2 py-0.5 rounded text-[11px]">In Progress</span></td>
+                    <td className="p-2.5 text-gray-300">Oct 14, 2026</td>
+                    <td className="p-2.5 text-[#D4AF37]">⭐⭐⭐⭐⭐</td>
+                  </tr>
+                  <tr>
+                    <td className="p-2.5 font-medium text-white">ATS Optimization Guide</td>
+                    <td className="p-2.5"><span className="bg-blue-950 text-blue-300 px-2 py-0.5 rounded text-[11px]">Completed</span></td>
+                    <td className="p-2.5 text-gray-300">Oct 18, 2026</td>
+                    <td className="p-2.5 text-[#D4AF37]">⭐⭐⭐⭐</td>
+                  </tr>
+                  <tr>
+                    <td className="p-2.5 font-medium text-white">Engineering Sprint Review</td>
+                    <td className="p-2.5"><span className="bg-amber-950 text-amber-300 px-2 py-0.5 rounded text-[11px]">Planned</span></td>
+                    <td className="p-2.5 text-gray-300">Oct 22, 2026</td>
+                    <td className="p-2.5 text-[#D4AF37]">⭐⭐⭐</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* 25 Preset Chips (Horizontal Scrollable) */}
+          <div className="space-y-2 mt-4">
+            <div className="flex items-center justify-between text-xs text-gray-300">
+              <span className="font-semibold text-white">25 Popular Notion Presets (Click any to load):</span>
+              <span className="text-[11px] text-[#D4AF37]">Scroll horizontally →</span>
+            </div>
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin">
+              {NOTION_PRESET_CHIPS.map((preset) => (
+                <button
+                  key={preset.id}
+                  onClick={() => {
+                    if (onNavigateTo) onNavigateTo('/tools/notion-template-builder');
+                    else if (onSelectTool) onSelectTool(preset.id);
+                  }}
+                  className="whitespace-nowrap px-3 py-1.5 rounded-lg bg-[#0F2340] border border-[#D4AF37]/25 hover:border-[#D4AF37] hover:bg-[#D4AF37]/10 text-xs text-gray-200 hover:text-white transition-colors cursor-pointer"
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================== */}
+      {/* SECTION 3 - SUBCATEGORIES (Shown BELOW Notion box)       */}
+      {/* ======================================================== */}
+      {currentCategory && (
+        <section className="space-y-5 pt-2">
+          {/* Subcategory Header with Reset Button */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#0F2340] border border-[#D4AF37]/30 rounded-xl p-4">
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
+                <span>{currentCategory.icon}</span>
+                <span>{currentCategory.name} Subcategories & Tool Operations</span>
+              </h3>
+              <p className="text-xs text-gray-300 mt-0.5">
+                {currentCategory.countDisplay} available • Click any subcategory card or click individual preview chips for iLovePDF-style single tool pages.
+              </p>
+            </div>
+
+            <button
+              onClick={handleResetFilters}
+              className="px-3.5 py-1.5 rounded-lg bg-[#0A1931] border border-[#D4AF37]/30 hover:border-[#D4AF37] text-xs font-semibold text-[#D4AF37] hover:text-white transition-colors flex items-center gap-1.5 self-start sm:self-auto cursor-pointer"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              Reset All Filters
+            </button>
+          </div>
+
+          {/* Grid: 3 columns subcategory cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {currentCategory.subcategories.map((sub) => {
+              const isSubSelected = selectedSubcategoryId === sub.id;
+              return (
+                <div
+                  key={sub.id}
+                  onClick={() => setSelectedSubcategoryId(sub.id)}
+                  className={`rounded-xl p-4 transition-all duration-200 cursor-pointer flex flex-col justify-between ${
+                    isSubSelected
+                      ? 'bg-[#0A1931] border-2 border-[#D4AF37] shadow-[0_0_20px_rgba(212,175,55,0.25)] ring-1 ring-[#D4AF37]'
+                      : 'bg-[#0A1931] border border-[#D4AF37]/25 hover:border-[#D4AF37]/60 hover:bg-[#0F2340]'
+                  }`}
+                >
+                  <div>
+                    {/* Header: Title + Dynamic Badge (e.g. 28 tools, 15 tools - NEVER 320!) */}
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className={`text-base font-bold transition-colors ${
+                        isSubSelected ? 'text-[#D4AF37]' : 'text-white'
+                      }`}>
+                        {sub.name}
+                      </h4>
+                      <span className="bg-[#0F2340] text-[#D4AF37] text-xs font-mono font-bold px-2 py-0.5 rounded-full border border-[#D4AF37]/30">
+                        {sub.count} tools
+                      </span>
                     </div>
 
-                    <div className="mt-3 pt-2 border-t border-[#D4AF37]/10 flex items-center justify-between text-[11px]">
-                      <span className="text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded font-mono text-[10px] border border-emerald-500/30">
-                        Single Tool Page
-                      </span>
-                      <span className="text-[#D4AF37] font-bold group-hover:underline flex items-center gap-1 transition-all">
-                        Open Tool →
-                      </span>
+                    {/* Preview chips as clickable buttons -> Direct single tool page! */}
+                    <div className="flex flex-wrap gap-1.5 my-3">
+                      {sub.chips.map((chip, chipIdx) => {
+                        // Find matching tool item or fallback
+                        const matchingTool = sub.tools.find(t => 
+                          t.name.toLowerCase().includes(chip.toLowerCase()) || 
+                          chip.toLowerCase().includes(t.name.toLowerCase())
+                        ) || sub.tools[chipIdx % sub.tools.length] || {
+                          id: `${sub.id}-${chipIdx}`,
+                          slug: `${sub.id}-${chipIdx}`,
+                          name: chip,
+                          description: `Dedicated ${chip} tool page with 100% offline client-side processing.`,
+                          category: currentCategory.id,
+                          subcategory: sub.name,
+                          categoryName: currentCategory.name
+                        };
+
+                        return (
+                          <button
+                            key={chipIdx}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openSingleTool(matchingTool);
+                            }}
+                            className="text-[11px] font-medium px-2.5 py-1 rounded-md bg-[#0F2340] hover:bg-[#D4AF37] text-gray-200 hover:text-[#0A1931] border border-[#D4AF37]/20 hover:border-[#D4AF37] transition-all cursor-pointer flex items-center gap-1 group/chip"
+                          >
+                            <span>{chip}</span>
+                            <ArrowUpRight className="w-2.5 h-2.5 opacity-60 group-hover/chip:opacity-100" />
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
-                );
-              })}
+
+                  {/* Footer button */}
+                  <div className="pt-3 border-t border-[#D4AF37]/15 flex items-center justify-between text-xs font-bold text-[#D4AF37]">
+                    <span>Select Subcategory ({sub.count})</span>
+                    <ChevronRight className={`w-4 h-4 transition-transform ${isSubSelected ? 'translate-x-1' : ''}`} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* ======================================================== */}
+      {/* SECTION 4 - TOOLS LIST (When subcategory clicked)         */}
+      {/* ======================================================== */}
+      {currentSubcategory && (
+        <section className="space-y-4 pt-2">
+          <div className="flex items-center justify-between border-b border-[#D4AF37]/20 pb-3">
+            <div>
+              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <span>Tools in '{currentSubcategory.name}'</span>
+                <span className="text-xs font-mono text-[#D4AF37] bg-[#0A1931] border border-[#D4AF37]/30 px-2 py-0.5 rounded-full">
+                  {currentSubcategory.tools.length} Items
+                </span>
+              </h3>
+              <p className="text-xs text-gray-300 mt-0.5">
+                Every tool opens in its own dedicated single page with working client-side processing.
+              </p>
             </div>
-          )}
-        </div>
-      </div>
+          </div>
+
+          {/* Grid: 3 columns tool cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {currentSubcategory.tools.map((tool) => (
+              <div
+                key={tool.id}
+                onClick={() => openSingleTool(tool)}
+                className="bg-[#0A1931] border border-[#D4AF37]/25 hover:border-[#D4AF37] hover:shadow-[0_0_20px_rgba(212,175,55,0.2)] rounded-xl p-4 transition-all duration-200 cursor-pointer flex flex-col justify-between group"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="text-sm font-bold text-white group-hover:text-[#D4AF37] transition-colors line-clamp-1">
+                      {tool.name}
+                    </h4>
+                  </div>
+
+                  <p className="text-xs text-gray-300 line-clamp-2 leading-relaxed">
+                    {tool.description}
+                  </p>
+
+                  <div className="flex items-center gap-2 mt-3">
+                    <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded">
+                      Single Tool Page
+                    </span>
+                    <span className="text-[10px] font-mono font-bold text-blue-400 bg-blue-950/60 border border-blue-500/30 px-2 py-0.5 rounded">
+                      Working 100%
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mt-4 pt-3 border-t border-[#D4AF37]/15 flex items-center justify-between text-xs font-bold text-[#D4AF37]">
+                  <span>Open Tool</span>
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ======================================================== */}
+      {/* SECTION 5 - SINGLE TOOL PAGE MODAL / DEDICATED VIEW     */}
+      {/* ======================================================== */}
+      {activeSingleTool && (
+        <DedicatedSingleToolModal
+          tool={activeSingleTool}
+          categoryName={currentCategory.name}
+          subcategoryName={currentSubcategory ? currentSubcategory.name : currentCategory.name}
+          relatedTools={currentSubcategory ? currentSubcategory.tools.filter(t => t.id !== activeSingleTool.id) : []}
+          onClose={() => setActiveSingleTool(null)}
+          onSelectTool={(tool) => setActiveSingleTool(tool)}
+          onNavigateTo={onNavigateTo}
+        />
+      )}
+
     </div>
   );
 };

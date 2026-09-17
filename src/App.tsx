@@ -7,7 +7,6 @@ import {
 import { ToolCategory, RecentTool } from './types';
 import { LeftSidebar } from './components/LeftSidebar';
 import { RightSidebar } from './components/RightSidebar';
-import { DabbaGrid } from './components/DabbaGrid';
 import { RoyalCategoryExplorer } from './components/RoyalCategoryExplorer';
 import { CommandKSearch } from './components/CommandKSearch';
 import { AdSenseBanner } from './components/AdSenseBanner';
@@ -714,27 +713,11 @@ export default function App() {
 
 
 
-          {/* ROYAL ELEGANT 3-LEVEL CATEGORY SYSTEM */}
+          {/* ROYAL ELEGANT 3-LEVEL CATEGORY SYSTEM: 6 BOXES + BIG NOTION BOX + SUBCATEGORIES + TOOLS */}
           <RoyalCategoryExplorer 
             onSelectTool={handleOpenTool}
             onNavigateTo={navigateTo}
           />
-
-          {/* THE 7 DABBA GRID (2 Rows x 3 Columns + 1 Full Width Notion Builder) */}
-          <section className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-[#0B1F3A] flex items-center gap-2">
-                <span>Featured Tool Categories</span>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#EBF3FF] text-[#126BFF] border border-[#C8DDFF]">7 Working Clusters</span>
-              </h2>
-            </div>
-
-            <DabbaGrid 
-              onOpenCategory={(cat) => setSelectedCategory(cat)}
-              onOpenTool={handleOpenTool}
-              onNavigateTo={navigateTo}
-            />
-          </section>
 
           {/* Center Bottom AdSense 728x90 */}
           <div className="w-full pt-2">
