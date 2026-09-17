@@ -40,23 +40,23 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
   const mappedCat = getMappedCategory(activeCategory);
   const categoryTools = ALL_DIRECTORY_TOOLS.filter(t => t.category === mappedCat);
 
-  // Filter tools by subcategory/sub-subcategory or search term
-  const filteredTools = categoryTools.filter(t => {
-    const matchesSearch = searchTerm === '' || 
-      t.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      t.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      t.slug.toLowerCase().includes(searchTerm.toLowerCase());
+  // Dynamic filtered tools inside Box 1
+  const getFilteredTools = () => {
+    let tools = categoryTools;
+    if (searchTerm) {
+      const q = searchTerm.toLowerCase();
+      tools = tools.filter(t => t.name.toLowerCase().includes(q) || t.description.toLowerCase().includes(q) || t.slug.toLowerCase().includes(q));
+    }
+    if (activeSubcategory) {
+      tools = tools.filter(t => t.categoryName?.toLowerCase().includes(activeSubcategory.toLowerCase()) || t.description.toLowerCase().includes(activeSubcategory.toLowerCase()));
+    }
+    if (activeSubSubcategory) {
+      tools = tools.filter(t => t.name.toLowerCase().includes(activeSubSubcategory.toLowerCase()) || t.description.toLowerCase().includes(activeSubSubcategory.toLowerCase()));
+    }
+    return tools;
+  };
 
-    const matchesSub = !activeSubcategory || 
-      t.categoryName?.toLowerCase().includes(activeSubcategory.toLowerCase()) ||
-      t.description.toLowerCase().includes(activeSubcategory.toLowerCase());
-
-    const matchesSubSub = !activeSubSubcategory ||
-      t.name.toLowerCase().includes(activeSubSubcategory.toLowerCase()) ||
-      t.description.toLowerCase().includes(activeSubSubcategory.toLowerCase());
-
-    return matchesSearch && matchesSub && matchesSubSub;
-  });
+  const filteredTools = getFilteredTools();
 
   return (
     <div className="w-full bg-white border border-[#E2E8F0] rounded-3xl p-6 sm:p-8 shadow-sm my-6">
@@ -134,22 +134,36 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
         })}
       </div>
 
-      {/* LEVEL 2 & 3: SUBCATEGORIES & SUB-SUBCATEGORIES & TOOLS (SINGLE UNIFIED BOX - NO DUPLICATE BOX) */}
-      <div id="tools-grid-section" className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-6">
-        <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#E2E8F0]">
-          <div className="flex items-center gap-2">
-            <span className="text-xl">{currentCategoryObj.icon}</span>
-            <h3 className="text-lg font-bold font-serif-royal text-[#0A1931]">
-              {currentCategoryObj.label} Subcategories & Tool Operations
-            </h3>
+      {/* SINGLE UNIFIED BOX (BOX 1 ONLY - NO BOX 2) */}
+      <div id="tools-grid-section" className="bg-[#0F2340] border border-[#D4AF37]/25 rounded-2xl p-6 sm:p-8 text-[#FFFEF7] shadow-xl">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-[#D4AF37]/20">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">{currentCategoryObj.icon}</span>
+            <div>
+              <h3 className="text-xl sm:text-2xl font-bold font-serif-royal text-[#FFFEF7]">
+                {currentCategoryObj.label} Subcategories & Tool Operations
+              </h3>
+              <p className="text-xs text-[#D4AF37] font-mono mt-0.5">
+                {categoryTools.length} Utilities Available • Click any subcategory to filter tools instantly
+              </p>
+            </div>
           </div>
-          <span className="text-xs font-mono font-bold text-slate-500 bg-white px-3 py-1 rounded-xl border border-slate-200">
-            {filteredTools.length} Utilities Available
-          </span>
+          {(activeSubcategory || activeSubSubcategory || searchTerm) && (
+            <button
+              onClick={() => {
+                setActiveSubcategory(null);
+                setActiveSubSubcategory(null);
+                setSearchTerm('');
+              }}
+              className="text-xs font-bold bg-[#D4AF37] text-[#0A1931] px-4 py-2 rounded-xl hover:bg-[#FFFEF7] transition-colors shadow-xs"
+            >
+              Reset All Filters
+            </button>
+          )}
         </div>
 
-        {/* Subcategories grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+        {/* Subcategory Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
           {Object.entries(currentCategoryObj.subcategories).map(([subName, subData]) => {
             const isSubSelected = activeSubcategory === subName;
             return (
@@ -159,86 +173,74 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
                   setActiveSubcategory(isSubSelected ? null : subName);
                   setActiveSubSubcategory(null);
                 }}
-                className={`bg-white border rounded-2xl p-4 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer ${
-                  isSubSelected ? 'border-[#0A1931] ring-2 ring-[#0A1931]/10' : 'border-[#E2E8F0] hover:border-[#0A1931]'
+                className={`border rounded-xl p-4 cursor-pointer transition-all flex flex-col justify-between ${
+                  isSubSelected 
+                    ? 'bg-[#0A1931] border-[#D4AF37] shadow-lg ring-1 ring-[#D4AF37]' 
+                    : 'bg-[#0A1931]/60 border-[#D4AF37]/20 hover:border-[#D4AF37]/60'
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="text-xs sm:text-sm font-bold text-[#0A1931] group-hover:text-[#C5A059] transition-colors flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-[#C5A059]" />
+                    <h4 className="text-sm font-bold text-[#FFFEF7] flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-[#D4AF37]" />
                       {subName}
                     </h4>
-                    <span className="text-[10px] font-mono font-bold bg-[#F8FAFC] text-slate-600 px-2 py-0.5 rounded-md border border-slate-200">
+                    <span className="text-[10px] font-mono font-bold bg-[#0A1931] text-[#D4AF37] px-2 py-0.5 rounded border border-[#D4AF37]/30">
                       {subData.count} tools
                     </span>
                   </div>
 
-                  {/* Sub-subcategories */}
-                  <div className="space-y-1 mt-2 pt-2 border-t border-[#F1F5F9]">
+                  {/* Sub-subcategory chips */}
+                  <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-[#D4AF37]/10">
                     {subData.subs.map((subSub, idx) => {
                       const isSubSubSelected = activeSubSubcategory === subSub;
                       return (
-                        <div
+                        <button
                           key={idx}
                           onClick={(e) => {
                             e.stopPropagation();
                             setActiveSubcategory(subName);
                             setActiveSubSubcategory(isSubSubSelected ? null : subSub);
                           }}
-                          className={`text-xs p-1 rounded-lg cursor-pointer flex items-center justify-between transition-colors font-medium ${
+                          className={`text-[11px] px-2 py-1 rounded-lg font-medium transition-colors ${
                             isSubSubSelected
-                              ? 'bg-[#0A1931] text-white'
-                              : 'text-slate-600 hover:text-[#0A1931] hover:bg-[#F8FAFC]'
+                              ? 'bg-[#D4AF37] text-[#0A1931] font-bold'
+                              : 'bg-[#0A1931] text-[#FFFEF7]/80 hover:text-[#FFFEF7] border border-[#D4AF37]/20'
                           }`}
                         >
-                          <span className="flex items-center gap-1 truncate">
-                            <ChevronRight className="w-3 h-3 text-[#C5A059] shrink-0" />
-                            <span className="truncate">{subSub}</span>
-                          </span>
-                        </div>
+                          {subSub}
+                        </button>
                       );
                     })}
                   </div>
                 </div>
 
-                <div className="mt-3 pt-2 border-t border-slate-100 w-full text-[11px] font-bold text-[#0A1931] group-hover:text-[#C5A059] flex items-center justify-between transition-colors">
-                  <span>{isSubSelected ? 'Active Filter (Click to Reset)' : `Filter ${subName}`}</span>
-                  <ArrowRight className="w-3 h-3" />
+                <div className="mt-3 pt-2 border-t border-[#D4AF37]/10 flex items-center justify-between text-xs text-[#D4AF37]">
+                  <span>{isSubSelected ? 'Selected (Click to Reset)' : 'Select Subcategory'}</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </div>
               </div>
             );
           })}
         </div>
 
-        {/* Tools grid inside the SAME unified box (No second duplicate box) */}
-        <div className="mt-6 pt-6 border-t border-slate-200">
+        {/* TOOLS GRID INSIDE THE SAME UNIFIED BOX (DYNAMICALLY LOADED IN PLACE OF BOX 2) */}
+        <div className="mt-6 pt-6 border-t border-[#D4AF37]/25">
           <div className="flex items-center justify-between mb-4">
-            <h4 className="text-sm font-bold font-serif-royal text-[#0A1931]">
-              Tools for {activeSubcategory || currentCategoryObj.label} ({filteredTools.length})
+            <h4 className="text-base font-bold font-serif-royal text-[#FFFEF7] flex items-center gap-2">
+              <span>{activeSubcategory ? `Tools in "${activeSubcategory}"` : `All Tools in ${currentCategoryObj.label}`}</span>
+              <span className="text-xs font-mono font-normal text-[#D4AF37]">({filteredTools.length} items)</span>
             </h4>
-            {(activeSubcategory || activeSubSubcategory || searchTerm) && (
-              <button
-                onClick={() => {
-                  setActiveSubcategory(null);
-                  setActiveSubSubcategory(null);
-                  setSearchTerm('');
-                }}
-                className="text-xs font-bold text-blue-600 hover:underline bg-white px-3 py-1 rounded-lg border border-slate-200"
-              >
-                Reset All Filters
-              </button>
-            )}
           </div>
 
           {filteredTools.length === 0 ? (
-            <div className="text-center py-8 bg-white rounded-xl border border-slate-200">
-              <p className="text-xs font-bold text-slate-700">No matching tools found in this view.</p>
+            <div className="text-center py-10 bg-[#0A1931] rounded-xl border border-[#D4AF37]/20">
+              <p className="text-sm font-bold text-[#FFFEF7]">No tools found matching your selection.</p>
               <button
                 onClick={() => { setActiveSubcategory(null); setActiveSubSubcategory(null); setSearchTerm(''); }}
-                className="mt-2 text-xs text-blue-600 font-bold underline"
+                className="mt-3 text-xs text-[#0A1931] bg-[#D4AF37] font-bold px-4 py-2 rounded-xl"
               >
-                Clear filters
+                Reset Filters
               </button>
             </div>
           ) : (
@@ -250,29 +252,29 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
                     console.log('Tool clicked:', tool.id);
                     onSelectTool(tool.id);
                   }}
-                  className="bg-white border border-slate-200 hover:border-[#0A1931] rounded-xl p-4 cursor-pointer flex flex-col justify-between shadow-2xs hover:shadow-md transition-all group"
+                  className="bg-[#0A1931] border border-[#D4AF37]/20 hover:border-[#D4AF37]/80 rounded-xl p-4 cursor-pointer flex flex-col justify-between shadow-xs hover:shadow-md transition-all group"
                 >
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-1.5">
-                      <h5 className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-[#C5A059] transition-colors leading-snug">
+                      <h5 className="text-xs sm:text-sm font-bold text-[#FFFEF7] group-hover:text-[#D4AF37] transition-colors leading-snug">
                         {tool.name}
                       </h5>
                       {tool.isFlagship && (
-                        <span className="bg-amber-100 text-amber-950 text-[9px] font-bold px-1.5 py-0.5 rounded shrink-0">
+                        <span className="bg-[#D4AF37]/20 text-[#D4AF37] text-[9px] font-bold px-1.5 py-0.5 rounded border border-[#D4AF37]/30 shrink-0">
                           FLAGSHIP
                         </span>
                       )}
                     </div>
-                    <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed">
+                    <p className="text-[11px] text-[#FFFEF7]/70 line-clamp-2 leading-relaxed">
                       {tool.description}
                     </p>
                   </div>
 
-                  <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
-                    <span className="text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-mono text-[10px]">
+                  <div className="mt-3 pt-2 border-t border-[#D4AF37]/10 flex items-center justify-between text-[11px]">
+                    <span className="text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded font-mono text-[10px] border border-emerald-500/30">
                       Working 100%
                     </span>
-                    <span className="text-[#0A1931] font-bold group-hover:text-[#C5A059] flex items-center gap-1 transition-colors">
+                    <span className="text-[#D4AF37] font-bold group-hover:underline flex items-center gap-1 transition-all">
                       Launch Tool <ArrowRight className="w-3 h-3" />
                     </span>
                   </div>
