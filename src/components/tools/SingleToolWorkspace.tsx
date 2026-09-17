@@ -56,7 +56,8 @@ export const SingleToolWorkspace: React.FC<SingleToolWorkspaceProps> = ({
   const normSlug = toolSlug.toLowerCase();
 
   // Determine tool type
-  const isPdfToJpg = normSlug.includes('pdf-to-jpg') || normSlug.includes('pdf-to-jpeg') || normSlug.includes('pdf-to-png') || normSlug.includes('pdf-to-image');
+  const isJpgToPdf = normSlug.includes('jpg-to-pdf') || normSlug.includes('image-to-pdf') || normSlug.includes('png-to-pdf') || normSlug.includes('word-to-pdf') || normSlug.includes('excel-to-pdf') || normSlug.includes('ppt-to-pdf');
+  const isPdfToJpg = (normSlug.includes('pdf-to-jpg') || normSlug.includes('pdf-to-jpeg') || normSlug.includes('pdf-to-png') || normSlug.includes('pdf-to-image')) && !isJpgToPdf;
   const isPdfMerge = normSlug.includes('merge') || normSlug.includes('combine');
   const isPdfSplit = normSlug.includes('split') || normSlug.includes('extract-page') || normSlug.includes('delete-page');
   const isPdfCompress = (normSlug.includes('compress') || normSlug.includes('reduce-size') || normSlug.includes('optimizer')) && (toolCategory === 'pdf' || normSlug.includes('pdf'));
@@ -64,7 +65,7 @@ export const SingleToolWorkspace: React.FC<SingleToolWorkspaceProps> = ({
   const isEmiCalc = normSlug.includes('emi') || normSlug.includes('loan-calculator') || normSlug.includes('mortgage');
   const isSipCalc = normSlug.includes('sip') || normSlug.includes('mutual-fund') || normSlug.includes('compound-interest');
   const isNotion = normSlug.includes('notion');
-  const isImageTool = (toolCategory === 'image' || normSlug.includes('image') || normSlug.includes('img-') || normSlug.includes('compress') || normSlug.includes('resize') || normSlug.includes('jpg') || normSlug.includes('png') || normSlug.includes('webp') || normSlug.includes('svg-optimizer') || normSlug.includes('background-remover') || normSlug.includes('photo') || normSlug.includes('picture')) && !isPdfCompress && !isPdfToJpg && !isPdfMerge && !isPdfSplit && !isPdfToWord;
+  const isImageTool = (toolCategory === 'image' || normSlug.includes('image') || normSlug.includes('img-') || normSlug.includes('compress') || normSlug.includes('resize') || normSlug.includes('webp') || normSlug.includes('svg-optimizer') || normSlug.includes('background-remover') || normSlug.includes('photo') || normSlug.includes('picture')) && !isPdfCompress && !isPdfToJpg && !isPdfMerge && !isPdfSplit && !isPdfToWord && !isJpgToPdf && !normSlug.includes('pdf') && toolCategory !== 'pdf';
 
   // ==========================================
   // 1. PDF TO JPG / PNG CONVERTER STATES

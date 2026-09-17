@@ -229,23 +229,37 @@ export function getTools(categoryId: string, subcategoryId: string): ToolItemExt
     if (matched.length > targetCount) {
       matched = matched.slice(0, targetCount);
     } else if (matched.length < targetCount) {
-      // Complement with generated high-fidelity tool variants based on subcategory keywords
+      // Complement with generated high-fidelity unique tool variants
       const needed = targetCount - matched.length;
       const baseNames = keywords.length > 0 ? keywords : [rawSub];
+      const modifiers = [
+        'Advanced', 'Fast', 'Pro', 'Enterprise', 'Batch', 'HD', 'Instant', 'Secure', 'Ultimate', 'Plus', 
+        'Max', 'Turbo', 'Express', 'Expert', 'Master', 'Elite', 'Studio', 'Toolkit', 'Special Edition', 'Pro Plus', 
+        'Optimized', 'Precision', 'Enterprise Pro', 'Cloud', 'Direct', 'Global', 'Prime', 'Select', 'Signature', 'V2',
+        'Alpha', 'Beta', 'Gamma', 'Delta', 'Omega', 'Supreme', 'Ultra', 'Infinite', 'Total', 'Complete', 'Plus Pro'
+      ];
       for (let i = 0; i < needed; i++) {
         const kw = baseNames[i % baseNames.length];
         const formattedName = kw.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-        const slug = `${canonicalSub}-${kw.replace(/ /g, '-')}-${i + 1}`;
-        matched.push({
-          id: slug,
-          slug: slug,
-          name: `${formattedName} Pro Tool #${i + 1}`,
-          category: normCat,
-          subcategory: canonicalSub,
-          categoryName: normCat.toUpperCase(),
-          description: `Dedicated ${formattedName} client-side utility with 100% in-browser processing, instant execution, and zero watermark.`,
-          isFlagship: i === 0
-        });
+        const modIndex = Math.floor(i / baseNames.length);
+        const mod = modifiers[modIndex % modifiers.length];
+        const absoluteIndex = matched.length + i + 1;
+        const slug = `${canonicalSub}-${kw.replace(/ /g, '-')}-${mod.toLowerCase().replace(/ /g, '-')}-${absoluteIndex}`;
+        const name = `${formattedName} ${mod} #${absoluteIndex}`;
+        
+        // Ensure slug is unique
+        if (!matched.some(t => t.slug === slug)) {
+          matched.push({
+            id: slug,
+            slug: slug,
+            name: name,
+            category: normCat,
+            subcategory: canonicalSub,
+            categoryName: normCat.toUpperCase(),
+            description: `Dedicated ${formattedName} (${mod}) client-side utility with 100% in-browser processing, instant execution, and zero watermark.`,
+            isFlagship: false
+          });
+        }
       }
     }
   }
