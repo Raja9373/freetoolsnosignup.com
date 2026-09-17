@@ -6,11 +6,13 @@ import { ChevronRight, ArrowRight, Sparkles, Layers, Search, Flame, FolderTree, 
 interface RoyalCategoryExplorerProps {
   onSelectTool: (toolId: string) => void;
   onSelectCategory?: (categoryKey: string) => void;
+  onNavigateTo?: (path: string) => void;
 }
 
 export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
   onSelectTool,
-  onSelectCategory
+  onSelectCategory,
+  onNavigateTo
 }) => {
   const [activeCategory, setActiveCategory] = useState<string>('calculators');
   const [activeSubcategory, setActiveSubcategory] = useState<string | null>(null);
@@ -40,6 +42,17 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
   const mappedCat = getMappedCategory(activeCategory);
   const categoryTools = ALL_DIRECTORY_TOOLS.filter(t => t.category === mappedCat);
 
+  // Compute dynamic count for a subcategory to prevent mismatch (e.g. 85 vs 26)
+  const getSubcategoryCount = (subName: string, subs: string[]) => {
+    return categoryTools.filter(t => {
+      const matchSub = t.categoryName?.toLowerCase().includes(subName.toLowerCase()) ||
+        t.description.toLowerCase().includes(subName.toLowerCase()) ||
+        t.name.toLowerCase().includes(subName.toLowerCase()) ||
+        subs.some(subSub => t.name.toLowerCase().includes(subSub.toLowerCase()) || t.description.toLowerCase().includes(subSub.toLowerCase()));
+      return matchSub;
+    }).length;
+  };
+
   // Dynamic filtered tools inside Box 1
   const getFilteredTools = () => {
     let tools = categoryTools;
@@ -48,10 +61,23 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
       tools = tools.filter(t => t.name.toLowerCase().includes(q) || t.description.toLowerCase().includes(q) || t.slug.toLowerCase().includes(q));
     }
     if (activeSubcategory) {
-      tools = tools.filter(t => t.categoryName?.toLowerCase().includes(activeSubcategory.toLowerCase()) || t.description.toLowerCase().includes(activeSubcategory.toLowerCase()));
+      tools = tools.filter(t => {
+        const subData = currentCategoryObj.subcategories[activeSubcategory];
+        const matchName = t.categoryName?.toLowerCase().includes(activeSubcategory.toLowerCase()) ||
+          t.description.toLowerCase().includes(activeSubcategory.toLowerCase()) ||
+          t.name.toLowerCase().includes(activeSubcategory.toLowerCase());
+        const matchSubs = subData?.subs?.some(subSub => 
+          t.name.toLowerCase().includes(subSub.toLowerCase()) || 
+          t.description.toLowerCase().includes(subSub.toLowerCase())
+        );
+        return matchName || matchSubs;
+      });
     }
     if (activeSubSubcategory) {
-      tools = tools.filter(t => t.name.toLowerCase().includes(activeSubSubcategory.toLowerCase()) || t.description.toLowerCase().includes(activeSubSubcategory.toLowerCase()));
+      tools = tools.filter(t => 
+        t.name.toLowerCase().includes(activeSubSubcategory.toLowerCase()) || 
+        t.description.toLowerCase().includes(activeSubSubcategory.toLowerCase())
+      );
     }
     return tools;
   };
@@ -66,7 +92,7 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
             <span className="bg-[#0A1931] text-[#C5A059] text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest font-mono">
               3-Level Royal Directory
             </span>
-            <span className="text-xs text-slate-500 font-medium">4,753 Browser-Native Tools</span>
+            <span className="text-xs text-slate-500 font-medium">{categoryTools.length} Browser-Native Tools in Category</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-serif-royal font-bold text-[#0A1931] mt-2">
             Explore by Category, Subcategory & Operation
@@ -144,7 +170,7 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
                 {currentCategoryObj.label} Subcategories & Tool Operations
               </h3>
               <p className="text-xs text-[#D4AF37] font-mono mt-0.5">
-                {categoryTools.length} Utilities Available • Click any subcategory to filter tools instantly
+                {categoryTools.length} Utilities Available • Click any subcategory to filter tools instantly (Dynamic Count)
               </p>
             </div>
           </div>
@@ -162,10 +188,11 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
           )}
         </div>
 
-        {/* Subcategory Cards Grid */}
+        {/* Subcategory Cards Grid with Dynamic Actual Counts (Fixed Mismatch) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
           {Object.entries(currentCategoryObj.subcategories).map(([subName, subData]) => {
             const isSubSelected = activeSubcategory === subName;
+            const actualCount = getSubcategoryCount(subName, subData.subs);
             return (
               <div
                 key={subName}
@@ -186,7 +213,7 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
                       {subName}
                     </h4>
                     <span className="text-[10px] font-mono font-bold bg-[#0A1931] text-[#D4AF37] px-2 py-0.5 rounded border border-[#D4AF37]/30">
-                      {subData.count} tools
+                      {actualCount} tools
                     </span>
                   </div>
 
@@ -224,7 +251,7 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
           })}
         </div>
 
-        {/* TOOLS GRID INSIDE THE SAME UNIFIED BOX (DYNAMICALLY LOADED IN PLACE OF BOX 2) */}
+        {/* TOOLS GRID INSIDE THE SAME UNIFIED BOX (SINGLE TOOL SINGLE PAGE NAVIGATION) */}
         <div className="mt-6 pt-6 border-t border-[#D4AF37]/25">
           <div className="flex items-center justify-between mb-4">
             <h4 className="text-base font-bold font-serif-royal text-[#FFFEF7] flex items-center gap-2">
@@ -245,41 +272,48 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {filteredTools.map(tool => (
-                <div
-                  key={tool.id}
-                  onClick={() => {
-                    console.log('Tool clicked:', tool.id);
-                    onSelectTool(tool.id);
-                  }}
-                  className="bg-[#0A1931] border border-[#D4AF37]/20 hover:border-[#D4AF37]/80 rounded-xl p-4 cursor-pointer flex flex-col justify-between shadow-xs hover:shadow-md transition-all group"
-                >
-                  <div>
-                    <div className="flex items-center justify-between gap-2 mb-1.5">
-                      <h5 className="text-xs sm:text-sm font-bold text-[#FFFEF7] group-hover:text-[#D4AF37] transition-colors leading-snug">
-                        {tool.name}
-                      </h5>
-                      {tool.isFlagship && (
-                        <span className="bg-[#D4AF37]/20 text-[#D4AF37] text-[9px] font-bold px-1.5 py-0.5 rounded border border-[#D4AF37]/30 shrink-0">
-                          FLAGSHIP
-                        </span>
-                      )}
+              {filteredTools.map(tool => {
+                const toolSlug = tool.slug || tool.id;
+                return (
+                  <div
+                    key={tool.id}
+                    onClick={() => {
+                      const targetPath = `/tools/${toolSlug}`;
+                      if (onNavigateTo) {
+                        onNavigateTo(targetPath);
+                      } else {
+                        window.location.href = targetPath;
+                      }
+                    }}
+                    className="bg-[#0A1931] border border-[#D4AF37]/20 hover:border-[#D4AF37]/85 rounded-xl p-4 cursor-pointer flex flex-col justify-between shadow-xs hover:shadow-md transition-all group"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between gap-2 mb-1.5">
+                        <h5 className="text-xs sm:text-sm font-bold text-[#FFFEF7] group-hover:text-[#D4AF37] transition-colors leading-snug">
+                          {tool.name}
+                        </h5>
+                        {tool.isFlagship && (
+                          <span className="bg-[#D4AF37]/20 text-[#D4AF37] text-[9px] font-bold px-1.5 py-0.5 rounded border border-[#D4AF37]/30 shrink-0">
+                            FLAGSHIP
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-[#FFFEF7]/70 line-clamp-2 leading-relaxed">
+                        {tool.description}
+                      </p>
                     </div>
-                    <p className="text-[11px] text-[#FFFEF7]/70 line-clamp-2 leading-relaxed">
-                      {tool.description}
-                    </p>
-                  </div>
 
-                  <div className="mt-3 pt-2 border-t border-[#D4AF37]/10 flex items-center justify-between text-[11px]">
-                    <span className="text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded font-mono text-[10px] border border-emerald-500/30">
-                      Working 100%
-                    </span>
-                    <span className="text-[#D4AF37] font-bold group-hover:underline flex items-center gap-1 transition-all">
-                      Launch Tool <ArrowRight className="w-3 h-3" />
-                    </span>
+                    <div className="mt-3 pt-2 border-t border-[#D4AF37]/10 flex items-center justify-between text-[11px]">
+                      <span className="text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded font-mono text-[10px] border border-emerald-500/30">
+                        Single Tool Page
+                      </span>
+                      <span className="text-[#D4AF37] font-bold group-hover:underline flex items-center gap-1 transition-all">
+                        Open Tool →
+                      </span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

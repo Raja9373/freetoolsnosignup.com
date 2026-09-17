@@ -717,6 +717,7 @@ export default function App() {
           {/* ROYAL ELEGANT 3-LEVEL CATEGORY SYSTEM */}
           <RoyalCategoryExplorer 
             onSelectTool={handleOpenTool}
+            onNavigateTo={navigateTo}
           />
 
           {/* THE 7 DABBA GRID (2 Rows x 3 Columns + 1 Full Width Notion Builder) */}
