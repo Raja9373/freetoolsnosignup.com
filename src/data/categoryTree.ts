@@ -14,14 +14,12 @@ export interface CategoryNode {
 
 export const CATEGORY_TREE: Record<string, CategoryNode> = {
   pdf: {
-    label: 'PDF Suite', icon: '📄', count: 320, color: '#0A1931',
+    label: 'PDF Suite', icon: '📄', count: 57, color: '#0A1931',
     subcategories: {
-      'Convert': { count: 85, subs: ['PDF to Word/Excel/PPT', 'Word/Excel/PPT to PDF', 'PDF to JPG/PNG', 'JPG/PNG to PDF', 'ePub/Mobi to PDF'] },
-      'Merge & Split': { count: 55, subs: ['Merge PDFs', 'Split PDF', 'Extract Pages', 'Reorder Pages', 'Rotate Pages'] },
-      'Compress & Optimize': { count: 40, subs: ['Compress PDF', 'Reduce Size', 'Optimize for Web', 'Repair PDF'] },
-      'Edit & Organize': { count: 60, subs: ['Edit Text', 'Add Watermark', 'Add Page Numbers', 'Crop Pages', 'Add Header Footer'] },
-      'Security & Sign': { count: 50, subs: ['Protect PDF', 'Unlock PDF', 'eSign PDF', 'Add Password', 'Remove Password'] },
-      'OCR & Extract': { count: 30, subs: ['OCR PDF', 'Extract Text', 'Extract Images', 'Extract Tables'] }
+      'Convert': { count: 28, subs: ['PDF to Word/Excel/PPT', 'Word/Excel/PPT to PDF', 'PDF to JPG/PNG', 'JPG/PNG to PDF', 'ePub/Mobi to PDF'] },
+      'Merge & Split': { count: 15, subs: ['Merge PDFs', 'Split PDF', 'Extract Pages', 'Reorder Pages', 'Rotate Pages'] },
+      'Compress & Optimize': { count: 8, subs: ['Compress PDF', 'Reduce Size', 'Optimize for Web', 'Repair PDF'] },
+      'Security & Sign': { count: 6, subs: ['Protect PDF', 'Unlock PDF', 'eSign PDF', 'Add Password', 'Remove Password'] }
     }
   },
   image: {

@@ -141,9 +141,7 @@ export const MASTER_CATEGORIES: MasterCategory[] = [
       { id: 'convert', name: 'Convert', count: 28, chips: ['PDF to Word', 'PDF to Excel', 'PDF to JPG', 'Word to PDF'], tools: PDF_CONVERT_TOOLS },
       { id: 'merge-split', name: 'Merge & Split', count: 15, chips: ['PDF Merge', 'PDF Split', 'Extract Pages', 'Reorder Pages'], tools: PDF_MERGE_SPLIT_TOOLS },
       { id: 'compress', name: 'Compress & Optimize', count: 8, chips: ['Compress PDF', 'Reduce Size', 'Optimize for Web', 'Repair PDF'], tools: PDF_COMPRESS_TOOLS },
-      { id: 'edit', name: 'Edit & Organize', count: 10, chips: ['Edit Text', 'Add Watermark', 'Add Page Numbers', 'Crop Pages'], tools: PDF_EDIT_TOOLS },
-      { id: 'security', name: 'Security & Sign', count: 12, chips: ['Protect PDF', 'Unlock PDF', 'eSign PDF', 'Add Password'], tools: PDF_SECURITY_TOOLS },
-      { id: 'ocr', name: 'OCR & Extract', count: 10, chips: ['OCR PDF', 'Extract Text', 'Extract Images', 'Extract Tables'], tools: PDF_OCR_TOOLS }
+      { id: 'security', name: 'Security & Sign', count: 6, chips: ['Protect PDF', 'Unlock PDF', 'eSign PDF', 'Add Password'], tools: PDF_SECURITY_TOOLS.slice(0, 6) }
     ]
   },
   {
@@ -157,7 +155,7 @@ export const MASTER_CATEGORIES: MasterCategory[] = [
       {
         id: 'img-compress-resize',
         name: 'Compress & Resize',
-        count: 90,
+        count: 4,
         chips: ['Lossless Compressor', 'Bulk Resizer', 'Target Size KB', 'Scale Down 4K'],
         tools: [
           { id: 'image-compressor', slug: 'image-compressor', name: 'Lossless Image Compressor', description: 'Compress JPG, PNG, and WebP images with real-time byte savings.', category: 'image', subcategory: 'Compress & Resize', categoryName: 'Image & Media', isFlagship: true },
@@ -169,7 +167,7 @@ export const MASTER_CATEGORIES: MasterCategory[] = [
       {
         id: 'img-convert',
         name: 'Convert Format',
-        count: 80,
+        count: 4,
         chips: ['PNG to JPG', 'JPG to WebP', 'HEIC to JPG', 'ICO Favicon'],
         tools: [
           { id: 'image-converter', slug: 'image-converter', name: 'Image Format Converter (PNG/JPG/WebP)', description: 'Convert between PNG, JPEG, WebP, SVG, and BMP formats in browser memory.', category: 'image', subcategory: 'Convert Format', categoryName: 'Image & Media', isFlagship: true },
@@ -181,7 +179,7 @@ export const MASTER_CATEGORIES: MasterCategory[] = [
       {
         id: 'img-edit-enhance',
         name: 'Edit & Enhance',
-        count: 120,
+        count: 4,
         chips: ['AI Background Remover', 'Image Cropper', 'Rotator & Flipper', 'Photo Filters'],
         tools: [
           { id: 'bg-remover', slug: 'bg-remover', name: 'AI Background Remover', description: 'Isolate subjects and eliminate photo backgrounds with transparency in browser RAM.', category: 'image', subcategory: 'Edit & Enhance', categoryName: 'Image & Media', isFlagship: true },
@@ -193,7 +191,7 @@ export const MASTER_CATEGORIES: MasterCategory[] = [
       {
         id: 'img-color-palette',
         name: 'Color & Palette',
-        count: 40,
+        count: 2,
         chips: ['Palette Generator', 'Eyedropper Tool', 'Hex Code Picker', 'Gradient Maker'],
         tools: [
           { id: 'color-palette-extractor', slug: 'color-palette-extractor', name: 'Color Palette & Eyedropper', description: 'Extract dominant color palettes and copy CSS hex codes directly.', category: 'image', subcategory: 'Color & Palette', categoryName: 'Image & Media', isFlagship: true },
@@ -203,7 +201,7 @@ export const MASTER_CATEGORIES: MasterCategory[] = [
       {
         id: 'img-audio-video',
         name: 'Audio & Video Tools',
-        count: 80,
+        count: 2,
         chips: ['Audio Converter', 'Video Trimmer', 'MP3 Cutter', 'GIF Maker'],
         tools: [
           { id: 'audio-cutter', slug: 'audio-cutter', name: 'Audio Trimmer & Ringtone Maker', description: 'Cut and trim MP3, WAV, and AAC audio tracks directly in browser memory.', category: 'image', subcategory: 'Audio & Video Tools', categoryName: 'Image & Media' },

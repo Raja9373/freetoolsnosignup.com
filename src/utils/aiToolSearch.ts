@@ -1,5 +1,6 @@
 import Fuse, { IFuseOptions } from 'fuse.js';
 import toolsData from '../data/tools.json';
+import { MASTER_CATEGORIES } from '../data/masterCategoryData';
 
 export interface SearchableTool {
   id: string;
@@ -7,11 +8,27 @@ export interface SearchableTool {
   name: string;
   category: string;
   categoryName: string;
+  subcategory?: string;
   description: string;
   isFlagship?: boolean;
   intentKeywords?: string;
   hindiKeywords?: string;
   spanishKeywords?: string;
+}
+
+// Build subcategory lookup map from MASTER_CATEGORIES
+const SUBCATEGORY_LOOKUP = new Map<string, string>();
+try {
+  MASTER_CATEGORIES.forEach(cat => {
+    cat.subcategories.forEach(sub => {
+      sub.tools.forEach(tool => {
+        if (tool.slug) SUBCATEGORY_LOOKUP.set(tool.slug.toLowerCase(), sub.name);
+        if (tool.id) SUBCATEGORY_LOOKUP.set(tool.id.toLowerCase(), sub.name);
+      });
+    });
+  });
+} catch {
+  // Graceful fallback
 }
 
 // Multilingual Intent Map for popular requests
@@ -20,6 +37,16 @@ const INTENT_MAPPINGS: Record<string, { hi: string; es: string; en: string }> = 
     hi: 'pdf jodna hai pdf combine jodo ek sath merge files',
     es: 'unir pdf combinar pdf juntar documentos',
     en: 'merge pdf combine join multiple files together'
+  },
+  'pdf-to-word': {
+    hi: 'pdf se word convert docx editable text',
+    es: 'convertir pdf a word docx documento',
+    en: 'pdf to word docx extract convert document'
+  },
+  'word-to-pdf': {
+    hi: 'word se pdf banana docx to pdf',
+    es: 'word a pdf convertir documento',
+    en: 'word to pdf docx convert printable'
   },
   'pdf-split': {
     hi: 'pdf todna alag karna page nikalna extract cut',
@@ -100,17 +127,26 @@ const INTENT_MAPPINGS: Record<string, { hi: string; es: string; en: string }> = 
 
 // Enrich tools with multilingual intent keywords
 const ENRICHED_TOOLS: SearchableTool[] = (toolsData as any[]).map(tool => {
-  const mapping = INTENT_MAPPINGS[tool.id] || INTENT_MAPPINGS[tool.slug] || { hi: '', es: '', en: '' };
+  const toolId = tool.id || tool.slug || '';
+  const toolSlug = tool.slug || tool.id || '';
+  const mapping = INTENT_MAPPINGS[toolId] || INTENT_MAPPINGS[toolSlug] || { hi: '', es: '', en: '' };
   
+  const subcategory = 
+    tool.subcategory || 
+    SUBCATEGORY_LOOKUP.get(toolSlug.toLowerCase()) || 
+    SUBCATEGORY_LOOKUP.get(toolId.toLowerCase()) || 
+    (tool.category === 'pdf' ? 'Convert' : tool.category === 'image' ? 'Edit & Enhance' : 'General');
+
   // Generic keywords based on category and name
-  const genericKeywords = `${tool.name} ${tool.categoryName} ${tool.category} free no signup`;
+  const genericKeywords = `${tool.name} ${tool.categoryName || ''} ${tool.category || ''} ${subcategory} free no signup`;
 
   return {
-    id: tool.id || tool.slug,
-    slug: tool.slug || tool.id,
+    id: toolId,
+    slug: toolSlug,
     name: tool.name,
-    category: tool.category,
-    categoryName: tool.categoryName || `${tool.category.toUpperCase()} Tools`,
+    category: tool.category || 'tools',
+    categoryName: tool.categoryName || `${(tool.category || 'all').toUpperCase()} Tools`,
+    subcategory,
     description: tool.description || '',
     isFlagship: !!tool.isFlagship,
     intentKeywords: `${genericKeywords} ${mapping.en}`,
@@ -124,10 +160,11 @@ const FUSE_OPTIONS: IFuseOptions<SearchableTool> = {
   includeScore: true,
   keys: [
     { name: 'name', weight: 0.7 },
-    { name: 'hindiKeywords', weight: 0.65 },
-    { name: 'intentKeywords', weight: 0.6 },
+    { name: 'intentKeywords', weight: 0.65 },
+    { name: 'hindiKeywords', weight: 0.6 },
     { name: 'spanishKeywords', weight: 0.55 },
-    { name: 'description', weight: 0.5 },
+    { name: 'description', weight: 0.45 },
+    { name: 'subcategory', weight: 0.4 },
     { name: 'categoryName', weight: 0.3 },
     { name: 'category', weight: 0.2 }
   ]
@@ -142,30 +179,74 @@ export function getFuseInstance(): Fuse<SearchableTool> {
   return fuseInstance;
 }
 
-export function searchToolsSemantic(query: string, limit: number = 6): SearchableTool[] {
+// Stop words to strip for natural language intent detection
+const STOP_WORDS = new Set([
+  'i', 'me', 'my', 'myself', 'we', 'our', 'you', 'your', 'need', 'want', 'please', 
+  'help', 'can', 'how', 'to', 'do', 'the', 'a', 'an', 'and', 'or', 'for', 'with',
+  'in', 'on', 'at', 'by', 'from', 'of', 'tool', 'tools', 'free', 'online'
+]);
+
+export function searchToolsSemantic(query: string, limit: number = 20): SearchableTool[] {
   const trimmed = query.trim();
   if (!trimmed) return [];
 
-  const fuse = getFuseInstance();
-  const results = fuse.search(trimmed, { limit });
+  const lower = trimmed.toLowerCase();
 
-  if (results.length > 0) {
-    return results.map(r => r.item);
+  // Natural Language Intent normalization
+  // e.g. "I need to merge my pdfs" -> tokens: ["merge", "pdfs"]
+  const rawTokens = lower.split(/[^a-z0-9+#]+/).filter(Boolean);
+  const cleanTokens = rawTokens.filter(t => !STOP_WORDS.has(t));
+  const effectiveTokens = cleanTokens.length > 0 ? cleanTokens : rawTokens;
+
+  // Exact / High-priority matches (e.g. tool name includes "pdf to word", or tool includes all tokens)
+  const priorityMatches: SearchableTool[] = [];
+  const seenIds = new Set<string>();
+
+  // 1. Direct name or slug match
+  for (const tool of ENRICHED_TOOLS) {
+    const tName = tool.name.toLowerCase();
+    const tSlug = tool.slug.toLowerCase();
+    
+    // Exact or near-exact phrase match in name
+    if (tName.includes(lower) || tSlug.includes(lower.replace(/\s+/g, '-'))) {
+      priorityMatches.push(tool);
+      seenIds.add(tool.id);
+      if (priorityMatches.length >= limit) break;
+    }
   }
 
-  // Fallback: simple token substring match
-  const lower = trimmed.toLowerCase();
-  const tokens = lower.split(/\s+/).filter(t => t.length > 2);
-  
-  const fallback = ENRICHED_TOOLS.filter(t => {
-    const text = `${t.name} ${t.description} ${t.categoryName} ${t.intentKeywords || ''} ${t.hindiKeywords || ''}`.toLowerCase();
-    return tokens.some(tok => text.includes(tok));
-  }).slice(0, limit);
+  // 2. Token-based matching if under limit (all tokens must match)
+  if (priorityMatches.length < limit && effectiveTokens.length > 0) {
+    for (const tool of ENRICHED_TOOLS) {
+      if (seenIds.has(tool.id)) continue;
+      const haystack = `${tool.name} ${tool.subcategory || ''} ${tool.category} ${tool.description}`.toLowerCase();
+      const allMatch = effectiveTokens.every(tok => {
+        // Handle singular/plural roughly (e.g., pdfs -> pdf)
+        const singular = tok.endsWith('s') && tok.length > 3 ? tok.slice(0, -1) : tok;
+        return haystack.includes(tok) || haystack.includes(singular);
+      });
+      if (allMatch) {
+        priorityMatches.push(tool);
+        seenIds.add(tool.id);
+        if (priorityMatches.length >= limit) break;
+      }
+    }
+  }
 
-  if (fallback.length > 0) return fallback;
+  // 3. Fuse.js semantic fuzzy search
+  const fuse = getFuseInstance();
+  const searchPhrase = cleanTokens.join(' ') || trimmed;
+  const fuseResults = fuse.search(searchPhrase, { limit: limit * 2 });
 
-  // If still nothing, return popular flagships
-  return ENRICHED_TOOLS.filter(t => t.isFlagship).slice(0, limit);
+  for (const r of fuseResults) {
+    if (!seenIds.has(r.item.id)) {
+      priorityMatches.push(r.item);
+      seenIds.add(r.item.id);
+      if (priorityMatches.length >= limit) break;
+    }
+  }
+
+  return priorityMatches.slice(0, limit);
 }
 
 export function getAllSearchableTools(): SearchableTool[] {

@@ -370,7 +370,9 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
               <div>
                 <h2 className="text-lg sm:text-2xl font-bold text-white flex items-center gap-2">
                   <span>{currentCategory.icon}</span>
-                  <span>{currentCategory.name} Subcategories & Tool Operations - {currentCategory.countDisplay} Available</span>
+                  <span>
+                    {currentCategory.name} Subcategories & Tool Operations - {currentCategory.id === 'pdf' ? 57 : (currentCategory.count || currentCategory.subcategories.reduce((acc, s) => acc + s.tools.length, 0))} Utilities Available
+                  </span>
                 </h2>
                 <p className="text-xs text-gray-300 mt-0.5">
                   Click any subcategory card below to view its single tools or open individual tools directly.
@@ -422,7 +424,7 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
                         {sub.name}
                       </h4>
                       <span className="bg-[#0F2340] text-[#D4AF37] text-xs font-mono font-bold px-2 py-0.5 rounded-full border border-[#D4AF37]/30">
-                        {sub.count} tools
+                        {sub.tools.length} tools
                       </span>
                     </div>
 
@@ -471,7 +473,7 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
                       </div>
                     ) : (
                       <>
-                        <span>Select Subcategory ({sub.count})</span>
+                        <span>Select Subcategory ({sub.tools.length})</span>
                         <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                       </>
                     )}
@@ -505,8 +507,21 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
             </span>
           </div>
 
+          {/* Tools List Header with matched count */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-[#0F2340] border border-[#D4AF37]/40 rounded-xl p-3.5 px-4 mb-2 shadow-md">
+            <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+              <span>Tools in '{currentSubcategory.name}'</span>
+              <span className="text-[#D4AF37] font-mono text-xs sm:text-sm bg-[#0A1931] border border-[#D4AF37]/40 px-2.5 py-0.5 rounded-full">
+                ({currentSubcategory.tools.length} Items)
+              </span>
+            </h3>
+            <span className="text-xs text-gray-300">
+              Single Tool Pages • 100% Client-Side Processing
+            </span>
+          </div>
+
           {/* Connecting line */}
-          <div className="w-0.5 h-8 bg-gradient-to-b from-[#D4AF37] to-transparent mx-auto -mt-4 mb-4"></div>
+          <div className="w-0.5 h-8 bg-gradient-to-b from-[#D4AF37] to-transparent mx-auto -mt-2 mb-4"></div>
 
           {/* Tools Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

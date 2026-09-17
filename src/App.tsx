@@ -16,11 +16,9 @@ import { GeoFlagSwitcher } from './components/GeoFlagSwitcher';
 import { useTranslation } from './i18n/I18nContext';
 import { SUPPORTED_LANGUAGES } from './i18n/languages';
 import { PWAInstallBanner } from './components/PWAInstallBanner';
-import { AIToolFinder } from './components/AIToolFinder';
 import { ToolOfTheDay } from './components/ToolOfTheDay';
 import { EmailCapture } from './components/EmailCapture';
-
-import AiChatbotWidget from './components/AiChatbotWidget';
+import { searchToolsSemantic, SearchableTool } from './utils/aiToolSearch';
 
 // Dedicated Crawlable Pages
 import { AboutUs } from './pages/AboutUs';
@@ -71,8 +69,87 @@ export default function App() {
 
   const [isCmdKOpen, setIsCmdKOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<ToolCategory | null>(null);
-  const [searchFilter, setSearchFilter] = useState('');
-  const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
+  const searchContainerRef = React.useRef<HTMLDivElement>(null);
+
+  // Close AI search dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+        setIsSearchDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Global shortcut: Focus top AI search bar with Cmd+K or Ctrl+K
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        const input = document.getElementById('top-ai-search-input') as HTMLInputElement | null;
+        if (input) {
+          input.focus();
+          input.select();
+          setIsSearchDropdownOpen(true);
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // AI Semantic search results
+  const filteredSearchTools = React.useMemo(() => {
+    if (!searchQuery.trim()) return [];
+    return searchToolsSemantic(searchQuery, 30);
+  }, [searchQuery]);
+
+  const handleAISearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setSearchQuery(val);
+    setIsSearchDropdownOpen(val.trim().length > 0);
+  };
+
+  const handleSearchSubmit = () => {
+    if (!searchQuery.trim()) return;
+    if (filteredSearchTools.length > 0) {
+      const topTool = filteredSearchTools[0];
+      setIsSearchDropdownOpen(false);
+      setSearchQuery('');
+      recordToolUse(topTool.slug);
+      navigateTo(`/tools/${topTool.slug}`);
+    } else {
+      setIsSearchDropdownOpen(false);
+      const section = document.getElementById('subcategory-section') || document.getElementById('tools-section');
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSearchSubmit();
+    } else if (e.key === 'Escape') {
+      setIsSearchDropdownOpen(false);
+    }
+  };
+
+  const getCategoryIcon = (category: string) => {
+    const cat = (category || '').toLowerCase();
+    if (cat.includes('pdf')) return '📄';
+    if (cat.includes('image') || cat.includes('img')) return '🖼️';
+    if (cat.includes('calc') || cat.includes('math') || cat.includes('loan') || cat.includes('tax')) return '🧮';
+    if (cat.includes('ai') || cat.includes('study')) return '🤖';
+    if (cat.includes('job') || cat.includes('ats') || cat.includes('career')) return '💼';
+    if (cat.includes('dev') || cat.includes('code')) return '💻';
+    if (cat.includes('notion')) return '📓';
+    return '⚡';
+  };
 
   // Derive normalized route regardless of language prefix like /ja/about or /es/pdf-tools
   const normalizedPath = React.useMemo(() => {
@@ -293,16 +370,6 @@ export default function App() {
     setRecentTools([]);
   };
 
-  // Filtered tools for direct center search
-  const filteredTools = searchFilter.trim() 
-    ? TOOLS_DATABASE.filter(t => 
-        (activeCategoryFilter === 'all' || t.category === activeCategoryFilter) &&
-        (t.name.toLowerCase().includes(searchFilter.toLowerCase()) ||
-         t.description.toLowerCase().includes(searchFilter.toLowerCase()) ||
-         t.tags.some(tag => tag.toLowerCase().includes(searchFilter.toLowerCase())))
-      )
-    : [];
-
   // Routing Views: About, Privacy Policy, Contact, Terms, Disclaimer, Category Pages, Extension, Stats
   const renderCurrentPage = () => {
     if (normalizedPath === '/about') {
@@ -431,10 +498,11 @@ export default function App() {
     return (
       <div id="ftns-app-root" className="min-h-screen bg-[#F4F7FC] text-[#0B1F3A] flex flex-col font-sans selection:bg-[#D4AF37] selection:text-[#0A1931]">
       
-        {/* SIMPLE CLEAN ROYAL NAVY HEADER */}
-        <header className="w-full bg-[#0A1931] border-b border-[#D4AF37]/20 sticky top-0 z-40 shadow-md">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
+        {/* SINGLE TOP AI SEARCH BAR HEADER */}
+        <header className="sticky top-0 z-30 bg-[#0A1931] border-b border-[#D4AF37]/20 shadow-lg">
+          <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+            {/* Logo and Status Badges */}
+            <div className="flex items-center gap-3 shrink-0">
               <BrandLogo variant="header" onClick={() => navigateTo('/')} />
               <div className="hidden sm:flex items-center gap-2 pl-3 border-l border-[#D4AF37]/20">
                 <span className="text-xs font-black text-[#D4AF37] tracking-wider uppercase bg-[#0F2340] px-2.5 py-1 rounded-md border border-[#D4AF37]/30">
@@ -446,48 +514,82 @@ export default function App() {
               </div>
             </div>
 
-            {/* Quick Search trigger button */}
-            <div className="flex-1 max-w-md hidden md:block">
-              <button
-                onClick={() => setIsCmdKOpen(true)}
-                className="w-full py-2 px-3.5 bg-[#0F2340] hover:bg-[#142646] border border-[#D4AF37]/30 hover:border-[#D4AF37]/60 rounded-xl text-xs text-slate-300 flex items-center justify-between transition-all cursor-pointer shadow-inner"
+            {/* SINGLE AI SEARCH BAR - CENTER - 1 ONLY */}
+            <div ref={searchContainerRef} className="flex-1 max-w-xl mx-auto relative">
+              <input 
+                id="top-ai-search-input"
+                type="text"
+                value={searchQuery}
+                placeholder="Search 4,753 tools or ask AI - e.g., 'pdf to word' or 'I need to merge PDFs'..."
+                className="w-full bg-[#0F2340] text-white placeholder-slate-400 border border-[#D4AF37]/30 rounded-full px-5 py-2.5 pr-12 text-sm focus:border-[#D4AF37] focus:shadow-[0_0_15px_rgba(212,175,55,0.3)] outline-none transition-all"
+                onChange={handleAISearch}
+                onKeyDown={handleSearchKeyDown}
+                onFocus={() => { if (searchQuery.trim()) setIsSearchDropdownOpen(true); }}
+              />
+              <button 
+                type="button"
+                onClick={handleSearchSubmit}
+                aria-label="Search with AI"
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#D4AF37] hover:bg-[#E5C158] text-[#0A1931] rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm cursor-pointer shadow-md transition-all"
               >
-                <div className="flex items-center gap-2">
-                  <Search className="w-4 h-4 text-[#D4AF37]" />
-                  <span className="text-slate-300">Search all 4,753 free tools...</span>
-                </div>
-                <span className="px-1.5 py-0.5 rounded bg-[#0A1931] border border-[#D4AF37]/30 text-[10px] font-mono text-[#D4AF37] font-bold">
-                  ⌘K
-                </span>
+                🔍
               </button>
+              
+              {/* AI Suggestions Dropdown - Shows when typing */}
+              {isSearchDropdownOpen && searchQuery.trim() && (
+                <div className="absolute top-full mt-2 w-full bg-[#0F2340] border border-[#D4AF37]/30 rounded-xl shadow-2xl max-h-96 overflow-y-auto z-50">
+                  <div className="p-2">
+                    <div className="text-xs text-[#D4AF37] font-semibold mb-2 px-2 flex items-center justify-between">
+                      <span>🤖 AI Found {filteredSearchTools.length} tools</span>
+                      <span className="text-[10px] text-gray-400">Enter for top match</span>
+                    </div>
+                    {filteredSearchTools.length === 0 ? (
+                      <div className="p-4 text-center text-xs text-gray-300">
+                        No matching tools found for "{searchQuery}".
+                      </div>
+                    ) : (
+                      filteredSearchTools.slice(0, 6).map(tool => (
+                        <button 
+                          key={tool.id}
+                          onClick={() => {
+                            setIsSearchDropdownOpen(false);
+                            setSearchQuery('');
+                            recordToolUse(tool.slug);
+                            navigateTo(`/tools/${tool.slug}`);
+                          }} 
+                          className="w-full text-left p-3 hover:bg-[#0A1931] rounded-lg flex items-center gap-3 transition-colors cursor-pointer group"
+                        >
+                          <span className="text-lg bg-[#0A1931] group-hover:bg-[#142646] p-1.5 rounded-md border border-[#D4AF37]/20 flex items-center justify-center shrink-0">
+                            {getCategoryIcon(tool.category)}
+                          </span>
+                          <div className="flex-1 min-w-0">
+                            <div className="font-bold text-sm text-white group-hover:text-[#D4AF37] truncate transition-colors">
+                              {tool.name}
+                            </div>
+                            <div className="text-xs text-gray-400 truncate">
+                              {tool.categoryName || tool.category} {tool.subcategory ? `• ${tool.subcategory}` : ''}
+                            </div>
+                          </div>
+                        </button>
+                      ))
+                    )}
+                    {filteredSearchTools.length > 0 && (
+                      <div className="border-t border-[#D4AF37]/20 mt-2 pt-2">
+                        <button 
+                          onClick={handleSearchSubmit}
+                          className="text-xs text-[#D4AF37] hover:text-white font-medium w-full text-center py-1.5 rounded transition-colors cursor-pointer"
+                        >
+                          Ask AI: "{searchQuery}" → Show all {filteredSearchTools.length} results
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Right Actions */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setIsCmdKOpen(true)}
-                className="md:hidden p-2 rounded-xl bg-[#0F2340] text-[#D4AF37] border border-[#D4AF37]/30"
-                title="Search tools"
-              >
-                <Search className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => navigateTo('/chrome-extension')}
-                className="hidden lg:flex px-3 py-1.5 rounded-xl bg-[#0F2340] hover:bg-[#152e54] text-[#FFFEF7] hover:text-[#D4AF37] border border-[#D4AF37]/20 text-xs font-bold items-center gap-1.5 transition cursor-pointer"
-                title="Install Chrome Extension"
-              >
-                <Chrome className="w-3.5 h-3.5 text-[#D4AF37]" />
-                <span>Extension</span>
-              </button>
-              <button
-                onClick={() => navigateTo('/stats')}
-                className="hidden sm:flex px-2.5 py-1.5 rounded-xl bg-[#0F2340] hover:bg-[#152e54] text-slate-300 hover:text-white border border-[#D4AF37]/20 text-xs font-bold items-center gap-1 shadow-2xs transition cursor-pointer"
-                title="Platform Analytics"
-              >
-                <BarChart3 className="w-3.5 h-3.5 text-[#D4AF37]" />
-                <span>Stats</span>
-              </button>
-              <GeoFlagSwitcher />
+            {/* Right: Language EN */}
+            <div className="flex items-center gap-2 shrink-0">
               <LanguageSwitcher />
             </div>
           </div>
@@ -518,125 +620,9 @@ export default function App() {
             <AdSenseBanner format="728x90" slotName="TopHeader" />
           </div>
 
-          {/* Search Box Card with Cmd+K Shortcut */}
-          <div className="w-full bg-white border border-[#E2E8F0] p-5 sm:p-6 rounded-3xl shadow-sm space-y-4">
-            <div className="relative flex items-center">
-              <Search className="w-5 h-5 text-[#475569] absolute left-4 pointer-events-none" />
-              <input
-                id="main-center-search-input"
-                type="text"
-                value={searchFilter}
-                onChange={(e) => setSearchFilter(e.target.value)}
-                placeholder={t('searchPlaceholder', `Search ${TOTAL_TOOLS_COUNT} working tools (ATS check, AI detector, PDF merge, Fake Data)...`)}
-                className="w-full pl-12 pr-28 py-3.5 sm:py-4 bg-[#F8FAFC] hover:bg-white focus:bg-white border-2 border-[#E2E8F0] focus:border-[#0A1931] focus:ring-4 focus:ring-[#0A1931]/5 rounded-2xl text-sm sm:text-base font-medium text-[#0F172A] placeholder:text-[#94A3B8] outline-none shadow-2xs transition-all"
-              />
-              <button
-                onClick={() => setIsCmdKOpen(true)}
-                className="absolute right-3.5 px-3 py-1.5 bg-white border border-[#E2E8F0] hover:border-[#0A1931] hover:text-[#0A1931] rounded-xl text-xs font-mono font-bold text-[#64748B] flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer"
-              >
-                <Command className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">K</span>
-              </button>
-            </div>
-
-            {/* Quick Filter Category Pills - Royal Styling */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs no-scrollbar">
-              {[
-                { id: 'All', label: `All (${TOTAL_TOOLS_COUNT})`, path: '/' },
-                { id: 'Notion Builder', label: `📓 Notion Builder (${NOTION_TOOLS_COUNT})`, path: '/notion-template-builder' },
-                { id: 'Job & Career', label: `💼 Job & Career (${JOB_ATS_TOOLS_COUNT})`, path: '/job-ats' },
-                { id: 'AI & Study', label: `🎓 AI & Study (${AI_STUDY_TOOLS_COUNT})`, path: '/ai-study' },
-                { id: 'Developer', label: `💻 Developer (${DEV_PRO_TOOLS_COUNT})`, path: '/dev-tools' },
-                { id: 'PDF Studio', label: `📄 PDF Studio (${PDF_TOOLS_COUNT})`, path: '/pdf-tools' },
-                { id: 'Image & Media', label: `🖼️ Image & Media (${IMAGE_TOOLS_COUNT})`, path: '/image-tools' },
-                { id: 'Calculators', label: `🧮 Calculators (${CALCULATOR_TOOLS_COUNT})`, path: '/calculators' },
-              ].map(tab => (
-                <button
-                  key={tab.id}
-                  onClick={() => {
-                    setActiveCategoryFilter(tab.id);
-                    if (tab.id === 'All') {
-                      navigateTo('/');
-                    } else if (tab.id === 'Notion Builder') {
-                      navigateTo('/notion-template-builder');
-                    } else if (tab.id === 'Job & Career') {
-                      navigateTo('/job-ats');
-                    } else if (tab.id === 'AI & Study') {
-                      navigateTo('/ai-study');
-                    } else if (tab.id === 'Developer') {
-                      navigateTo('/dev-tools');
-                    } else if (tab.id === 'PDF Studio') {
-                      navigateTo('/pdf-tools');
-                    } else if (tab.id === 'Image & Media') {
-                      navigateTo('/image-tools');
-                    } else if (tab.id === 'Calculators') {
-                      navigateTo('/calculators');
-                    }
-                  }}
-                  className={`px-3.5 py-2 rounded-xl font-medium whitespace-nowrap transition-all text-xs category-pill select-none cursor-pointer pointer-events-auto ${
-                    activeCategoryFilter === tab.id
-                      ? 'bg-[#0A1931] text-white shadow-sm border border-[#0A1931]'
-                      : 'bg-[#F8FAFC] hover:bg-[#F1F5F9] text-[#475569] hover:text-[#0F172A] border border-[#E2E8F0]'
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Search Results Dropdown if user typed in center search */}
-          {searchFilter.trim() && (
-            <div className="bg-white border border-[#CBD5E1] rounded-2xl p-5 shadow-xl space-y-3.5 animate-in fade-in">
-              <div className="flex items-center justify-between text-xs font-bold uppercase text-[#64748B]">
-                <span className="text-[#071A3D] font-extrabold">{t('matchingTools', 'Matching Tools')} ({filteredTools.length})</span>
-                <button onClick={() => setSearchFilter('')} className="text-[#FF7A00] hover:text-[#E66A00] font-bold hover:underline cursor-pointer">
-                  {t('clearSearch', 'Clear search')}
-                </button>
-              </div>
-
-              {filteredTools.length === 0 ? (
-                <div className="py-8 text-center text-[#64748B] text-sm">
-                  {t('noToolsFound', 'No tools found. Try another keyword.')}
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5 max-h-80 overflow-y-auto pr-1">
-                  {filteredTools.map(tool => (
-                    <div
-                      key={tool.id}
-                      onClick={() => handleOpenTool(tool.id)}
-                      className="p-3.5 bg-white border border-[#E2E8F0] hover:border-[#126BFF] hover:bg-[#F8FAFD] rounded-xl cursor-pointer transition-all flex flex-col justify-between shadow-2xs group"
-                    >
-                      <div>
-                        <div className="flex items-center justify-between">
-                          <h4 className="text-sm font-bold text-[#0B1F3A] group-hover:text-[#126BFF] transition-colors">{tool.name}</h4>
-                          <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-1.5 py-0.5 rounded font-bold">
-                            {tool.workingBadge}
-                          </span>
-                        </div>
-                        <p className="text-xs text-[#64748B] mt-1 line-clamp-2">{tool.description}</p>
-                      </div>
-                      <span className="text-xs font-bold text-[#FF7A00] group-hover:text-[#E66A00] mt-2.5 flex items-center gap-1">
-                        {t('runTool', 'Run Tool')} →
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* AI Semantic Tool Finder (Fuse.js powered natural language tool search) */}
-          <AIToolFinder 
-            onSelectTool={(slug) => {
-              recordToolUse(slug);
-              navigateTo(`/tools/${slug}`);
-            }} 
-          />
-
           {/* Hero Section */}
-          <div className="px-2 py-6 mb-2 text-center">
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-[#0A1931] mb-3 leading-tight text-center flex items-center justify-center gap-2">
+          <div className="px-2 py-4 mb-1 text-center">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-[#0A1931] mb-2 leading-tight text-center flex items-center justify-center gap-2">
               <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span>
               <span>4,753 Free Online Tools • No Signup • 100% Client-Side</span>
             </h1>
@@ -706,14 +692,6 @@ export default function App() {
     <>
       <PWAInstallBanner />
       {renderCurrentPage()}
-      <AiChatbotWidget
-        onOpenTool={(slug) => {
-          recordToolUse(slug);
-          navigateTo('/tools/' + slug);
-        }}
-        favorites={favorites}
-        onToggleFavorite={toggleFavorite}
-      />
     </>
   );
 }
