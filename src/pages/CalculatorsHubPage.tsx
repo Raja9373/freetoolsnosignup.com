@@ -77,9 +77,9 @@ export const CalculatorsHubPage: React.FC<CalculatorsHubPageProps> = ({ onNaviga
               <button 
                 onClick={() => {
                   if (cat.id === 'loans') {
-                    onNavigateTo('/calculators/emi-calculator');
+                    onNavigateTo('emi');
                   } else {
-                    onNavigateTo(`/calculators/${cat.id}`);
+                    onNavigateTo('calculators');
                   }
                 }}
                 className="w-full bg-[#0A1931] text-white hover:bg-[#142646] font-semibold py-2.5 px-4 rounded-xl text-sm transition-colors flex items-center justify-center gap-2 cursor-pointer"

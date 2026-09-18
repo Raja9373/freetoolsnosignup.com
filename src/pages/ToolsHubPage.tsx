@@ -61,7 +61,7 @@ export const ToolsHubPage: React.FC<ToolsHubPageProps> = ({ onNavigateHome, onNa
             </p>
           </div>
           <button 
-            onClick={() => onNavigateTo('/tools/pdf-to-word')}
+            onClick={() => onNavigateTo('pdf-to-word')}
             className="px-8 py-4 bg-white text-orange-600 font-extrabold text-sm rounded-2xl shadow-md hover:bg-orange-50 transition cursor-pointer shrink-0"
           >
             Launch PDF to Word →

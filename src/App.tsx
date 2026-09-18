@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Search, Wrench, Calculator, Sparkles, ArrowRight, Shield, Zap, Menu, X, ExternalLink, FileText, Image as ImageIcon, Video, Cpu, Layers, BookOpen } from 'lucide-react';
 import { Logo } from './components/Logo';
 import { ToolsHubPage } from './pages/ToolsHubPage';
@@ -6,7 +6,6 @@ import { CalculatorsHubPage } from './pages/CalculatorsHubPage';
 import { EMICalculatorPage } from './pages/EMICalculatorPage';
 import { PDFToWordPage } from './pages/PDFToWordPage';
 import { AIUpdatesHubPage } from './pages/AIUpdatesHubPage';
-import { BacklinksDirectoryPage } from './pages/BacklinksDirectoryPage';
 import { ProductDirectoryPage } from './pages/ProductDirectoryPage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
 import { AINewsPage } from './pages/AINewsPage';
@@ -17,96 +16,113 @@ import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { ContactUs } from './pages/ContactUs';
 import { TermsOfService } from './pages/TermsOfService';
 import { DisclaimerPage } from './pages/DisclaimerPage';
-import { Footer } from './components/Footer';
 
 export default function App() {
-  const [currentPath, setCurrentPath] = useState<string>(() => {
-    if (typeof window !== 'undefined') {
-      return window.location.pathname || '/';
-    }
-    return '/';
-  });
-
+  const [currentView, setCurrentView] = useState<string>('home');
+  const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const handlePopState = () => {
-      setCurrentPath(window.location.pathname || '/');
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
-
-  const navigateTo = (path: string) => {
-    window.history.pushState({}, '', path);
-    setCurrentPath(path);
+  const navigateTo = (pathOrView: string) => {
+    if (pathOrView.startsWith('/directory/')) {
+      const slug = pathOrView.replace('/directory/', '');
+      setSelectedSlug(slug);
+      setCurrentView('product-detail');
+    } else if (pathOrView.startsWith('/news/')) {
+      const slug = pathOrView.replace('/news/', '');
+      setSelectedSlug(slug);
+      setCurrentView('news-detail');
+    } else if (pathOrView === '/calculators/emi-calculator' || pathOrView === 'emi') {
+      setCurrentView('emi');
+    } else if (pathOrView === '/tools/pdf-to-word' || pathOrView === 'pdf-to-word') {
+      setCurrentView('pdf-to-word');
+    } else if (pathOrView === 'calculators') {
+      setCurrentView('calculators');
+    } else if (pathOrView === 'tools') {
+      setCurrentView('tools');
+    } else if (pathOrView === 'directory' || pathOrView === 'product-finder') {
+      setCurrentView('directory');
+    } else if (pathOrView === 'news') {
+      setCurrentView('news');
+    } else if (pathOrView === 'ai-updates' || pathOrView === 'ai') {
+      setCurrentView('ai-updates');
+    } else if (pathOrView === 'notion' || pathOrView === 'notion-templates') {
+      setCurrentView('notion');
+    } else if (pathOrView === 'about') {
+      setCurrentView('about');
+    } else if (pathOrView === 'privacy' || pathOrView === 'privacy-policy') {
+      setCurrentView('privacy');
+    } else if (pathOrView === 'contact') {
+      setCurrentView('contact');
+    } else if (pathOrView === 'terms' || pathOrView === 'terms-of-service') {
+      setCurrentView('terms');
+    } else if (pathOrView === 'disclaimer') {
+      setCurrentView('disclaimer');
+    } else {
+      setCurrentView(pathOrView);
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const normalizedPath = currentPath.replace(/\/+$/, '') || '/';
-
-  // Routing Views (Specific first, then wildcards/hubs)
-  if (normalizedPath === '/calculators/emi-calculator') {
-    return <EMICalculatorPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+  // Conditional rendering based on currentView state (No Next/Link, pure useState routing)
+  if (currentView === 'emi') {
+    return <EMICalculatorPage onNavigateHome={() => setCurrentView('home')} onNavigateTo={navigateTo} />;
   }
 
-  if (normalizedPath.startsWith('/calculators')) {
-    return <CalculatorsHubPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+  if (currentView === 'calculators') {
+    return <CalculatorsHubPage onNavigateHome={() => setCurrentView('home')} onNavigateTo={navigateTo} />;
   }
 
-  if (normalizedPath === '/tools/pdf-to-word') {
-    return <PDFToWordPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+  if (currentView === 'tools') {
+    return <ToolsHubPage onNavigateHome={() => setCurrentView('home')} onNavigateTo={navigateTo} />;
   }
 
-  if (normalizedPath.startsWith('/tools')) {
-    return <ToolsHubPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+  if (currentView === 'pdf-to-word') {
+    return <PDFToWordPage onNavigateHome={() => setCurrentView('home')} onNavigateTo={navigateTo} />;
   }
 
-  if (normalizedPath.startsWith('/news/')) {
-    const slug = normalizedPath.replace('/news/', '');
-    return <AINewsDetailPage slug={slug} onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+  if (currentView === 'directory') {
+    return <ProductDirectoryPage onNavigateHome={() => setCurrentView('home')} onNavigateTo={navigateTo} />;
   }
 
-  if (normalizedPath === '/news') {
-    return <AINewsPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+  if (currentView === 'product-detail') {
+    return <ProductDetailPage slug={selectedSlug || '1'} onNavigateHome={() => setCurrentView('home')} onNavigateTo={navigateTo} />;
   }
 
-  if (normalizedPath === '/ai-updates' || normalizedPath === '/ai') {
-    return <AIUpdatesHubPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+  if (currentView === 'news') {
+    return <AINewsPage onNavigateHome={() => setCurrentView('home')} onNavigateTo={navigateTo} />;
   }
 
-  if (normalizedPath.startsWith('/directory/')) {
-    const slug = normalizedPath.replace('/directory/', '');
-    return <ProductDetailPage slug={slug} onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+  if (currentView === 'news-detail') {
+    return <AINewsDetailPage slug={selectedSlug || '1'} onNavigateHome={() => setCurrentView('home')} onNavigateTo={navigateTo} />;
   }
 
-  if (normalizedPath === '/directory' || normalizedPath === '/product-finder') {
-    return <ProductDirectoryPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+  if (currentView === 'ai-updates') {
+    return <AIUpdatesHubPage onNavigateHome={() => setCurrentView('home')} onNavigateTo={navigateTo} />;
   }
 
-  if (normalizedPath === '/notion-templates') {
-    return <NotionTemplatesPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+  if (currentView === 'notion') {
+    return <NotionTemplatesPage onNavigateHome={() => setCurrentView('home')} onNavigateTo={navigateTo} />;
   }
 
-  if (normalizedPath === '/about') {
-    return <AboutUs onNavigateHome={() => navigateTo('/')} />;
+  if (currentView === 'about') {
+    return <AboutUs onNavigateHome={() => setCurrentView('home')} />;
   }
 
-  if (normalizedPath === '/privacy-policy') {
-    return <PrivacyPolicy onNavigateHome={() => navigateTo('/')} />;
+  if (currentView === 'privacy') {
+    return <PrivacyPolicy onNavigateHome={() => setCurrentView('home')} />;
   }
 
-  if (normalizedPath === '/contact') {
-    return <ContactUs onNavigateHome={() => navigateTo('/')} />;
+  if (currentView === 'contact') {
+    return <ContactUs onNavigateHome={() => setCurrentView('home')} />;
   }
 
-  if (normalizedPath === '/terms' || normalizedPath === '/terms-of-service') {
-    return <TermsOfService onNavigateHome={() => navigateTo('/')} />;
+  if (currentView === 'terms') {
+    return <TermsOfService onNavigateHome={() => setCurrentView('home')} />;
   }
 
-  if (normalizedPath === '/disclaimer') {
-    return <DisclaimerPage onNavigateHome={() => navigateTo('/')} />;
+  if (currentView === 'disclaimer') {
+    return <DisclaimerPage onNavigateHome={() => setCurrentView('home')} />;
   }
 
   const handleUniversalSearch = (e: React.FormEvent) => {
@@ -114,35 +130,34 @@ export default function App() {
     if (!searchQuery.trim()) return;
     const q = searchQuery.toLowerCase();
     if (q.includes('calc') || q.includes('emi') || q.includes('sip') || q.includes('loan')) {
-      navigateTo('/calculators');
+      setCurrentView('calculators');
     } else if (q.includes('ai') || q.includes('openai') || q.includes('model')) {
-      navigateTo('/ai-updates');
+      setCurrentView('ai-updates');
     } else if (q.includes('dir') || q.includes('product')) {
-      navigateTo('/directory');
+      setCurrentView('directory');
     } else if (q.includes('notion') || q.includes('template')) {
-      navigateTo('/notion-templates');
+      setCurrentView('notion');
     } else {
-      navigateTo('/tools');
+      setCurrentView('tools');
     }
   };
 
   return (
     <div className="min-h-screen bg-[#F4F7FC] text-[#0B1F3A] flex flex-col font-sans selection:bg-[#FF7A00] selection:text-white">
       
-      {/* HEADER: Sticky top bar. Left: Logo. Center: Big search input. Right: Navy pill badge */}
+      {/* HEADER */}
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
           
-          {/* Left: Logo */}
-          <a 
-            href="/" 
-            onClick={(e) => { e.preventDefault(); navigateTo('/'); }} 
-            className="flex items-center gap-2 group cursor-pointer shrink-0"
+          {/* Logo (Base64 data URL) */}
+          <button 
+            onClick={() => setCurrentView('home')} 
+            className="flex items-center gap-2 group cursor-pointer shrink-0 bg-transparent border-none p-0"
           >
             <Logo className="h-10 sm:h-12 w-auto" />
-          </a>
+          </button>
 
-          {/* Center: Search Input */}
+          {/* Search Input */}
           <div className="hidden md:flex flex-1 max-w-md mx-4 relative">
             <input 
               type="text"
@@ -155,7 +170,7 @@ export default function App() {
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           </div>
 
-          {/* Right: Navy pill badge #0A2342 */}
+          {/* Right badge */}
           <div className="flex items-center gap-3 shrink-0">
             <div className="hidden sm:flex items-center bg-[#0A2342] text-white px-4 py-2 rounded-full text-xs font-extrabold shadow-sm">
               <span className="text-[#FFC000]">⚡ FAST</span>
@@ -165,17 +180,15 @@ export default function App() {
               <span className="text-[#FFC000]">👆 EASY</span>
             </div>
 
-            {/* Mobile Menu Button */}
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden text-slate-700 p-2"
+              className="lg:hidden text-slate-700 p-2 cursor-pointer"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="lg:hidden bg-white border-t border-slate-200 px-4 py-4 space-y-3 shadow-lg">
             <div className="relative mb-2">
@@ -188,19 +201,19 @@ export default function App() {
               />
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             </div>
-            <button onClick={() => { setMobileMenuOpen(false); navigateTo('/calculators'); }} className="block w-full text-left font-bold text-sm text-slate-800 py-2 px-3 rounded-lg hover:bg-slate-50">
+            <button onClick={() => { setMobileMenuOpen(false); setCurrentView('calculators'); }} className="block w-full text-left font-bold text-sm text-slate-800 py-2 px-3 rounded-lg hover:bg-slate-50 cursor-pointer">
               🧮 Calculators
             </button>
-            <button onClick={() => { setMobileMenuOpen(false); navigateTo('/tools'); }} className="block w-full text-left font-bold text-sm text-slate-800 py-2 px-3 rounded-lg hover:bg-slate-50">
+            <button onClick={() => { setMobileMenuOpen(false); setCurrentView('tools'); }} className="block w-full text-left font-bold text-sm text-slate-800 py-2 px-3 rounded-lg hover:bg-slate-50 cursor-pointer">
               🛠️ Dev &amp; File Tools
             </button>
-            <button onClick={() => { setMobileMenuOpen(false); navigateTo('/directory'); }} className="block w-full text-left font-bold text-sm text-slate-800 py-2 px-3 rounded-lg hover:bg-slate-50">
+            <button onClick={() => { setMobileMenuOpen(false); setCurrentView('directory'); }} className="block w-full text-left font-bold text-sm text-slate-800 py-2 px-3 rounded-lg hover:bg-slate-50 cursor-pointer">
               🚀 Product Finder
             </button>
-            <button onClick={() => { setMobileMenuOpen(false); navigateTo('/news'); }} className="block w-full text-left font-bold text-sm text-slate-800 py-2 px-3 rounded-lg hover:bg-slate-50">
+            <button onClick={() => { setMobileMenuOpen(false); setCurrentView('news'); }} className="block w-full text-left font-bold text-sm text-slate-800 py-2 px-3 rounded-lg hover:bg-slate-50 cursor-pointer">
               🤖 AI News
             </button>
-            <button onClick={() => { setMobileMenuOpen(false); navigateTo('/notion-templates'); }} className="block w-full text-left font-bold text-sm text-slate-800 py-2 px-3 rounded-lg hover:bg-slate-50">
+            <button onClick={() => { setMobileMenuOpen(false); setCurrentView('notion'); }} className="block w-full text-left font-bold text-sm text-slate-800 py-2 px-3 rounded-lg hover:bg-slate-50 cursor-pointer">
               📝 Notion Templates
             </button>
           </div>
@@ -210,17 +223,15 @@ export default function App() {
       {/* HERO SECTION */}
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 w-full flex flex-col items-center text-center">
         
-        {/* Centered logo */}
+        {/* Centered Logo (Base64 data URL) */}
         <div className="mb-8 transform hover:scale-105 transition-transform duration-300">
           <Logo className="h-28 sm:h-36 md:h-[140px] w-auto mx-auto drop-shadow-md" />
         </div>
 
-        {/* H1 */}
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#0A2342] tracking-tight max-w-4xl mb-4">
           Free Tools - No Signup Required
         </h1>
         
-        {/* Sub */}
         <p className="text-base sm:text-lg text-slate-600 max-w-2xl mb-10 leading-relaxed font-medium">
           250+ PDF, Image, Video, AI &amp; Calculator Tools - All work in your browser. Fast, Free &amp; Easy.
         </p>
@@ -243,7 +254,7 @@ export default function App() {
           </button>
         </form>
 
-        {/* MAIN CONTENT - 5 COLORFUL BOXES IN GRID */}
+        {/* 5 COLORFUL BOXES */}
         <div className="w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 mb-20 text-left">
           
           {/* BOX 1 - CALCULATORS */}
@@ -268,7 +279,7 @@ export default function App() {
               </ul>
             </div>
             <button 
-              onClick={() => navigateTo('/calculators')}
+              onClick={() => setCurrentView('calculators')}
               className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-[#0B4DB8] to-[#00D4FF] hover:opacity-95 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition shadow-sm cursor-pointer"
             >
               <span>Explore Calculators</span>
@@ -298,7 +309,7 @@ export default function App() {
               </ul>
             </div>
             <button 
-              onClick={() => navigateTo('/tools')}
+              onClick={() => setCurrentView('tools')}
               className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-[#FF8C00] to-[#FFB800] hover:opacity-95 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition shadow-sm cursor-pointer"
             >
               <span>Explore Tools</span>
@@ -328,7 +339,7 @@ export default function App() {
               </ul>
             </div>
             <button 
-              onClick={() => navigateTo('/directory')}
+              onClick={() => setCurrentView('directory')}
               className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-[#7C3AED] to-[#EC4899] hover:opacity-95 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition shadow-sm cursor-pointer"
             >
               <span>Browse Products</span>
@@ -358,7 +369,7 @@ export default function App() {
               </ul>
             </div>
             <button 
-              onClick={() => navigateTo('/news')}
+              onClick={() => setCurrentView('news')}
               className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-[#10B981] to-[#06B6D4] hover:opacity-95 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition shadow-sm cursor-pointer"
             >
               <span>Read AI News</span>
@@ -390,7 +401,7 @@ export default function App() {
             </div>
             <div className="shrink-0 w-full md:w-auto">
               <button 
-                onClick={() => navigateTo('/notion-templates')}
+                onClick={() => setCurrentView('notion')}
                 className="w-full md:w-auto py-3.5 px-8 rounded-2xl bg-gradient-to-r from-black to-[#4B5563] hover:opacity-90 text-[#FFB800] font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition shadow-sm cursor-pointer"
               >
                 <span>Get Templates</span>
@@ -432,19 +443,19 @@ export default function App() {
 
             <div className="flex flex-col space-y-2">
               <h4 className="font-bold text-white text-xs uppercase tracking-wider text-[#FFC000] mb-1">Quick Hubs</h4>
-              <button onClick={() => navigateTo('/calculators')} className="text-left text-xs text-slate-300 hover:text-white transition">Calculators Hub</button>
-              <button onClick={() => navigateTo('/tools')} className="text-left text-xs text-slate-300 hover:text-white transition">Dev &amp; File Tools</button>
-              <button onClick={() => navigateTo('/directory')} className="text-left text-xs text-slate-300 hover:text-white transition">Product Finder</button>
-              <button onClick={() => navigateTo('/news')} className="text-left text-xs text-slate-300 hover:text-white transition">AI News Feed</button>
+              <button onClick={() => setCurrentView('calculators')} className="text-left text-xs text-slate-300 hover:text-white transition cursor-pointer">Calculators Hub</button>
+              <button onClick={() => setCurrentView('tools')} className="text-left text-xs text-slate-300 hover:text-white transition cursor-pointer">Dev &amp; File Tools</button>
+              <button onClick={() => setCurrentView('directory')} className="text-left text-xs text-slate-300 hover:text-white transition cursor-pointer">Product Finder</button>
+              <button onClick={() => setCurrentView('news')} className="text-left text-xs text-slate-300 hover:text-white transition cursor-pointer">AI News Feed</button>
             </div>
 
             <div className="flex flex-col space-y-2">
               <h4 className="font-bold text-white text-xs uppercase tracking-wider text-[#FFC000] mb-1">Legal &amp; Policy</h4>
-              <button onClick={() => navigateTo('/about')} className="text-left text-xs text-slate-300 hover:text-white transition">About</button>
-              <button onClick={() => navigateTo('/contact')} className="text-left text-xs text-slate-300 hover:text-white transition">Contact</button>
-              <button onClick={() => navigateTo('/privacy-policy')} className="text-left text-xs text-slate-300 hover:text-white transition">Privacy Policy</button>
-              <button onClick={() => navigateTo('/terms')} className="text-left text-xs text-slate-300 hover:text-white transition">Terms</button>
-              <button onClick={() => navigateTo('/disclaimer')} className="text-left text-xs text-slate-300 hover:text-white transition">Disclaimer</button>
+              <button onClick={() => setCurrentView('about')} className="text-left text-xs text-slate-300 hover:text-white transition cursor-pointer">About</button>
+              <button onClick={() => setCurrentView('contact')} className="text-left text-xs text-slate-300 hover:text-white transition cursor-pointer">Contact</button>
+              <button onClick={() => setCurrentView('privacy')} className="text-left text-xs text-slate-300 hover:text-white transition cursor-pointer">Privacy Policy</button>
+              <button onClick={() => setCurrentView('terms')} className="text-left text-xs text-slate-300 hover:text-white transition cursor-pointer">Terms</button>
+              <button onClick={() => setCurrentView('disclaimer')} className="text-left text-xs text-slate-300 hover:text-white transition cursor-pointer">Disclaimer</button>
             </div>
 
             <div className="flex flex-col space-y-2">
