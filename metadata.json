@@ -1,6 +1,6 @@
 {
-  "name": "FreeToolsNoSignup",
-  "description": "4753 Powerful Tools That Actually Work - 100% Free, No Signup Required",
+  "name": "OmniCalculator Clone",
+  "description": "3,923 Free interactive calculators for every calculation you will ever need.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
