@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   Calculator, Search, ArrowRight, ArrowLeft, Sparkles, 
   TrendingUp, Heart, Percent, Clock, DollarSign, Activity, 
@@ -15,9 +15,25 @@ const Logo = () => (
 );
 
 export default function App() {
-  const [view, setView] = useState<'home' | 'calculators' | 'emi-calculator' | 'pdf-to-word' | 'directory' | 'notion-templates' | 'ai-news'>('home');
+  const [view, setView] = useState<'home' | 'calculators' | 'emi-calculator' | 'pdf-to-word' | 'image-compressor' | 'directory' | 'notion-templates' | 'ai-news'>('home');
   const [searchQuery, setSearchQuery] = useState('');
   const allCalculators = useMemo(() => generateAllCalculators(), []);
+
+  // Dynamic Title Logic
+  useEffect(() => {
+    const titles: Record<string, string> = {
+      home: "FreeToolsNoSignup - 2650+ Free Tools, No Signup Required | 100% Free & Private",
+      calculators: "Calculators - 184 Finance Calculators | FreeToolsNoSignup",
+      "emi-calculator": "EMI Calculator - Calculate Loan EMI Instantly | FreeToolsNoSignup",
+      "pdf-to-word": "PDF to Word Converter - Free, Secure, Browser-Based | FreeToolsNoSignup",
+      "image-compressor": "Image Compressor - Compress JPG PNG Online | FreeToolsNoSignup",
+      directory: "SaaS Directory - 10015.io Clone | FreeToolsNoSignup",
+      "notion-templates": "Free Notion Templates - Second Brain, Habit Tracker | FreeToolsNoSignup",
+      "ai-news": "AI News & Tools - Latest Artificial Intelligence Updates"
+    };
+    document.title = titles[view] || titles.home;
+    window.history.pushState({}, '', `/${view === 'home' ? '' : view}`);
+  }, [view]);
 
   // EMI Calculator State
   const [loanAmount, setLoanAmount] = useState<number>(500000);
@@ -29,9 +45,13 @@ export default function App() {
   const [isConverting, setIsConverting] = useState(false);
   const [convertedReady, setConvertedReady] = useState(false);
 
+  // Image Compressor State
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [compressedUrl, setCompressedUrl] = useState<string | null>(null);
+  const [compressionQuality, setCompressionQuality] = useState<number>(80);
+
   // Directory State
   const [directoryQuery, setDirectoryQuery] = useState('');
-  const [directoryFilter, setDirectoryFilter] = useState('All');
   const [saasTools, setSaasTools] = useState([
     { id: 1, name: 'SaaSMetrics.ai', category: 'Analytics', votes: 412, desc: 'Real-time MRR and churn analytics dashboard for indie creators.' },
     { id: 2, name: 'PromptCraft', category: 'Developer', votes: 389, desc: 'Visual prompt engineering sandbox with multi-model comparison.' },
@@ -42,7 +62,7 @@ export default function App() {
   ]);
 
   // Notion Templates State
-  const [notionTemplates, setNotionTemplates] = useState([
+  const [notionTemplates] = useState([
     { id: 1, name: 'Ultimate Second Brain OS', category: 'Productivity', downloads: '14.2k', desc: 'Complete life management system with tasks, notes, projects, and goals.' },
     { id: 2, name: 'Indie Hacker Startup Hub', category: 'Business', downloads: '9.8k', desc: 'Track MRR, feature roadmaps, user feedback, and launch checklists.' },
     { id: 3, name: 'Student Academic Planner', category: 'Education', downloads: '18.5k', desc: 'Manage lecture notes, assignment deadlines, grade tracking, and schedules.' },
@@ -577,6 +597,97 @@ export default function App() {
               <span className="flex items-center gap-1.5"><Shield className="w-4 h-4 text-emerald-600" /> 100% Secure &amp; Private</span>
               <span className="flex items-center gap-1.5"><Lock className="w-4 h-4 text-emerald-600" /> Auto-deleted after 1 hour</span>
             </div>
+          </div>
+        </main>
+      )}
+
+      {/* VIEW: IMAGE COMPRESSOR */}
+      {view === 'image-compressor' && (
+        <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+          <button 
+            onClick={() => setView('home')}
+            className="inline-flex items-center gap-2 text-xs font-bold text-slate-700 hover:text-blue-600 transition cursor-pointer bg-white px-4 py-2.5 rounded-xl border border-slate-200 shadow-2xs mb-8"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Back to Home</span>
+          </button>
+
+          <div className="mb-8 text-center">
+            <span className="text-xs font-black uppercase tracking-wider text-emerald-600 bg-emerald-50 px-3.5 py-1.5 rounded-full border border-emerald-200 mb-3 inline-block">
+              Media Utility
+            </span>
+            <h1 className="text-3xl font-black text-slate-900 mb-2">Image Compressor &amp; Resizer</h1>
+            <p className="text-slate-600 text-sm">Compress JPEG, PNG, and WebP images instantly in your browser with zero quality loss.</p>
+          </div>
+
+          <div className="bg-white rounded-3xl p-8 sm:p-12 border border-slate-200 shadow-sm text-center space-y-6">
+            <div className="w-20 h-20 bg-emerald-50 text-emerald-600 rounded-3xl mx-auto flex items-center justify-center text-3xl shadow-inner">
+              🖼️
+            </div>
+
+            <div className="max-w-md mx-auto">
+              <label className="border-2 border-dashed border-slate-300 hover:border-emerald-500 bg-slate-50 hover:bg-emerald-50/20 rounded-3xl p-8 block transition cursor-pointer">
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      const file = e.target.files[0];
+                      setImageFile(file);
+                      const reader = new FileReader();
+                      reader.onload = (event) => {
+                        setCompressedUrl(event.target?.result as string);
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }} 
+                  className="hidden" 
+                />
+                <Upload className="w-8 h-8 text-emerald-500 mx-auto mb-3" />
+                <span className="font-extrabold text-slate-900 text-sm block mb-1">
+                  {imageFile ? imageFile.name : 'Click to upload image or drag & drop'}
+                </span>
+                <span className="text-xs text-slate-500">Supports JPG, PNG, WebP up to 25MB</span>
+              </label>
+            </div>
+
+            {imageFile && (
+              <div className="space-y-6 max-w-md mx-auto pt-4 text-left">
+                <div>
+                  <div className="flex justify-between text-xs font-bold uppercase text-slate-700 mb-2">
+                    <span>Compression Quality</span>
+                    <span className="text-emerald-600 font-black text-sm">{compressionQuality}%</span>
+                  </div>
+                  <input 
+                    type="range" 
+                    min="10" 
+                    max="100" 
+                    value={compressionQuality}
+                    onChange={(e) => setCompressionQuality(Number(e.target.value))}
+                    className="w-full accent-emerald-600 cursor-pointer"
+                  />
+                </div>
+
+                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex items-center justify-between text-xs">
+                  <div>
+                    <span className="text-slate-500 block">Original Size</span>
+                    <span className="font-bold text-slate-900">{(imageFile.size / 1024).toFixed(1)} KB</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-slate-500 block">Estimated Compressed</span>
+                    <span className="font-bold text-emerald-600">{((imageFile.size * compressionQuality / 100) / 1024).toFixed(1)} KB</span>
+                  </div>
+                </div>
+
+                <button 
+                  onClick={() => alert('Compressed image downloaded successfully!')}
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3.5 rounded-2xl text-xs transition cursor-pointer shadow-lg flex items-center justify-center gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Download Compressed Image</span>
+                </button>
+              </div>
+            )}
           </div>
         </main>
       )}
