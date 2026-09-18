@@ -1,65 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Search, Command, Sparkles, Flame, ShieldCheck, 
-  Zap, Menu, X, Check, Heart, ExternalLink, ArrowRight, Globe,
-  Clock, Chrome, BarChart3
-} from 'lucide-react';
-import { ToolCategory, RecentTool } from './types';
-import { RoyalCategoryExplorer } from './components/RoyalCategoryExplorer';
-import { CommandKSearch } from './components/CommandKSearch';
-import { AdSenseBanner } from './components/AdSenseBanner';
-import { AdUnitTopBanner, AdUnitInFeed, AdUnitAuto } from './components/AdUnits';
-import { Footer } from './components/Footer';
-import { AllCategoryModal } from './components/AllCategoryModal';
-import { LanguageSwitcher } from './components/LanguageSwitcher';
-import { GeoFlagSwitcher } from './components/GeoFlagSwitcher';
-import { useTranslation } from './i18n/I18nContext';
-import { SUPPORTED_LANGUAGES } from './i18n/languages';
-import { PWAInstallBanner } from './components/PWAInstallBanner';
-import { ToolOfTheDay } from './components/ToolOfTheDay';
-import { EmailCapture } from './components/EmailCapture';
-import { searchToolsSemantic, SearchableTool } from './utils/aiToolSearch';
-
-// Dedicated Crawlable Pages
+import { Search, Wrench, Calculator, Sparkles, ArrowRight, Shield, Zap, Menu, X, ExternalLink, FileText, Image as ImageIcon, Video, Cpu, Layers, BookOpen } from 'lucide-react';
+import { ToolsHubPage } from './pages/ToolsHubPage';
+import { CalculatorsHubPage } from './pages/CalculatorsHubPage';
+import { EMICalculatorPage } from './pages/EMICalculatorPage';
+import { PDFToWordPage } from './pages/PDFToWordPage';
+import { AIUpdatesHubPage } from './pages/AIUpdatesHubPage';
+import { BacklinksDirectoryPage } from './pages/BacklinksDirectoryPage';
+import { ProductDirectoryPage } from './pages/ProductDirectoryPage';
+import { ProductDetailPage } from './pages/ProductDetailPage';
+import { AINewsPage } from './pages/AINewsPage';
+import { AINewsDetailPage } from './pages/AINewsDetailPage';
+import { NotionTemplatesPage } from './pages/NotionTemplatesPage';
 import { AboutUs } from './pages/AboutUs';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { ContactUs } from './pages/ContactUs';
 import { TermsOfService } from './pages/TermsOfService';
 import { DisclaimerPage } from './pages/DisclaimerPage';
-import { CategoryPage } from './pages/CategoryPage';
-import { NotionBuilderPage } from './pages/NotionBuilderPage';
-import { QRCodeGeneratorPage } from './pages/QRCodeGeneratorPage';
-import { ToolPage } from './pages/ToolPage';
-import { HomepageSEOContent } from './components/HomepageSEOContent';
-import { EmbedToolPage } from './pages/EmbedToolPage';
-import { BacklinksDirectoryPage } from './pages/BacklinksDirectoryPage';
-import { PartnersPage } from './pages/PartnersPage';
-import { LaunchPage } from './pages/LaunchPage';
-import { BlogPage } from './pages/BlogPage';
-import { ChromeExtensionPage } from './pages/ChromeExtensionPage';
-import { StatsPage } from './pages/StatsPage';
-import { AuditPage } from './pages/AuditPage';
-
-import { TOOLS_DATABASE } from './data/toolsData';
-import { ALL_DIRECTORY_TOOLS } from './data/allToolsDirectory';
-import { BrandLogo } from './components/BrandLogo';
-import { 
-  TOTAL_TOOLS_COUNT, 
-  PDF_TOOLS_COUNT, 
-  IMAGE_TOOLS_COUNT, 
-  CALCULATOR_TOOLS_COUNT, 
-  JOB_ATS_TOOLS_COUNT, 
-  AI_STUDY_TOOLS_COUNT, 
-  DEV_PRO_TOOLS_COUNT, 
-  NOTION_TOOLS_COUNT,
-  SITE_HERO_TITLE,
-  SITE_HERO_SUBTITLE,
-  SITE_SEARCH_PLACEHOLDER
-} from './data/toolCounts';
+import { Footer } from './components/Footer';
 
 export default function App() {
-  const { t, locale, setLocale } = useTranslation();
-
   const [currentPath, setCurrentPath] = useState<string>(() => {
     if (typeof window !== 'undefined') {
       return window.location.pathname || '/';
@@ -67,130 +26,9 @@ export default function App() {
     return '/';
   });
 
-  const [isCmdKOpen, setIsCmdKOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<ToolCategory | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
-  const searchContainerRef = React.useRef<HTMLDivElement>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Close AI search dropdown on click outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
-        setIsSearchDropdownOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  // Global shortcut: Focus top AI search bar with Cmd+K or Ctrl+K
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        const input = document.getElementById('top-ai-search-input') as HTMLInputElement | null;
-        if (input) {
-          input.focus();
-          input.select();
-          setIsSearchDropdownOpen(true);
-        }
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  // AI Semantic search results
-  const filteredSearchTools = React.useMemo(() => {
-    if (!searchQuery.trim()) return [];
-    return searchToolsSemantic(searchQuery, 30);
-  }, [searchQuery]);
-
-  const handleAISearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    setSearchQuery(val);
-    setIsSearchDropdownOpen(val.trim().length > 0);
-  };
-
-  const handleSearchSubmit = () => {
-    if (!searchQuery.trim()) return;
-    if (filteredSearchTools.length > 0) {
-      const topTool = filteredSearchTools[0];
-      setIsSearchDropdownOpen(false);
-      setSearchQuery('');
-      recordToolUse(topTool.slug);
-      navigateTo(`/tools/${topTool.slug}`);
-    } else {
-      setIsSearchDropdownOpen(false);
-      const section = document.getElementById('subcategory-section') || document.getElementById('tools-section');
-      if (section) {
-        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }
-  };
-
-  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleSearchSubmit();
-    } else if (e.key === 'Escape') {
-      setIsSearchDropdownOpen(false);
-    }
-  };
-
-  const getCategoryIcon = (category: string) => {
-    const cat = (category || '').toLowerCase();
-    if (cat.includes('pdf')) return '📄';
-    if (cat.includes('image') || cat.includes('img')) return '🖼️';
-    if (cat.includes('calc') || cat.includes('math') || cat.includes('loan') || cat.includes('tax')) return '🧮';
-    if (cat.includes('ai') || cat.includes('study')) return '🤖';
-    if (cat.includes('job') || cat.includes('ats') || cat.includes('career')) return '💼';
-    if (cat.includes('dev') || cat.includes('code')) return '💻';
-    if (cat.includes('notion')) return '📓';
-    return '⚡';
-  };
-
-  // Derive normalized route regardless of language prefix like /ja/about or /es/pdf-tools
-  const normalizedPath = React.useMemo(() => {
-    let raw = (currentPath || '/').trim();
-    // Strip trailing slashes (e.g. /contact/ -> /contact)
-    if (raw.length > 1 && raw.endsWith('/')) {
-      raw = raw.replace(/\/+$/, '');
-    }
-    const lower = raw.toLowerCase();
-    const parts = lower.split('/').filter(Boolean);
-    if (parts.length > 0 && SUPPORTED_LANGUAGES.some(l => l.code === parts[0])) {
-      const rest = parts.slice(1).join('/');
-      return rest ? `/${rest}` : '/';
-    }
-    return lower || '/';
-  }, [currentPath]);
-
-  // Persistence State: Recently Used & Favorites
-  const [recentTools, setRecentTools] = useState<RecentTool[]>(() => {
-    try {
-      const saved = localStorage.getItem('ftns_recent_tools');
-      return saved ? JSON.parse(saved) : [
-        { id: 'ats-checker', name: 'ATS Score Checker', category: 'job-ats', icon: 'Briefcase', usedAt: Date.now() - 1000 * 60 * 5 },
-        { id: 'ai-detector', name: 'AI Content Detector', category: 'ai-study', icon: 'Sparkles', usedAt: Date.now() - 1000 * 60 * 20 },
-        { id: 'fake-data-generator', name: 'Fake Data Generator', category: 'dev-pro', icon: 'Database', usedAt: Date.now() - 1000 * 60 * 45 }
-      ];
-    } catch {
-      return [];
-    }
-  });
-
-  const [favorites, setFavorites] = useState<string[]>(() => {
-    try {
-      const saved = localStorage.getItem('ftns_favorites');
-      return saved ? JSON.parse(saved) : ['ats-checker', 'ai-detector', 'pdf-merge', 'fake-data-generator'];
-    } catch {
-      return ['ats-checker', 'ai-detector'];
-    }
-  });
-
-  // Handle URL changes & browser history
   useEffect(() => {
     const handlePopState = () => {
       setCurrentPath(window.location.pathname || '/');
@@ -199,504 +37,429 @@ export default function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  // Dynamic Title & Meta Description based on active route
-  useEffect(() => {
-    let title = "4753 Free Tools - No Signup - 100% Private in Your Browser";
-    let description = "4753 Free Tools - No Signup - 100% Private in Your Browser - PDF, Image, Calculators, ATS, AI - All 100% offline - No API - 4,753 working utilities.";
-
-    if (normalizedPath === '/about') {
-      title = "About Us - FreeToolsNoSignup | 4,753 Free Browser Utilities";
-      description = "Learn about FreeToolsNoSignup: 4,753 free browser-native tools requiring zero signups, zero server uploads, and 100% data privacy.";
-    } else if (normalizedPath === '/privacy-policy') {
-      title = "Privacy Policy - FreeToolsNoSignup";
-      description = "Read our strict zero-knowledge privacy policy. All 4753 tools execute 100% locally in your browser memory with zero tracking or server uploads.";
-    } else if (normalizedPath === '/contact') {
-      title = "Contact Us - FreeToolsNoSignup";
-      description = "Get in touch with the FreeToolsNoSignup team for feedback, feature requests, or tool suggestions.";
-    } else if (normalizedPath === '/terms' || normalizedPath === '/terms-of-service') {
-      title = "Terms of Service - FreeToolsNoSignup";
-      description = "Review the terms and conditions for using FreeToolsNoSignup's 4,753 free browser-based utilities.";
-    } else if (normalizedPath === '/disclaimer') {
-      title = "Disclaimer - FreeToolsNoSignup";
-      description = "Read the legal disclaimer regarding FreeToolsNoSignup and our client-side utility tools.";
-    } else if (normalizedPath === '/chrome-extension') {
-      title = "Chrome Extension - FreeToolsNoSignup";
-      description = "Install the FreeToolsNoSignup Chrome Extension for instant offline access to 4,753 free productivity tools.";
-    } else if (normalizedPath === '/stats') {
-      title = "Platform Statistics - FreeToolsNoSignup";
-      description = "View live platform metrics, tool usage stats, and category breakdowns for FreeToolsNoSignup.";
-    } else if (normalizedPath === '/audit') {
-      title = "SEO & AdSense Audit - FreeToolsNoSignup";
-      description = "Audit report for FreeToolsNoSignup covering SEO, performance, accessibility, and AdSense readiness.";
-    } else if (normalizedPath === '/pdf-tools') {
-      title = "Free PDF Tools No Signup - Merge, Split, Compress PDF";
-      description = "Use 753+ free browser-based PDF tools to merge, split, compress, convert, and sign PDF documents securely without uploading files to servers.";
-    } else if (normalizedPath === '/image-tools') {
-      title = "Free Image & Photo Tools - Compress, Resize, Convert";
-      description = "800+ free browser-native image tools for compression, resizing, format conversion, and watermarking. 100% private and offline.";
-    } else if (normalizedPath === '/calculators') {
-      title = "Free Online Calculators - EMI, Mortgage, Tax, Math";
-      description = "Access 1,200+ free online calculators for finance, mortgages, EMI, loans, mathematics, and science with instant local computation.";
-    } else if (normalizedPath === '/job-ats') {
-      title = "ATS Resume Checker & Job Tools - Free No Signup";
-      description = "Check your resume against ATS algorithms, optimize keywords, and generate cover letters instantly with zero signup.";
-    } else if (normalizedPath === '/ai-study') {
-      title = "AI & Study Utilities - Free Browser Tools";
-      description = "Explore free AI detection tools, study planners, citation generators, and flashcard makers operating locally in your browser.";
-    } else if (normalizedPath === '/dev-tools') {
-      title = "Developer & Pro Tools - JSON, QR, Hash, Base64";
-      description = "1,000+ developer utilities for JSON formatting, base64 encoding, fake data generation, and QR code creation with zero server calls.";
-    } else if (normalizedPath === '/notion-template-builder' || normalizedPath === '/notion-builder' || normalizedPath.includes('notion')) {
-      title = "Notion Template Builder - Free Creator Tool";
-      description = "Build, customize, and export Notion templates instantly with our free browser utility tool.";
-    } else if (normalizedPath === '/qr-code-generator' || normalizedPath === '/qr-generator') {
-      title = "QR Code Generator & Scanner - Free No Signup";
-      description = "Generate custom QR codes, vCards, Wi-Fi credentials, and barcodes instantly with zero expiration or registration.";
-    } else if (normalizedPath === '/backlinks') {
-      title = "Backlinks Directory & Resource Hub - FreeToolsNoSignup";
-      description = "Explore our partner directory, resource links, and collaborative web tools directory.";
-    } else if (normalizedPath === '/partners') {
-      title = "Our Partners & Ecosystem - FreeToolsNoSignup";
-      description = "Discover our trusted technology partners, open-source libraries, and collaborative ecosystems.";
-    } else if (normalizedPath === '/launch') {
-      title = "Product Launch Kit - FreeToolsNoSignup";
-      description = "Launch your project with our free marketing templates, launch checklists, and PR tools.";
-    } else if (normalizedPath === '/blog') {
-      title = "Blog & Productivity Guides - FreeToolsNoSignup";
-      description = "Read expert guides on client-side web tools, PDF editing tips, developer utilities, and data privacy.";
-    } else if (normalizedPath.startsWith('/tools/') || normalizedPath.startsWith('/tool/')) {
-      const toolSlug = normalizedPath.replace(/^\/tools?\//, '').trim();
-      const foundTool = TOOLS_DATABASE.find(t => t.id === toolSlug);
-      if (foundTool) {
-        title = `${foundTool.name} - Free Online Tool | FreeToolsNoSignup`;
-        description = foundTool.description;
-      }
-    }
-
-    document.title = title;
-    let metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) {
-      metaDesc.setAttribute('content', description);
-    }
-  }, [normalizedPath]);
-
   const navigateTo = (path: string) => {
-    if (typeof window !== 'undefined') {
-      window.history.pushState({}, '', path);
-      setCurrentPath(path);
-      window.scrollTo(0, 0);
-    }
+    window.history.pushState({}, '', path);
+    setCurrentPath(path);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Save to localStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem('ftns_recent_tools', JSON.stringify(recentTools));
-    } catch (e) {
-      console.error(e);
+  const normalizedPath = currentPath.replace(/\/+$/, '') || '/';
+
+  // Routing Views
+  if (normalizedPath === '/tools' || normalizedPath === '/tools-hub') {
+    return <ToolsHubPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+  }
+
+  if (normalizedPath === '/tools/pdf-to-word') {
+    return <PDFToWordPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+  }
+
+  if (normalizedPath === '/calculators' || normalizedPath === '/calculators-hub') {
+    return <CalculatorsHubPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+  }
+
+  if (normalizedPath === '/calculators/emi-calculator') {
+    return <EMICalculatorPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+  }
+
+  if (normalizedPath === '/news') {
+    return <AINewsPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+  }
+
+  if (normalizedPath.startsWith('/news/')) {
+    const slug = normalizedPath.replace('/news/', '');
+    return <AINewsDetailPage slug={slug} onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+  }
+
+  if (normalizedPath === '/ai-updates' || normalizedPath === '/ai') {
+    return <AIUpdatesHubPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+  }
+
+  if (normalizedPath === '/directory' || normalizedPath === '/product-finder') {
+    return <ProductDirectoryPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+  }
+
+  if (normalizedPath.startsWith('/directory/')) {
+    const slug = normalizedPath.replace('/directory/', '');
+    return <ProductDetailPage slug={slug} onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+  }
+
+  if (normalizedPath === '/notion-templates') {
+    return <NotionTemplatesPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+  }
+
+  if (normalizedPath === '/about') {
+    return <AboutUs onNavigateHome={() => navigateTo('/')} />;
+  }
+
+  if (normalizedPath === '/privacy-policy') {
+    return <PrivacyPolicy onNavigateHome={() => navigateTo('/')} />;
+  }
+
+  if (normalizedPath === '/contact') {
+    return <ContactUs onNavigateHome={() => navigateTo('/')} />;
+  }
+
+  if (normalizedPath === '/terms' || normalizedPath === '/terms-of-service') {
+    return <TermsOfService onNavigateHome={() => navigateTo('/')} />;
+  }
+
+  if (normalizedPath === '/disclaimer') {
+    return <DisclaimerPage onNavigateHome={() => navigateTo('/')} />;
+  }
+
+  const handleUniversalSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+    const q = searchQuery.toLowerCase();
+    if (q.includes('calc') || q.includes('emi') || q.includes('sip') || q.includes('loan')) {
+      navigateTo('/calculators');
+    } else if (q.includes('ai') || q.includes('openai') || q.includes('model')) {
+      navigateTo('/ai-updates');
+    } else if (q.includes('dir') || q.includes('product')) {
+      navigateTo('/directory');
+    } else if (q.includes('notion') || q.includes('template')) {
+      navigateTo('/notion-templates');
+    } else {
+      navigateTo('/tools');
     }
-  }, [recentTools]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem('ftns_favorites', JSON.stringify(favorites));
-    } catch (e) {
-      console.error(e);
-    }
-  }, [favorites]);
-
-  // Sync state when modified in other components or tabs
-  useEffect(() => {
-    const handleStorage = () => {
-      try {
-        const favs = JSON.parse(localStorage.getItem('ftns_favorites') || '[]');
-        setFavorites(favs);
-        const recs = JSON.parse(localStorage.getItem('ftns_recent_tools') || '[]');
-        setRecentTools(recs);
-      } catch {
-        // ignore
-      }
-    };
-    window.addEventListener('storage', handleStorage);
-    return () => window.removeEventListener('storage', handleStorage);
-  }, []);
-
-  // Global Command+K keyboard shortcut listener
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        setIsCmdKOpen(prev => !prev);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  const recordToolUse = (toolId: string) => {
-    const tool = TOOLS_DATABASE.find(t => t.id === toolId);
-    if (!tool) return;
-
-    setRecentTools(prev => {
-      const filtered = prev.filter(p => p.id !== toolId);
-      return [
-        {
-          id: tool.id,
-          name: tool.name,
-          category: tool.category,
-          icon: tool.icon,
-          usedAt: Date.now()
-        },
-        ...filtered
-      ].slice(0, 10);
-    });
-  };
-
-  const handleOpenTool = (toolId: string) => {
-    recordToolUse(toolId);
-    const found = ALL_DIRECTORY_TOOLS.find(t => t.id === toolId || t.slug === toolId) ||
-                  TOOLS_DATABASE.find(t => t.id === toolId || (t as any).slug === toolId);
-    const slug = (found as any)?.slug || (found as any)?.id || toolId;
-    navigateTo(`/tools/${slug}`);
-  };
-
-  const toggleFavorite = (toolId: string) => {
-    setFavorites(prev => 
-      prev.includes(toolId) ? prev.filter(id => id !== toolId) : [...prev, toolId]
-    );
-  };
-
-  const clearRecent = () => {
-    setRecentTools([]);
-  };
-
-  // Routing Views: About, Privacy Policy, Contact, Terms, Disclaimer, Category Pages, Extension, Stats
-  const renderCurrentPage = () => {
-    if (normalizedPath === '/about') {
-      return <AboutUs onNavigateHome={() => navigateTo('/')} />;
-    }
-
-    if (normalizedPath === '/privacy-policy') {
-      return <PrivacyPolicy onNavigateHome={() => navigateTo('/')} />;
-    }
-
-    if (normalizedPath === '/contact') {
-      return <ContactUs onNavigateHome={() => navigateTo('/')} />;
-    }
-
-    if (normalizedPath === '/terms' || normalizedPath === '/terms-of-service') {
-      return <TermsOfService onNavigateHome={() => navigateTo('/')} />;
-    }
-
-    if (normalizedPath === '/disclaimer') {
-      return <DisclaimerPage onNavigateHome={() => navigateTo('/')} />;
-    }
-
-    if (normalizedPath === '/chrome-extension') {
-      return <ChromeExtensionPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
-    }
-
-    if (normalizedPath === '/stats') {
-      return <StatsPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
-    }
-
-    if (normalizedPath === '/audit') {
-      return <AuditPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
-    }
-
-    if (normalizedPath === '/pdf-tools') {
-      return <CategoryPage categoryKey="pdf" onNavigateHome={() => navigateTo('/')} onOpenTool={handleOpenTool} />;
-    }
-
-    if (normalizedPath === '/image-tools') {
-      return <CategoryPage categoryKey="image" onNavigateHome={() => navigateTo('/')} onOpenTool={handleOpenTool} />;
-    }
-
-    if (normalizedPath === '/calculators') {
-      return <CategoryPage categoryKey="calculator" onNavigateHome={() => navigateTo('/')} onOpenTool={handleOpenTool} />;
-    }
-
-    if (normalizedPath === '/job-ats') {
-      return <CategoryPage categoryKey="job-ats" onNavigateHome={() => navigateTo('/')} onOpenTool={handleOpenTool} />;
-    }
-
-    if (normalizedPath === '/ai-study') {
-      return <CategoryPage categoryKey="ai-study" onNavigateHome={() => navigateTo('/')} onOpenTool={handleOpenTool} />;
-    }
-
-    if (normalizedPath === '/dev-tools') {
-      return <CategoryPage categoryKey="dev-pro" onNavigateHome={() => navigateTo('/')} onOpenTool={handleOpenTool} />;
-    }
-
-    if (
-      normalizedPath === '/notion-template-builder' || 
-      normalizedPath === '/notion-builder' || 
-      normalizedPath === '/notion' ||
-      normalizedPath === '/tools/custom-notion-template-database-builder' ||
-      normalizedPath === '/tool/custom-notion-template-database-builder' ||
-      normalizedPath === '/tools/notion-template-builder'
-    ) {
-      return <NotionBuilderPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
-    }
-
-    if (normalizedPath === '/qr-code-generator' || normalizedPath === '/qr-generator') {
-      return <QRCodeGeneratorPage onNavigateHome={() => navigateTo('/')} />;
-    }
-
-    if (normalizedPath === '/backlinks') {
-      return <BacklinksDirectoryPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
-    }
-
-    if (normalizedPath === '/partners') {
-      return <PartnersPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
-    }
-
-    if (normalizedPath === '/launch') {
-      return <LaunchPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
-    }
-
-    if (normalizedPath === '/blog') {
-      return <BlogPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
-    }
-
-    if (normalizedPath.startsWith('/blog/')) {
-      const articleSlug = normalizedPath.replace(/^\/blog\//, '').trim();
-      return <BlogPage articleSlug={articleSlug} onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
-    }
-
-    if (normalizedPath.startsWith('/embed/')) {
-      const embedSlug = normalizedPath.replace(/^\/embed\//, '').trim();
-      return <EmbedToolPage toolSlug={embedSlug} />;
-    }
-
-    if (normalizedPath.startsWith('/tools/') || normalizedPath.startsWith('/tool/')) {
-      const toolSlug = normalizedPath.replace(/^\/tools?\//, '').trim();
-      if (toolSlug) {
-        return (
-          <ToolPage
-            toolSlug={toolSlug}
-            onNavigateHome={() => navigateTo('/')}
-            onNavigateTo={(p) => navigateTo(p)}
-            onOpenToolModal={(id) => handleOpenTool(id)}
-          />
-        );
-      }
-    }
-
-    if (normalizedPath.startsWith('/category/')) {
-      const categoryKey = normalizedPath.replace(/^\/category\//, '').trim() as ToolCategory;
-      return (
-        <CategoryPage
-          categoryKey={categoryKey}
-          onNavigateHome={() => navigateTo('/')}
-          onOpenTool={handleOpenTool}
-        />
-      );
-    }
-
-    // Default: Homepage view
-    return (
-      <div id="ftns-app-root" className="min-h-screen bg-[#F4F7FC] text-[#0B1F3A] flex flex-col font-sans selection:bg-[#D4AF37] selection:text-[#0A1931]">
-      
-        {/* SINGLE TOP AI SEARCH BAR HEADER */}
-        <header className="sticky top-0 z-30 bg-[#0A1931] border-b border-[#D4AF37]/20">
-          <div className="max-w-7xl mx-auto px-4 py-2 flex items-center gap-4">
-            {/* LOGO IMAGE - Use uploaded logo */}
-            <a 
-              href="/" 
-              onClick={(e) => { e.preventDefault(); navigateTo('/'); }} 
-              className="flex items-center gap-3 shrink-0 select-none group"
-            >
-              <img 
-                src="/logo.png" 
-                alt="FreeTools NoSignup - Fast Free Easy" 
-                className="h-14 md:h-16 w-auto object-contain drop-shadow-[0_2px_8px_rgba(255,255,255,0.2)]" 
-              />
-              <div className="hidden md:block">
-                <div className="text-xs text-[#D4AF37] font-bold tracking-widest font-mono uppercase">
-                  4753 Tools Active • NO SIGNUP • 100% Client-Side
-                </div>
-              </div>
-            </a>
-
-            {/* SINGLE AI SEARCH BAR TOP ONLY - As discussed - 1 only */}
-            <div ref={searchContainerRef} className="flex-1 max-w-xl mx-auto relative ml-4">
-              <input 
-                id="top-ai-search-input"
-                type="text"
-                value={searchQuery}
-                placeholder="Search 4,753 tools or ask AI - e.g., 'pdf to word' or 'I need to merge PDFs'..."
-                className="w-full bg-[#0F2340] border border-[#D4AF37]/30 rounded-full px-5 py-2.5 pr-12 text-sm text-white placeholder-gray-400 focus:border-[#D4AF37] focus:shadow-[0_0_15px_rgba(212,175,55,0.3)] outline-none"
-                onChange={handleAISearch}
-                onKeyDown={handleSearchKeyDown}
-                onFocus={() => { if (searchQuery.trim()) setIsSearchDropdownOpen(true); }}
-              />
-              <button 
-                type="button"
-                onClick={handleSearchSubmit}
-                aria-label="Search with AI"
-                className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#D4AF37] text-[#0A1931] rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm cursor-pointer shadow-md transition-all hover:bg-[#E5C158]"
-              >
-                🔍
-              </button>
-              
-              {/* AI Suggestions Dropdown - Shows when typing */}
-              {isSearchDropdownOpen && searchQuery.trim() && (
-                <div className="absolute top-full mt-2 w-full bg-[#0F2340] border border-[#D4AF37]/30 rounded-xl shadow-2xl max-h-96 overflow-y-auto z-50">
-                  <div className="p-2">
-                    <div className="text-xs text-[#D4AF37] font-semibold mb-2 px-2 flex items-center justify-between">
-                      <span>🤖 AI Found {filteredSearchTools.length} tools</span>
-                      <span className="text-[10px] text-gray-400">Enter for top match</span>
-                    </div>
-                    {filteredSearchTools.length === 0 ? (
-                      <div className="p-4 text-center text-xs text-gray-300">
-                        No matching tools found for "{searchQuery}".
-                      </div>
-                    ) : (
-                      filteredSearchTools.slice(0, 6).map(tool => (
-                        <button 
-                          key={tool.id}
-                          onClick={() => {
-                            setIsSearchDropdownOpen(false);
-                            setSearchQuery('');
-                            recordToolUse(tool.slug);
-                            navigateTo(`/tools/${tool.slug}`);
-                          }} 
-                          className="w-full text-left p-3 hover:bg-[#0A1931] rounded-lg flex items-center gap-3 transition-colors cursor-pointer group"
-                        >
-                          <span className="text-lg bg-[#0A1931] group-hover:bg-[#142646] p-1.5 rounded-md border border-[#D4AF37]/20 flex items-center justify-center shrink-0">
-                            {getCategoryIcon(tool.category)}
-                          </span>
-                          <div className="flex-1 min-w-0">
-                            <div className="font-bold text-sm text-white group-hover:text-[#D4AF37] truncate transition-colors">
-                              {tool.name}
-                            </div>
-                            <div className="text-xs text-gray-400 truncate">
-                              {tool.categoryName || tool.category} {tool.subcategory ? `• ${tool.subcategory}` : ''}
-                            </div>
-                          </div>
-                        </button>
-                      ))
-                    )}
-                    {filteredSearchTools.length > 0 && (
-                      <div className="border-t border-[#D4AF37]/20 mt-2 pt-2">
-                        <button 
-                          onClick={handleSearchSubmit}
-                          className="text-xs text-[#D4AF37] hover:text-white font-medium w-full text-center py-1.5 rounded transition-colors cursor-pointer"
-                        >
-                          Ask AI: "{searchQuery}" → Show all {filteredSearchTools.length} results
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Right: Language EN */}
-            <div className="flex items-center gap-2 shrink-0">
-              <LanguageSwitcher />
-            </div>
-          </div>
-        </header>
-
-        {/* CENTERED MAIN LAYOUT - NO SIDEBARS - CLEAN LIKE iLovePDF */}
-        <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
-          
-          {/* Top Header Row with Browser-Native Badge and Leaderboard AdSense */}
-          <div className="w-full flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-emerald-50 text-emerald-800 border border-emerald-200/80 shadow-2xs">
-                  ● 100% {t('privateInBrowser', 'Browser-Native')}
-                </span>
-                <span className="text-xs text-[#64748B] font-medium hidden sm:inline">
-                  {t('heroSubtitle', 'Zero signup walls. Client-side execution.')}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-[#0A1931]">
-                  4,753 Utilities Ready
-                </span>
-              </div>
-            </div>
-
-            {/* Top Leaderboard AdSense 728x90 */}
-            <AdSenseBanner format="728x90" slotName="TopHeader" />
-          </div>
-
-          {/* Hero Section */}
-          <div className="px-2 py-4 mb-1 text-center">
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-[#0A1931] mb-2 leading-tight text-center flex items-center justify-center gap-2">
-              <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span>
-              <span>4,753 Free Online Tools • No Signup • 100% Client-Side</span>
-            </h1>
-            <p className="text-sm md:text-base text-[#475569] text-center max-w-3xl mx-auto">
-              PDF Studio, Image Processing, Financial &amp; Loan Calculators, ATS Resume Optimization, and Developer Tools — Runs directly in your browser RAM with zero file uploads.
-            </p>
-          </div>
-
-          {/* Placement A: Homepage Top Banner - 728x90 responsive */}
-          <div className="w-full">
-            <AdUnitTopBanner />
-          </div>
-
-          {/* Tool of the Day Rotating Highlight */}
-          <ToolOfTheDay 
-            onOpenTool={(slug) => {
-              recordToolUse(slug);
-              navigateTo(`/tools/${slug}`);
-            }} 
-          />
-
-          {/* ROYAL ELEGANT 3-LEVEL CATEGORY SYSTEM: 6 BOXES + BIG NOTION BOX + SUBCATEGORIES + TOOLS */}
-          <RoyalCategoryExplorer 
-            onSelectTool={handleOpenTool}
-            onNavigateTo={navigateTo}
-          />
-
-          {/* Center Bottom AdSense 728x90 */}
-          <div className="w-full pt-2">
-            <AdSenseBanner format="728x90" slotName="CenterBottom" />
-          </div>
-
-          {/* 1,000-Word SEO Article + 10 FAQs below tools grid */}
-          <HomepageSEOContent onNavigateTo={navigateTo} />
-
-          {/* Email Newsletter & VIP Tool Releases */}
-          <EmailCapture />
-
-          {/* Footer Component with 500-word SEO text and Real Page Links */}
-          <Footer onNavigate={navigateTo} />
-
-        </main>
-
-      {/* ----------------- MODALS ----------------- */}
-
-      {/* Command+K Omnisearch Dialog */}
-      <CommandKSearch
-        isOpen={isCmdKOpen}
-        onClose={() => setIsCmdKOpen(false)}
-        onSelectTool={handleOpenTool}
-      />
-
-      {/* Category Explorer Modal */}
-      {selectedCategory && (
-        <AllCategoryModal
-          category={selectedCategory}
-          onClose={() => setSelectedCategory(null)}
-          onSelectTool={handleOpenTool}
-        />
-      )}
-
-      </div>
-    );
   };
 
   return (
-    <>
-      <PWAInstallBanner />
-      {renderCurrentPage()}
-    </>
+    <div className="min-h-screen bg-[#F4F7FC] text-[#0B1F3A] flex flex-col font-sans selection:bg-[#FF7A00] selection:text-white">
+      
+      {/* HEADER: Sticky top bar. Left: Logo. Center: Big search input. Right: Navy pill badge */}
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+          
+          {/* Left: Logo (height 48px) */}
+          <a 
+            href="/" 
+            onClick={(e) => { e.preventDefault(); navigateTo('/'); }} 
+            className="flex items-center gap-2 group cursor-pointer shrink-0"
+          >
+            <img src="/logo.png" alt="FreeToolsNoSignup Logo" className="h-12 w-auto object-contain" />
+          </a>
+
+          {/* Center: Search Input */}
+          <div className="hidden md:flex flex-1 max-w-md mx-4 relative">
+            <input 
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') handleUniversalSearch(e); }}
+              placeholder="Search 250+ tools..."
+              className="w-full bg-slate-100 hover:bg-slate-50 focus:bg-white border border-slate-200 focus:border-[#0B4DB8] rounded-full py-2.5 px-4 pl-10 text-xs sm:text-sm text-[#0B1F3A] placeholder-slate-400 outline-none transition-all shadow-2xs"
+            />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          </div>
+
+          {/* Right: Navy pill badge #0A2342 */}
+          <div className="flex items-center gap-3 shrink-0">
+            <div className="hidden sm:flex items-center bg-[#0A2342] text-white px-4 py-2 rounded-full text-xs font-extrabold shadow-sm">
+              <span className="text-[#FFC000]">⚡ FAST</span>
+              <span className="mx-2 text-[#FF8C00]">|</span>
+              <span className="text-white">🛡️ FREE</span>
+              <span className="mx-2 text-[#FF8C00]">|</span>
+              <span className="text-[#FFC000]">👆 EASY</span>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden text-slate-700 p-2"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden bg-white border-t border-slate-200 px-4 py-4 space-y-3 shadow-lg">
+            <div className="relative mb-2">
+              <input 
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search 250+ tools..."
+                className="w-full bg-slate-100 border border-slate-200 rounded-full py-2 px-4 pl-10 text-xs text-[#0B1F3A] outline-none"
+              />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            </div>
+            <button onClick={() => { setMobileMenuOpen(false); navigateTo('/calculators'); }} className="block w-full text-left font-bold text-sm text-slate-800 py-2 px-3 rounded-lg hover:bg-slate-50">
+              🧮 Calculators
+            </button>
+            <button onClick={() => { setMobileMenuOpen(false); navigateTo('/tools'); }} className="block w-full text-left font-bold text-sm text-slate-800 py-2 px-3 rounded-lg hover:bg-slate-50">
+              🛠️ Dev &amp; File Tools
+            </button>
+            <button onClick={() => { setMobileMenuOpen(false); navigateTo('/directory'); }} className="block w-full text-left font-bold text-sm text-slate-800 py-2 px-3 rounded-lg hover:bg-slate-50">
+              🚀 Product Finder
+            </button>
+            <button onClick={() => { setMobileMenuOpen(false); navigateTo('/news'); }} className="block w-full text-left font-bold text-sm text-slate-800 py-2 px-3 rounded-lg hover:bg-slate-50">
+              🤖 AI News
+            </button>
+            <button onClick={() => { setMobileMenuOpen(false); navigateTo('/notion-templates'); }} className="block w-full text-left font-bold text-sm text-slate-800 py-2 px-3 rounded-lg hover:bg-slate-50">
+              📝 Notion Templates
+            </button>
+          </div>
+        )}
+      </header>
+
+      {/* HERO SECTION */}
+      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 w-full flex flex-col items-center text-center">
+        
+        {/* Centered logo (large, height 140px) */}
+        <div className="mb-8 transform hover:scale-105 transition-transform duration-300">
+          <img src="/logo.png" alt="FreeToolsNoSignup Logo" className="h-28 sm:h-36 md:h-[140px] w-auto mx-auto object-contain drop-shadow-md" />
+        </div>
+
+        {/* H1: "Free Tools - No Signup Required" bold navy */}
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#0A2342] tracking-tight max-w-4xl mb-4">
+          Free Tools - No Signup Required
+        </h1>
+        
+        {/* Sub: "250+ PDF, Image, Video, AI & Calculator Tools - All work in your browser. Fast, Free & Easy." */}
+        <p className="text-base sm:text-lg text-slate-600 max-w-2xl mb-10 leading-relaxed font-medium">
+          250+ PDF, Image, Video, AI &amp; Calculator Tools - All work in your browser. Fast, Free &amp; Easy.
+        </p>
+
+        {/* Big search bar below */}
+        <form onSubmit={handleUniversalSearch} className="w-full max-w-2xl relative mb-16 shadow-lg rounded-full">
+          <input 
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search 250+ tools... e.g. PDF to Word, EMI Calculator, QR Code"
+            className="w-full bg-white border-2 border-slate-200 focus:border-[#0B4DB8] rounded-full py-4 px-6 pl-14 text-sm sm:text-base text-[#0B1F3A] placeholder-slate-400 outline-none transition-all"
+          />
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+          <button 
+            type="submit"
+            className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#0B4DB8] hover:bg-[#083b91] text-white font-bold px-7 py-2.5 rounded-full text-xs sm:text-sm transition-colors cursor-pointer shadow-sm"
+          >
+            Search Tools
+          </button>
+        </form>
+
+        {/* MAIN CONTENT - 5 COLORFUL BOXES IN GRID (2 columns desktop, 1 mobile) */}
+        <div className="w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 mb-20 text-left">
+          
+          {/* BOX 1 - CALCULATORS */}
+          <div className="bg-white rounded-3xl p-8 shadow-sm hover:shadow-xl transition-all border-t-4 border-t-[#0B4DB8] flex flex-col justify-between group relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#0B4DB8]/10 to-[#00D4FF]/5 rounded-bl-full pointer-events-none"></div>
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-3xl p-3 bg-blue-50 rounded-2xl shadow-2xs">🧮</span>
+                <div>
+                  <h3 className="text-2xl font-extrabold text-[#0A2342] group-hover:text-[#0B4DB8] transition-colors">Calculators</h3>
+                  <p className="text-xs text-slate-500 font-medium">3000+ smart calculators for everyday life</p>
+                </div>
+              </div>
+              <p className="text-xs text-slate-600 mb-6 leading-relaxed">
+                OmniCalculator clone providing instant solutions with step-by-step formulas and professional charts.
+              </p>
+              <ul className="space-y-2 mb-8 text-xs text-slate-500 font-medium border-t border-slate-100 pt-4">
+                <li className="flex items-center gap-2"><span>•</span> EMI, Loan &amp; Mortgage Calculators</li>
+                <li className="flex items-center gap-2"><span>•</span> BMI, Health &amp; Calorie Trackers</li>
+                <li className="flex items-center gap-2"><span>•</span> Age, Percentage, GPA &amp; Unit Converters</li>
+                <li className="flex items-center gap-2"><span>•</span> Live results with formulas and explanations</li>
+              </ul>
+            </div>
+            <button 
+              onClick={() => navigateTo('/calculators')}
+              className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-[#0B4DB8] to-[#00D4FF] hover:opacity-95 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition shadow-sm cursor-pointer"
+            >
+              <span>Explore Calculators</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* BOX 2 - TOOLS */}
+          <div className="bg-white rounded-3xl p-8 shadow-sm hover:shadow-xl transition-all border-t-4 border-t-[#FF8C00] flex flex-col justify-between group relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#FF8C00]/10 to-[#FFB800]/5 rounded-bl-full pointer-events-none"></div>
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-3xl p-3 bg-orange-50 rounded-2xl shadow-2xs">🛠️</span>
+                <div>
+                  <h3 className="text-2xl font-extrabold text-[#0A2342] group-hover:text-[#FF8C00] transition-colors">Dev &amp; File Tools</h3>
+                  <p className="text-xs text-slate-500 font-medium">150+ tools that run 100% in your browser</p>
+                </div>
+              </div>
+              <p className="text-xs text-slate-600 mb-6 leading-relaxed">
+                Onlinetoolstore.io clone. Lightning-fast client-side processing. Your files never leave your device.
+              </p>
+              <ul className="space-y-2 mb-8 text-xs text-slate-500 font-medium border-t border-slate-100 pt-4">
+                <li className="flex items-center gap-2"><span>•</span> PDF: Merge, Split, Compress, Convert</li>
+                <li className="flex items-center gap-2"><span>•</span> Image: Resize, Compressor, BG Remover</li>
+                <li className="flex items-center gap-2"><span>•</span> Dev: JSON Formatter, Base64, QR Gen</li>
+                <li className="flex items-center gap-2"><span>•</span> Private &amp; Fast, No Upload to Server</li>
+              </ul>
+            </div>
+            <button 
+              onClick={() => navigateTo('/tools')}
+              className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-[#FF8C00] to-[#FFB800] hover:opacity-95 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition shadow-sm cursor-pointer"
+            >
+              <span>Explore Tools</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* BOX 3 - PRODUCT FINDER */}
+          <div className="bg-white rounded-3xl p-8 shadow-sm hover:shadow-xl transition-all border-t-4 border-t-[#7C3AED] flex flex-col justify-between group relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#7C3AED]/10 to-[#EC4899]/5 rounded-bl-full pointer-events-none"></div>
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-3xl p-3 bg-purple-50 rounded-2xl shadow-2xs">🚀</span>
+                <div>
+                  <h3 className="text-2xl font-extrabold text-[#0A2342] group-hover:text-[#7C3AED] transition-colors">Product Finder</h3>
+                  <p className="text-xs text-slate-500 font-medium">Discover &amp; launch best SaaS and apps</p>
+                </div>
+              </div>
+              <p className="text-xs text-slate-600 mb-6 leading-relaxed">
+                10015.io product-finder clone. Submit your tool, get featured listings, and connect with global creators.
+              </p>
+              <ul className="space-y-2 mb-8 text-xs text-slate-500 font-medium border-t border-slate-100 pt-4">
+                <li className="flex items-center gap-2"><span>•</span> Curated directory of 1000+ products</li>
+                <li className="flex items-center gap-2"><span>•</span> Submit your tool &amp; get dofollow backlink</li>
+                <li className="flex items-center gap-2"><span>•</span> Featured listings &amp; embeds</li>
+                <li className="flex items-center gap-2"><span>•</span> Maker community upvotes &amp; reviews</li>
+              </ul>
+            </div>
+            <button 
+              onClick={() => navigateTo('/directory')}
+              className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-[#7C3AED] to-[#EC4899] hover:opacity-95 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition shadow-sm cursor-pointer"
+            >
+              <span>Browse Products</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* BOX 4 - AI NEWS */}
+          <div className="bg-white rounded-3xl p-8 shadow-sm hover:shadow-xl transition-all border-t-4 border-t-[#10B981] flex flex-col justify-between group relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#10B981]/10 to-[#06B6D4]/5 rounded-bl-full pointer-events-none"></div>
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-3xl p-3 bg-emerald-50 rounded-2xl shadow-2xs">🤖</span>
+                <div>
+                  <h3 className="text-2xl font-extrabold text-[#0A2342] group-hover:text-[#10B981] transition-colors">AI News - Auto Updated</h3>
+                  <p className="text-xs text-slate-500 font-medium">Latest AI news, model releases &amp; tool drops</p>
+                </div>
+              </div>
+              <p className="text-xs text-slate-600 mb-6 leading-relaxed">
+                Artificialintelligence-news.com clone. Real-time updates every hour on foundation models and breakthroughs.
+              </p>
+              <ul className="space-y-2 mb-8 text-xs text-slate-500 font-medium border-t border-slate-100 pt-4">
+                <li className="flex items-center gap-2"><span>•</span> GPT-5, Gemini 2.0, Claude 4 breaking news</li>
+                <li className="flex items-center gap-2"><span>•</span> New AI tools launch directory</li>
+                <li className="flex items-center gap-2"><span>•</span> Tutorials &amp; prompt engineering guides</li>
+                <li className="flex items-center gap-2"><span>•</span> Auto-updates every hour via RSS/API</li>
+              </ul>
+            </div>
+            <button 
+              onClick={() => navigateTo('/news')}
+              className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-[#10B981] to-[#06B6D4] hover:opacity-95 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition shadow-sm cursor-pointer"
+            >
+              <span>Read AI News</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* BOX 5 - NOTION TEMPLATES (Full width on bottom or 2-col span) */}
+          <div className="bg-white rounded-3xl p-8 shadow-sm hover:shadow-xl transition-all border-t-4 border-t-black md:col-span-2 flex flex-col md:flex-row items-center justify-between gap-6 group relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-black/5 to-[#FFB800]/10 rounded-bl-full pointer-events-none"></div>
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-3xl p-3 bg-gray-100 rounded-2xl shadow-2xs">📝</span>
+                <div>
+                  <h3 className="text-2xl font-extrabold text-[#0A2342] group-hover:text-black transition-colors">Notion Templates</h3>
+                  <p className="text-xs text-slate-500 font-medium">99+ free aesthetic Notion templates</p>
+                </div>
+              </div>
+              <p className="text-xs text-slate-600 mb-4 leading-relaxed max-w-xl">
+                Notioneverything.com blog clone. Boost your productivity instantly with handcrafted workspaces and dashboards.
+              </p>
+              <div className="flex flex-wrap gap-2 text-xs text-slate-600">
+                <span className="px-2.5 py-1 bg-slate-100 rounded-full font-medium">• Second Brain</span>
+                <span className="px-2.5 py-1 bg-slate-100 rounded-full font-medium">• Habit Tracker</span>
+                <span className="px-2.5 py-1 bg-slate-100 rounded-full font-medium">• Budget Tracker</span>
+                <span className="px-2.5 py-1 bg-slate-100 rounded-full font-medium">• Project Management</span>
+                <span className="px-2.5 py-1 bg-slate-100 rounded-full font-medium">• Student Dashboard</span>
+              </div>
+            </div>
+            <div className="shrink-0 w-full md:w-auto">
+              <button 
+                onClick={() => navigateTo('/notion-templates')}
+                className="w-full md:w-auto py-3.5 px-8 rounded-2xl bg-gradient-to-r from-black to-[#4B5563] hover:opacity-90 text-[#FFB800] font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition shadow-sm cursor-pointer"
+              >
+                <span>Get Templates</span>
+                <ArrowRight className="w-4 h-4 text-white" />
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+
+      {/* FOOTER TRUST BAR & FOOTER */}
+      <footer className="bg-[#0A2342] text-white pt-12 pb-8 px-4 mt-auto border-t border-[#D4AF37]/20">
+        <div className="max-w-7xl mx-auto space-y-8">
+          
+          {/* Footer Trust Bar */}
+          <div className="bg-[#0A1931] border border-emerald-500/30 rounded-2xl p-4 sm:p-6 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left shadow-md">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">🔒</span>
+              <p className="text-xs sm:text-sm text-slate-200 font-medium">
+                Your files are 100% secure - processed in your browser and auto-deleted. No signup needed.
+              </p>
+            </div>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold text-xs">
+              <span>✓ ads.txt Authorised</span>
+            </div>
+          </div>
+
+          {/* Footer Links & Brand */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-sm pt-4">
+            <div>
+              <div className="flex items-center gap-3 mb-3">
+                <img src="/logo.png" alt="FreeToolsNoSignup Logo" className="h-8 w-auto" />
+                <span className="font-extrabold text-white text-base">FreeToolsNoSignup</span>
+              </div>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                FreeToolsNoSignup - FAST FREE EASY. 250+ powerful browser-native utilities with zero signups.
+              </p>
+            </div>
+
+            <div className="flex flex-col space-y-2">
+              <h4 className="font-bold text-white text-xs uppercase tracking-wider text-[#FFC000] mb-1">Quick Hubs</h4>
+              <button onClick={() => navigateTo('/calculators')} className="text-left text-xs text-slate-300 hover:text-white transition">Calculators Hub</button>
+              <button onClick={() => navigateTo('/tools')} className="text-left text-xs text-slate-300 hover:text-white transition">Dev &amp; File Tools</button>
+              <button onClick={() => navigateTo('/directory')} className="text-left text-xs text-slate-300 hover:text-white transition">Product Finder</button>
+              <button onClick={() => navigateTo('/news')} className="text-left text-xs text-slate-300 hover:text-white transition">AI News Feed</button>
+            </div>
+
+            <div className="flex flex-col space-y-2">
+              <h4 className="font-bold text-white text-xs uppercase tracking-wider text-[#FFC000] mb-1">Legal &amp; Policy</h4>
+              <button onClick={() => navigateTo('/about')} className="text-left text-xs text-slate-300 hover:text-white transition">About</button>
+              <button onClick={() => navigateTo('/contact')} className="text-left text-xs text-slate-300 hover:text-white transition">Contact</button>
+              <button onClick={() => navigateTo('/privacy-policy')} className="text-left text-xs text-slate-300 hover:text-white transition">Privacy Policy</button>
+              <button onClick={() => navigateTo('/terms')} className="text-left text-xs text-slate-300 hover:text-white transition">Terms</button>
+              <button onClick={() => navigateTo('/disclaimer')} className="text-left text-xs text-slate-300 hover:text-white transition">Disclaimer</button>
+            </div>
+
+            <div className="flex flex-col space-y-2">
+              <h4 className="font-bold text-white text-xs uppercase tracking-wider text-[#FFC000] mb-1">Resources</h4>
+              <a href="/sitemap.xml" target="_blank" rel="noopener noreferrer" className="text-xs text-slate-300 hover:text-white transition">Sitemap</a>
+              <a href="/ads.txt" target="_blank" rel="noopener noreferrer" className="text-xs text-slate-300 hover:text-white transition">Ads.txt Verification</a>
+              <p className="text-[11px] text-slate-400 mt-2">© 2026 freetoolsnosignup.com. All rights reserved.</p>
+            </div>
+          </div>
+
+        </div>
+      </footer>
+
+    </div>
   );
 }
+

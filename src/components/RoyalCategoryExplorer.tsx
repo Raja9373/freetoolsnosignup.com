@@ -133,6 +133,67 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
     <div className="w-full space-y-10 my-6 font-sans">
       
       {/* ======================================================== */}
+      {/* TWO PRIMARY DESTINATIONS: TOOLS & CALCULATORS           */}
+      {/* ======================================================== */}
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div 
+          onClick={() => handleCategorySelect('pdf')}
+          className="bg-gradient-to-br from-[#0A1931] to-[#0F2340] border-2 border-[#D4AF37]/50 rounded-2xl p-6 sm:p-8 text-white shadow-xl hover:shadow-[0_0_30px_rgba(212,175,55,0.3)] transition-all cursor-pointer group flex flex-col justify-between"
+        >
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <span className="w-14 h-14 rounded-2xl bg-[#D4AF37]/20 border border-[#D4AF37]/40 flex items-center justify-center text-3xl shadow-md group-hover:scale-110 transition-transform">
+                🛠️
+              </span>
+              <span className="bg-[#D4AF37] text-[#0A1931] font-extrabold text-xs px-3 py-1 rounded-full uppercase tracking-wider font-mono">
+                2,173 Tools
+              </span>
+            </div>
+            <h2 className="text-2xl font-extrabold text-white group-hover:text-[#D4AF37] transition-colors mb-2">
+              TOOLS
+            </h2>
+            <p className="text-sm text-gray-300 leading-relaxed">
+              Free online tools for files, images, PDFs, text, video, audio, SEO, developers, ATS resumes, and AI utilities. 100% client-side execution in your browser RAM.
+            </p>
+          </div>
+          <div className="mt-6 flex items-center justify-between pt-4 border-t border-[#D4AF37]/20">
+            <span className="text-xs text-[#D4AF37] font-semibold">Explore 6 Suites &amp; 38 Subcategories</span>
+            <span className="w-8 h-8 rounded-full bg-[#D4AF37] text-[#0A1931] flex items-center justify-center font-bold group-hover:translate-x-1 transition-transform">
+              →
+            </span>
+          </div>
+        </div>
+
+        <div 
+          onClick={() => handleCategorySelect('calculator')}
+          className="bg-gradient-to-br from-[#0A1931] to-[#0F2340] border-2 border-[#D4AF37]/50 rounded-2xl p-6 sm:p-8 text-white shadow-xl hover:shadow-[0_0_30px_rgba(212,175,55,0.3)] transition-all cursor-pointer group flex flex-col justify-between"
+        >
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <span className="w-14 h-14 rounded-2xl bg-[#D4AF37]/20 border border-[#D4AF37]/40 flex items-center justify-center text-3xl shadow-md group-hover:scale-110 transition-transform">
+                🧮
+              </span>
+              <span className="bg-[#D4AF37] text-[#0A1931] font-extrabold text-xs px-3 py-1 rounded-full uppercase tracking-wider font-mono">
+                2,580 Calculators
+              </span>
+            </div>
+            <h2 className="text-2xl font-extrabold text-white group-hover:text-[#D4AF37] transition-colors mb-2">
+              CALCULATORS
+            </h2>
+            <p className="text-sm text-gray-300 leading-relaxed">
+              Free calculators for finance, loans, mortgage, SIP, compound interest, health, BMI, real estate, math, science, and engineering. Instant answers with formulas.
+            </p>
+          </div>
+          <div className="mt-6 flex items-center justify-between pt-4 border-t border-[#D4AF37]/20">
+            <span className="text-xs text-[#D4AF37] font-semibold">Explore 25 Subcategories &amp; 2,580 Models</span>
+            <span className="w-8 h-8 rounded-full bg-[#D4AF37] text-[#0A1931] flex items-center justify-center font-bold group-hover:translate-x-1 transition-transform">
+              →
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================== */}
       {/* 5. STEPPER PROGRESS BAR - TOP BELOW HEADER               */}
       {/* ======================================================== */}
       <div className="w-full bg-[#0A1931]/95 border border-[#D4AF37]/30 rounded-xl px-4 py-3 flex items-center gap-2 sm:gap-4 text-xs sm:text-sm overflow-x-auto shadow-md">
