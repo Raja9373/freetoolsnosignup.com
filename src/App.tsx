@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Wrench, Calculator, Sparkles, ArrowRight, Shield, Zap, Menu, X, ExternalLink, FileText, Image as ImageIcon, Video, Cpu, Layers, BookOpen } from 'lucide-react';
+import { Logo } from './components/Logo';
 import { ToolsHubPage } from './pages/ToolsHubPage';
 import { CalculatorsHubPage } from './pages/CalculatorsHubPage';
 import { EMICalculatorPage } from './pages/EMICalculatorPage';
@@ -45,25 +46,21 @@ export default function App() {
 
   const normalizedPath = currentPath.replace(/\/+$/, '') || '/';
 
-  // Routing Views
-  if (normalizedPath === '/tools' || normalizedPath === '/tools-hub') {
-    return <ToolsHubPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+  // Routing Views (Specific first, then wildcards/hubs)
+  if (normalizedPath === '/calculators/emi-calculator') {
+    return <EMICalculatorPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+  }
+
+  if (normalizedPath.startsWith('/calculators')) {
+    return <CalculatorsHubPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
   }
 
   if (normalizedPath === '/tools/pdf-to-word') {
     return <PDFToWordPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
   }
 
-  if (normalizedPath === '/calculators' || normalizedPath === '/calculators-hub') {
-    return <CalculatorsHubPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
-  }
-
-  if (normalizedPath === '/calculators/emi-calculator') {
-    return <EMICalculatorPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
-  }
-
-  if (normalizedPath === '/news') {
-    return <AINewsPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+  if (normalizedPath.startsWith('/tools')) {
+    return <ToolsHubPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
   }
 
   if (normalizedPath.startsWith('/news/')) {
@@ -71,17 +68,21 @@ export default function App() {
     return <AINewsDetailPage slug={slug} onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
   }
 
-  if (normalizedPath === '/ai-updates' || normalizedPath === '/ai') {
-    return <AIUpdatesHubPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+  if (normalizedPath === '/news') {
+    return <AINewsPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
   }
 
-  if (normalizedPath === '/directory' || normalizedPath === '/product-finder') {
-    return <ProductDirectoryPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+  if (normalizedPath === '/ai-updates' || normalizedPath === '/ai') {
+    return <AIUpdatesHubPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
   }
 
   if (normalizedPath.startsWith('/directory/')) {
     const slug = normalizedPath.replace('/directory/', '');
     return <ProductDetailPage slug={slug} onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
+  }
+
+  if (normalizedPath === '/directory' || normalizedPath === '/product-finder') {
+    return <ProductDirectoryPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
   }
 
   if (normalizedPath === '/notion-templates') {
@@ -132,13 +133,13 @@ export default function App() {
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
           
-          {/* Left: Logo (height 48px) */}
+          {/* Left: Logo */}
           <a 
             href="/" 
             onClick={(e) => { e.preventDefault(); navigateTo('/'); }} 
             className="flex items-center gap-2 group cursor-pointer shrink-0"
           >
-            <img src="/logo.png" alt="FreeToolsNoSignup Logo" className="h-12 w-auto object-contain" />
+            <Logo className="h-10 sm:h-12 w-auto" />
           </a>
 
           {/* Center: Search Input */}
@@ -209,22 +210,22 @@ export default function App() {
       {/* HERO SECTION */}
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 w-full flex flex-col items-center text-center">
         
-        {/* Centered logo (large, height 140px) */}
+        {/* Centered logo */}
         <div className="mb-8 transform hover:scale-105 transition-transform duration-300">
-          <img src="/logo.png" alt="FreeToolsNoSignup Logo" className="h-28 sm:h-36 md:h-[140px] w-auto mx-auto object-contain drop-shadow-md" />
+          <Logo className="h-28 sm:h-36 md:h-[140px] w-auto mx-auto drop-shadow-md" />
         </div>
 
-        {/* H1: "Free Tools - No Signup Required" bold navy */}
+        {/* H1 */}
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#0A2342] tracking-tight max-w-4xl mb-4">
           Free Tools - No Signup Required
         </h1>
         
-        {/* Sub: "250+ PDF, Image, Video, AI & Calculator Tools - All work in your browser. Fast, Free & Easy." */}
+        {/* Sub */}
         <p className="text-base sm:text-lg text-slate-600 max-w-2xl mb-10 leading-relaxed font-medium">
           250+ PDF, Image, Video, AI &amp; Calculator Tools - All work in your browser. Fast, Free &amp; Easy.
         </p>
 
-        {/* Big search bar below */}
+        {/* Big search bar */}
         <form onSubmit={handleUniversalSearch} className="w-full max-w-2xl relative mb-16 shadow-lg rounded-full">
           <input 
             type="text"
@@ -242,7 +243,7 @@ export default function App() {
           </button>
         </form>
 
-        {/* MAIN CONTENT - 5 COLORFUL BOXES IN GRID (2 columns desktop, 1 mobile) */}
+        {/* MAIN CONTENT - 5 COLORFUL BOXES IN GRID */}
         <div className="w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 mb-20 text-left">
           
           {/* BOX 1 - CALCULATORS */}
@@ -253,7 +254,7 @@ export default function App() {
                 <span className="text-3xl p-3 bg-blue-50 rounded-2xl shadow-2xs">🧮</span>
                 <div>
                   <h3 className="text-2xl font-extrabold text-[#0A2342] group-hover:text-[#0B4DB8] transition-colors">Calculators</h3>
-                  <p className="text-xs text-slate-500 font-medium">3000+ smart calculators for everyday life</p>
+                  <p className="text-xs text-slate-500 font-medium">Smart calculators for everyday life</p>
                 </div>
               </div>
               <p className="text-xs text-slate-600 mb-6 leading-relaxed">
@@ -283,7 +284,7 @@ export default function App() {
                 <span className="text-3xl p-3 bg-orange-50 rounded-2xl shadow-2xs">🛠️</span>
                 <div>
                   <h3 className="text-2xl font-extrabold text-[#0A2342] group-hover:text-[#FF8C00] transition-colors">Dev &amp; File Tools</h3>
-                  <p className="text-xs text-slate-500 font-medium">150+ tools that run 100% in your browser</p>
+                  <p className="text-xs text-slate-500 font-medium">Tools that run 100% in your browser</p>
                 </div>
               </div>
               <p className="text-xs text-slate-600 mb-6 leading-relaxed">
@@ -320,7 +321,7 @@ export default function App() {
                 10015.io product-finder clone. Submit your tool, get featured listings, and connect with global creators.
               </p>
               <ul className="space-y-2 mb-8 text-xs text-slate-500 font-medium border-t border-slate-100 pt-4">
-                <li className="flex items-center gap-2"><span>•</span> Curated directory of 1000+ products</li>
+                <li className="flex items-center gap-2"><span>•</span> Curated directory of products</li>
                 <li className="flex items-center gap-2"><span>•</span> Submit your tool &amp; get dofollow backlink</li>
                 <li className="flex items-center gap-2"><span>•</span> Featured listings &amp; embeds</li>
                 <li className="flex items-center gap-2"><span>•</span> Maker community upvotes &amp; reviews</li>
@@ -365,7 +366,7 @@ export default function App() {
             </button>
           </div>
 
-          {/* BOX 5 - NOTION TEMPLATES (Full width on bottom or 2-col span) */}
+          {/* BOX 5 - NOTION TEMPLATES */}
           <div className="bg-white rounded-3xl p-8 shadow-sm hover:shadow-xl transition-all border-t-4 border-t-black md:col-span-2 flex flex-col md:flex-row items-center justify-between gap-6 group relative overflow-hidden">
             <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-black/5 to-[#FFB800]/10 rounded-bl-full pointer-events-none"></div>
             <div className="flex-1">
@@ -373,11 +374,11 @@ export default function App() {
                 <span className="text-3xl p-3 bg-gray-100 rounded-2xl shadow-2xs">📝</span>
                 <div>
                   <h3 className="text-2xl font-extrabold text-[#0A2342] group-hover:text-black transition-colors">Notion Templates</h3>
-                  <p className="text-xs text-slate-500 font-medium">99+ free aesthetic Notion templates</p>
+                  <p className="text-xs text-slate-500 font-medium">Free aesthetic Notion templates</p>
                 </div>
               </div>
               <p className="text-xs text-slate-600 mb-4 leading-relaxed max-w-xl">
-                Notioneverything.com blog clone. Boost your productivity instantly with handcrafted workspaces and dashboards.
+                Notioneverything.com clone. Boost your productivity instantly with handcrafted workspaces and dashboards.
               </p>
               <div className="flex flex-wrap gap-2 text-xs text-slate-600">
                 <span className="px-2.5 py-1 bg-slate-100 rounded-full font-medium">• Second Brain</span>
@@ -402,11 +403,10 @@ export default function App() {
 
       </main>
 
-      {/* FOOTER TRUST BAR & FOOTER */}
+      {/* FOOTER */}
       <footer className="bg-[#0A2342] text-white pt-12 pb-8 px-4 mt-auto border-t border-[#D4AF37]/20">
         <div className="max-w-7xl mx-auto space-y-8">
           
-          {/* Footer Trust Bar */}
           <div className="bg-[#0A1931] border border-emerald-500/30 rounded-2xl p-4 sm:p-6 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left shadow-md">
             <div className="flex items-center gap-3">
               <span className="text-2xl">🔒</span>
@@ -419,15 +419,14 @@ export default function App() {
             </div>
           </div>
 
-          {/* Footer Links & Brand */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-sm pt-4">
             <div>
               <div className="flex items-center gap-3 mb-3">
-                <img src="/logo.png" alt="FreeToolsNoSignup Logo" className="h-8 w-auto" />
+                <Logo className="h-8 w-auto" />
                 <span className="font-extrabold text-white text-base">FreeToolsNoSignup</span>
               </div>
               <p className="text-xs text-slate-400 leading-relaxed">
-                FreeToolsNoSignup - FAST FREE EASY. 250+ powerful browser-native utilities with zero signups.
+                FreeToolsNoSignup - FAST FREE EASY. Powerful browser-native utilities with zero signups.
               </p>
             </div>
 
@@ -462,4 +461,3 @@ export default function App() {
     </div>
   );
 }
-
