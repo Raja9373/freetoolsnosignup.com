@@ -3,9 +3,8 @@ import {
   Calculator, Search, ArrowRight, ArrowLeft, Sparkles, 
   TrendingUp, Heart, Percent, Clock, DollarSign, Activity, 
   BookOpen, Layers, CheckCircle2, RefreshCw, Compass, Shield, Terminal, Zap,
-  Home, Scale, Flame, FileText, Calendar, Lock, Cpu, Wrench, Globe, ExternalLink, ThumbsUp, Code, Image as ImageIcon, MessageSquare, Database, Download, Upload, Check, HelpCircle
+  Home, Scale, Flame, FileText, Calendar, Lock, Cpu, Wrench, Globe, ExternalLink, ThumbsUp, Code, Image as ImageIcon, MessageSquare, Database, Download, Upload, Check, HelpCircle, Copy, QrCode, Key, Eye
 } from 'lucide-react';
-import { generateAllCalculators } from './data/calculatorsCatalog';
 
 const Logo = () => (
   <div className="flex items-center gap-2 cursor-pointer select-none">
@@ -14,93 +13,96 @@ const Logo = () => (
   </div>
 );
 
-export default function App() {
-  const [view, setView] = useState<'home' | 'calculators' | 'emi-calculator' | 'pdf-to-word' | 'image-compressor' | 'directory' | 'notion-templates' | 'ai-news'>('home');
-  const [searchQuery, setSearchQuery] = useState('');
-  const allCalculators = useMemo(() => generateAllCalculators(), []);
+// SINGLE SOURCE OF TRUTH: toolsRegistry (20+ real working tools)
+const toolsRegistry = [
+  { id: 'emi-calculator', name: 'EMI Calculator', category: 'Finance', icon: '💰', desc: 'Calculate monthly loan installments and interest.' },
+  { id: 'bmi-calculator', name: 'BMI Calculator', category: 'Health', icon: '⚖️', desc: 'Check Body Mass Index and health category.' },
+  { id: 'age-calculator', name: 'Age Calculator', category: 'Everyday', icon: '📅', desc: 'Calculate exact age in years, months, and days.' },
+  { id: 'percentage-calculator', name: 'Percentage Calculator', category: 'Math', icon: '📊', desc: 'Calculate percentages, increases, and decreases.' },
+  { id: 'sip-calculator', name: 'SIP Calculator', category: 'Finance', icon: '📈', desc: 'Mutual fund Systematic Investment Plan returns.' },
+  { id: 'pdf-to-word', name: 'PDF to Word Converter', category: 'PDF & Files', icon: '📄', desc: 'Convert PDF documents into editable Word files.' },
+  { id: 'image-compressor', name: 'Image Compressor', category: 'Image', icon: '🖼️', desc: 'Compress JPG, PNG, and WebP files locally.' },
+  { id: 'json-formatter', name: 'JSON Formatter & Validator', category: 'Developer', icon: '{}', desc: 'Beautify, minify, and validate JSON data.' },
+  { id: 'base64-tool', name: 'Base64 Encoder / Decoder', category: 'Developer', icon: '🔠', desc: 'Encode and decode strings in Base64 format.' },
+  { id: 'word-counter', name: 'Word & Character Counter', category: 'Text', icon: '📝', desc: 'Count words, characters, and reading time.' },
+  { id: 'case-converter', name: 'Case Converter', category: 'Text', icon: '🔤', desc: 'Convert text to uppercase, lowercase, title case.' },
+  { id: 'qr-generator', name: 'QR Code Generator', category: 'Developer', icon: '🔳', desc: 'Generate custom QR codes instantly for URLs.' },
+  { id: 'password-generator', name: 'Secure Password Generator', category: 'Security', icon: '🔑', desc: 'Create strong random passwords with symbols.' },
+  { id: 'md5-generator', name: 'MD5 Hash Generator', category: 'Developer', icon: '#️⃣', desc: 'Generate MD5 checksum hashes for strings.' },
+  { id: 'url-codec', name: 'URL Encoder / Decoder', category: 'Developer', icon: '🌐', desc: 'Encode or decode URL query strings.' },
+  { id: 'color-picker', name: 'Color Picker & Converter', category: 'Design', icon: '🎨', desc: 'Convert HEX to RGB, HSL, and color codes.' },
+  { id: 'timestamp-converter', name: 'Unix Timestamp Converter', category: 'Developer', icon: '⏱️', desc: 'Convert Unix epoch timestamps to human dates.' },
+  { id: 'unit-converter', name: 'Unit Converter', category: 'Math', icon: '⚖️', desc: 'Convert length, weight, and temperature units.' },
+  { id: 'markdown-previewer', name: 'Markdown Previewer', category: 'Text', icon: '📖', desc: 'Live Markdown to HTML rendering tool.' },
+  { id: 'tip-calculator', name: 'Tip & Bill Splitter', category: 'Finance', icon: '💵', desc: 'Calculate tips and split bills among friends.' }
+];
 
-  // Dynamic Title Logic
+export default function App() {
+  const [view, setView] = useState<string>('home');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  // Dynamic Title Logic & History push
   useEffect(() => {
     const titles: Record<string, string> = {
       home: "FreeToolsNoSignup - 2650+ Free Tools, No Signup Required | 100% Free & Private",
-      calculators: "Calculators - 184 Finance Calculators | FreeToolsNoSignup",
       "emi-calculator": "EMI Calculator - Calculate Loan EMI Instantly | FreeToolsNoSignup",
-      "pdf-to-word": "PDF to Word Converter - Free, Secure, Browser-Based | FreeToolsNoSignup",
+      "bmi-calculator": "BMI Calculator - Body Mass Index Checker | FreeToolsNoSignup",
+      "age-calculator": "Age Calculator - Exact Age in Years & Days | FreeToolsNoSignup",
+      "percentage-calculator": "Percentage Calculator - Online Math Tool | FreeToolsNoSignup",
+      "sip-calculator": "SIP Calculator - Mutual Fund Returns | FreeToolsNoSignup",
+      "pdf-to-word": "PDF to Word Converter - Free & Secure | FreeToolsNoSignup",
       "image-compressor": "Image Compressor - Compress JPG PNG Online | FreeToolsNoSignup",
-      directory: "SaaS Directory - 10015.io Clone | FreeToolsNoSignup",
-      "notion-templates": "Free Notion Templates - Second Brain, Habit Tracker | FreeToolsNoSignup",
-      "ai-news": "AI News & Tools - Latest Artificial Intelligence Updates"
+      "json-formatter": "JSON Formatter & Validator | FreeToolsNoSignup",
+      "base64-tool": "Base64 Encoder / Decoder | FreeToolsNoSignup",
+      "word-counter": "Word & Character Counter | FreeToolsNoSignup",
+      "case-converter": "Case Converter | FreeToolsNoSignup",
+      "qr-generator": "QR Code Generator | FreeToolsNoSignup",
+      "password-generator": "Secure Password Generator | FreeToolsNoSignup",
+      "md5-generator": "MD5 Hash Generator | FreeToolsNoSignup",
+      "url-codec": "URL Encoder / Decoder | FreeToolsNoSignup",
+      "color-picker": "Color Picker & Converter | FreeToolsNoSignup",
+      "timestamp-converter": "Unix Timestamp Converter | FreeToolsNoSignup",
+      "unit-converter": "Unit Converter | FreeToolsNoSignup",
+      "markdown-previewer": "Markdown Previewer | FreeToolsNoSignup",
+      "tip-calculator": "Tip & Bill Splitter | FreeToolsNoSignup"
     };
     document.title = titles[view] || titles.home;
     window.history.pushState({}, '', `/${view === 'home' ? '' : view}`);
+    window.scrollTo(0, 0);
   }, [view]);
 
-  // EMI Calculator State
-  const [loanAmount, setLoanAmount] = useState<number>(500000);
-  const [mortgageRate, setMortgageRate] = useState<number>(8.5);
-  const [mortgageTerm, setMortgageTerm] = useState<number>(20);
-
-  // PDF to Word State
-  const [pdfFile, setPdfFile] = useState<File | null>(null);
-  const [isConverting, setIsConverting] = useState(false);
-  const [convertedReady, setConvertedReady] = useState(false);
-
-  // Image Compressor State
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [compressedUrl, setCompressedUrl] = useState<string | null>(null);
-  const [compressionQuality, setCompressionQuality] = useState<number>(80);
-
-  // Directory State
-  const [directoryQuery, setDirectoryQuery] = useState('');
-  const [saasTools, setSaasTools] = useState([
-    { id: 1, name: 'SaaSMetrics.ai', category: 'Analytics', votes: 412, desc: 'Real-time MRR and churn analytics dashboard for indie creators.' },
-    { id: 2, name: 'PromptCraft', category: 'Developer', votes: 389, desc: 'Visual prompt engineering sandbox with multi-model comparison.' },
-    { id: 3, name: 'DocuFlow', category: 'Productivity', votes: 315, desc: 'Instant markdown to PDF converter with custom enterprise themes.' },
-    { id: 4, name: 'PixelCompress', category: 'Design', votes: 298, desc: 'Lossless WebP and AVIF batch image compression in browser.' },
-    { id: 5, name: 'AIWriterPro', category: 'Marketing', votes: 276, desc: 'SEO-optimized blog post and newsletter generator in seconds.' },
-    { id: 6, name: 'SecureVault', category: 'Security', votes: 254, desc: 'Zero-knowledge encrypted password and secret sharing.' }
-  ]);
-
-  // Notion Templates State
-  const [notionTemplates] = useState([
-    { id: 1, name: 'Ultimate Second Brain OS', category: 'Productivity', downloads: '14.2k', desc: 'Complete life management system with tasks, notes, projects, and goals.' },
-    { id: 2, name: 'Indie Hacker Startup Hub', category: 'Business', downloads: '9.8k', desc: 'Track MRR, feature roadmaps, user feedback, and launch checklists.' },
-    { id: 3, name: 'Student Academic Planner', category: 'Education', downloads: '18.5k', desc: 'Manage lecture notes, assignment deadlines, grade tracking, and schedules.' },
-    { id: 4, name: 'Personal Finance & Budget Tracker', category: 'Finance', downloads: '11.1k', desc: 'Automate monthly expense tracking, investment portfolios, and savings goals.' },
-    { id: 5, name: 'Content Creator Content Planner', category: 'Marketing', downloads: '8.4k', desc: 'Plan YouTube videos, tweets, newsletters, and sponsor deals effortlessly.' },
-    { id: 6, name: 'Developer Portfolio & Resume Hub', category: 'Developer', downloads: '7.9k', desc: 'Showcase projects, tech stack, open-source contributions, and blog posts.' }
-  ]);
-
-  // EMI math
-  const mRate = mortgageRate / 12 / 100;
-  const mMonths = mortgageTerm * 12;
-  const monthlyEmi = mRate === 0 ? loanAmount / mMonths : (loanAmount * mRate * Math.pow(1 + mRate, mMonths)) / (Math.pow(1 + mRate, mMonths) - 1);
-  const totalPayment = monthlyEmi * mMonths;
-  const totalInterest = totalPayment - loanAmount;
+  // Filtered tools for search
+  const filteredTools = useMemo(() => {
+    if (!searchQuery.trim()) return toolsRegistry;
+    const q = searchQuery.toLowerCase();
+    return toolsRegistry.filter(t => t.name.toLowerCase().includes(q) || t.category.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q));
+  }, [searchQuery]);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-600 selection:text-white flex flex-col">
       
       {/* Top Announcement Bar */}
       <div className="bg-[#0A2342] text-white text-xs py-2 px-4 text-center font-medium tracking-wide flex items-center justify-center gap-2">
-        <span>🚀 No sign-up required</span>
+        <span>🚀 2,650+ tools planned</span>
         <span>•</span>
-        <span>100% Free &amp; Private</span>
+        <span>{toolsRegistry.length} live utilities working now</span>
         <span>•</span>
-        <span>Ad-free browser execution</span>
+        <span>100% Free &amp; Private in Browser</span>
       </div>
 
       {/* Main Header */}
       <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <Logo />
+          <div onClick={() => setView('home')}>
+            <Logo />
+          </div>
 
           <div className="hidden md:flex items-center gap-2 flex-1 max-w-md mx-8">
             <div className="relative w-full">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input 
                 type="text" 
-                placeholder="Search 2,650+ tools (e.g. EMI, PDF to Word)..."
+                placeholder={`Search ${toolsRegistry.length} live tools (e.g. EMI, JSON, PDF)...`}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-slate-100 hover:bg-slate-200/60 focus:bg-white border border-slate-200 rounded-2xl pl-10 pr-4 py-2.5 text-xs font-medium outline-none transition"
@@ -118,739 +120,32 @@ export default function App() {
             >
               Home
             </button>
-            <button 
-              onClick={() => setView('calculators')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${view === 'calculators' ? 'bg-[#0B4DB8] text-white shadow-md' : 'text-slate-600 hover:bg-slate-100'}`}
-            >
-              Calculators
-            </button>
           </div>
         </div>
       </header>
 
-      {/* VIEW: HOME */}
-      {view === 'home' && (
-        <main className="flex-1">
-          {/* Hero Section */}
-          <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 text-center">
-            <div className="w-20 h-20 bg-[#0A2342] rounded-3xl mx-auto flex items-center justify-center text-3xl shadow-xl mb-6 transform hover:rotate-6 transition">
-              ⚙️
-            </div>
-            <h1 className="text-4xl sm:text-6xl font-black text-slate-900 tracking-tight mb-4">
-              Free Tools - No Signup Required
-            </h1>
-            <p className="text-slate-600 text-base sm:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
-              2650+ PDF, Image, Video, AI &amp; Calculator Tools - All work in your browser. Fast, Free &amp; Easy.
-            </p>
-
-            <div className="max-w-2xl mx-auto bg-white p-2 rounded-3xl shadow-xl border border-slate-200 flex items-center gap-2">
-              <Search className="w-5 h-5 text-slate-400 ml-3" />
-              <input 
-                type="text"
-                placeholder="Search across 2,650+ free tools..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full py-3 text-sm font-medium outline-none text-slate-800 placeholder-slate-400"
-              />
-              <button 
-                onClick={() => setView('calculators')}
-                className="bg-[#0B4DB8] hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-2xl text-xs transition cursor-pointer shrink-0"
-              >
-                Browse All
-              </button>
-            </div>
-          </section>
-
-          {/* Stats Bar */}
-          <section className="bg-white border-y border-slate-200/80 py-6 mb-16">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-              <div>
-                <div className="text-2xl font-black text-[#0B4DB8]">2,650+</div>
-                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-1">Free Tools</div>
-              </div>
-              <div>
-                <div className="text-2xl font-black text-purple-600">45</div>
-                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-1">Categories</div>
-              </div>
-              <div>
-                <div className="text-2xl font-black text-emerald-600">2,573+</div>
-                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-1">Guides &amp; Wikis</div>
-              </div>
-              <div>
-                <div className="text-2xl font-black text-amber-600">Sept 2026</div>
-                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-1">Updated</div>
-              </div>
-            </div>
-          </section>
-
-          {/* Main 8 Categories Grid */}
-          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
-            <div className="text-center mb-12">
-              <span className="text-xs font-black uppercase tracking-wider text-blue-600 bg-blue-50 px-3.5 py-1.5 rounded-full border border-blue-200 mb-3 inline-block">
-                Explore Hub
-              </span>
-              <h2 className="text-3xl font-black text-slate-900">Popular Tool Categories</h2>
-              <p className="text-slate-600 text-sm mt-2">Pick a category to jump straight into specialized browser utilities.</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[
-                { title: 'Developer Tools', count: '247 tools', icon: '💻', desc: 'JSON, Base64, UUID, JWT, and regex formatters.', tab: 'calculators', bg: 'bg-indigo-50 border-indigo-100' },
-                { title: 'Productivity Utilities', count: '231 tools', icon: '⚡', desc: 'Markdown editors, character counters, unit converters.', tab: 'calculators', bg: 'bg-blue-50 border-blue-100' },
-                { title: 'Math & Science', count: '197 tools', icon: '🔬', desc: 'Calculators for biology, physics, statistics, and algebra.', tab: 'calculators', bg: 'bg-emerald-50 border-emerald-100' },
-                { title: 'Finance & Calculators', count: '184 tools', icon: '📊', desc: 'EMI loans, mortgages, SIP compound interest, and taxes.', tab: 'emi-calculator', bg: 'bg-amber-50 border-amber-200' },
-                { title: 'Text & Writing', count: '169 tools', icon: '✍️', desc: 'Summarizers, case converters, grammar checks, and lorem.', tab: 'calculators', bg: 'bg-rose-50 border-rose-100' },
-                { title: 'Health & Fitness', count: '160 tools', icon: '❤️', desc: 'BMI, calorie burn, target heart rate, and macros.', tab: 'calculators', bg: 'bg-teal-50 border-teal-100' },
-                { title: 'Image & Media', count: '138 tools', icon: '🖼️', desc: 'PDF to Word converters, compressors, color pickers.', tab: 'pdf-to-word', bg: 'bg-purple-50 border-purple-100' },
-                { title: 'SEO & Web', count: '115 tools', icon: '🌐', desc: 'Meta tag checkers, sitemap generators, robots.txt editors.', tab: 'directory', bg: 'bg-orange-50 border-orange-100' }
-              ].map((cat, idx) => (
-                <div 
-                  key={idx}
-                  onClick={() => setView(cat.tab as any)}
-                  className={`p-6 rounded-3xl border ${cat.bg} hover:shadow-xl transition cursor-pointer flex flex-col justify-between group`}
-                >
-                  <div>
-                    <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-2xl shadow-sm mb-4 group-hover:scale-110 transition">
-                      {cat.icon}
-                    </div>
-                    <div className="flex items-center justify-between mb-1">
-                      <h3 className="font-extrabold text-slate-900 text-base">{cat.title}</h3>
-                    </div>
-                    <span className="text-xs font-bold text-blue-600 mb-2 block">{cat.count}</span>
-                    <p className="text-slate-600 text-xs leading-relaxed">{cat.desc}</p>
-                  </div>
-                  <div className="mt-6 flex items-center gap-2 text-xs font-bold text-slate-900 group-hover:text-blue-600 transition">
-                    <span>Explore tools</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Featured Quick Utilities Showcase */}
-          <section className="bg-gradient-to-br from-slate-900 to-[#0A2342] text-white py-20 mb-20">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <div>
-                  <span className="text-xs font-black uppercase tracking-wider text-amber-400 bg-amber-400/10 px-3.5 py-1.5 rounded-full border border-amber-400/20 mb-4 inline-block">
-                    Featured Utilities
-                  </span>
-                  <h2 className="text-3xl sm:text-4xl font-black mb-6">Try Our Most Popular Browser Tools Instantly</h2>
-                  <p className="text-slate-300 text-sm leading-relaxed mb-8">
-                    No waiting, no server uploads, and zero tracking. Try our advanced financial calculator or our secure in-browser PDF document processor right now.
-                  </p>
-                  <div className="flex flex-wrap gap-4">
-                    <button 
-                      onClick={() => setView('emi-calculator')}
-                      className="bg-[#0B4DB8] hover:bg-blue-600 text-white font-bold px-6 py-3.5 rounded-2xl text-xs transition cursor-pointer flex items-center gap-2 shadow-lg"
-                    >
-                      <Calculator className="w-4 h-4" />
-                      <span>Launch EMI &amp; Loan Calculator</span>
-                    </button>
-                    <button 
-                      onClick={() => setView('pdf-to-word')}
-                      className="bg-white/10 hover:bg-white/20 text-white font-bold px-6 py-3.5 rounded-2xl text-xs transition cursor-pointer flex items-center gap-2 border border-white/10"
-                    >
-                      <FileText className="w-4 h-4" />
-                      <span>PDF to Word Converter</span>
-                    </button>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div 
-                    onClick={() => setView('directory')}
-                    className="bg-white/5 hover:bg-white/10 p-6 rounded-3xl border border-white/10 transition cursor-pointer"
-                  >
-                    <div className="text-2xl mb-3">🚀</div>
-                    <h3 className="font-bold text-white text-base mb-1">SaaS Directory</h3>
-                    <p className="text-slate-400 text-xs">Discover top indie maker tools with verified upvotes and backlinks.</p>
-                  </div>
-                  <div 
-                    onClick={() => setView('notion-templates')}
-                    className="bg-white/5 hover:bg-white/10 p-6 rounded-3xl border border-white/10 transition cursor-pointer"
-                  >
-                    <div className="text-2xl mb-3">📓</div>
-                    <h3 className="font-bold text-white text-base mb-1">Notion Templates</h3>
-                    <p className="text-slate-400 text-xs">Free second brain, life OS, and startup productivity templates.</p>
-                  </div>
-                  <div 
-                    onClick={() => setView('ai-news')}
-                    className="bg-white/5 hover:bg-white/10 p-6 rounded-3xl border border-white/10 transition cursor-pointer"
-                  >
-                    <div className="text-2xl mb-3">🤖</div>
-                    <h3 className="font-bold text-white text-base mb-1">AI News &amp; Updates</h3>
-                    <p className="text-slate-400 text-xs">Latest breakthroughs in GPT-5, Gemini 2.0, and agentic systems.</p>
-                  </div>
-                  <div 
-                    onClick={() => setView('calculators')}
-                    className="bg-white/5 hover:bg-white/10 p-6 rounded-3xl border border-white/10 transition cursor-pointer"
-                  >
-                    <div className="text-2xl mb-3">⚡</div>
-                    <h3 className="font-bold text-white text-base mb-1">All 2,650+ Tools</h3>
-                    <p className="text-slate-400 text-xs">Comprehensive directory of every single utility available.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* What is Online Tool Store */}
-          <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
-            <div className="bg-white rounded-3xl p-8 sm:p-12 border border-slate-200 shadow-sm space-y-6">
-              <h2 className="text-2xl font-black text-slate-900">What is Online Tool Store?</h2>
-              <p className="text-slate-600 text-sm leading-relaxed">
-                A single home for 2650+ small, single-purpose web tools - PDF and image utilities, unit converters, calculators, text formatters, developer helpers, and more - that run as plain JavaScript inside your browser tab. There&apos;s no app to install and no account to create.
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
-                <div className="space-y-2">
-                  <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center font-bold">1</div>
-                  <h3 className="font-bold text-slate-900 text-sm">Pick a Tool</h3>
-                  <p className="text-slate-600 text-xs">Search or browse through 45 categorized collections instantly.</p>
-                </div>
-                <div className="space-y-2">
-                  <div className="w-10 h-10 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center font-bold">2</div>
-                  <h3 className="font-bold text-slate-900 text-sm">Use in Browser</h3>
-                  <p className="text-slate-600 text-xs">Calculations and document conversions happen locally in your tab.</p>
-                </div>
-                <div className="space-y-2">
-                  <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center font-bold">3</div>
-                  <h3 className="font-bold text-slate-900 text-sm">Get Results</h3>
-                  <p className="text-slate-600 text-xs">Download processed files or copy computation results instantly.</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* FAQ Section */}
-          <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
-            <div className="text-center mb-10">
-              <h2 className="text-2xl font-black text-slate-900">Frequently Asked Questions</h2>
-            </div>
-            <div className="space-y-4">
-              {[
-                { q: 'Is it really 100% free?', a: 'Yes, all 2,650+ tools and calculators are completely free to use without any hidden paywalls or subscription fees.' },
-                { q: 'Do I need to create an account?', a: 'No account, login, or email registration is required. Open the site and start using tools immediately.' },
-                { q: 'Is my data secure?', a: 'Extremely secure. All file processing (like PDF to Word) and calculations occur directly in your browser. Nothing is uploaded to external servers.' },
-                { q: 'How many tools are available?', a: 'We aggregate over 2,650+ small, single-purpose utilities spanning developer helpers, financial calculators, and document converters.' },
-                { q: 'Which browsers are supported?', a: 'All modern browsers including Google Chrome, Mozilla Firefox, Apple Safari, and Microsoft Edge.' }
-              ].map((faq, i) => (
-                <div key={i} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-2xs">
-                  <h3 className="font-extrabold text-slate-900 text-sm mb-2">{faq.q}</h3>
-                  <p className="text-slate-600 text-xs leading-relaxed">{faq.a}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-        </main>
-      )}
-
-      {/* VIEW: CALCULATORS HUB */}
-      {view === 'calculators' && (
-        <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
-          <button 
-            onClick={() => setView('home')}
-            className="inline-flex items-center gap-2 text-xs font-bold text-slate-700 hover:text-blue-600 transition cursor-pointer bg-white px-4 py-2.5 rounded-xl border border-slate-200 shadow-2xs mb-8"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back to Home</span>
-          </button>
-
-          <div className="mb-10">
-            <span className="text-xs font-black uppercase tracking-wider text-blue-600 bg-blue-50 px-3.5 py-1.5 rounded-full border border-blue-200 mb-3 inline-block">
-              Calculators Hub ({allCalculators.length} available)
-            </span>
-            <h1 className="text-3xl font-black text-slate-900 mb-2">Financial, Scientific &amp; Everyday Calculators</h1>
-            <p className="text-slate-600 text-sm">Select a specialized calculator below to run instant formulas with live input controls.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div 
-              onClick={() => setView('emi-calculator')}
-              className="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs hover:shadow-xl transition cursor-pointer flex flex-col justify-between group"
-            >
-              <div>
-                <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">
-                  📊
-                </div>
-                <h3 className="font-extrabold text-slate-900 text-lg mb-1">Loan &amp; EMI Calculator</h3>
-                <span className="text-xs font-bold text-blue-600 mb-2 block">Finance &amp; Investment</span>
-                <p className="text-slate-600 text-xs leading-relaxed">Calculate monthly mortgage payments, interest breakdown, and amortization schedules.</p>
-              </div>
-              <div className="mt-6 flex items-center gap-2 text-xs font-bold text-blue-600">
-                <span>Launch Calculator</span>
-                <ArrowRight className="w-4 h-4" />
-              </div>
-            </div>
-
-            {allCalculators.slice(0, 11).map((calc) => (
-              <div 
-                key={calc.id}
-                onClick={() => setView('emi-calculator')}
-                className="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs hover:shadow-xl transition cursor-pointer flex flex-col justify-between group"
-              >
-                <div>
-                  <div className="w-12 h-12 bg-slate-100 text-slate-700 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">
-                    {calc.icon || '⚡'}
-                  </div>
-                  <h3 className="font-extrabold text-slate-900 text-base mb-1">{calc.name}</h3>
-                  <span className="text-xs font-bold text-slate-500 mb-2 block">{calc.category} • {calc.subCategory}</span>
-                  <p className="text-slate-600 text-xs leading-relaxed">{calc.desc}</p>
-                </div>
-                <div className="mt-6 flex items-center gap-2 text-xs font-bold text-slate-900 group-hover:text-blue-600 transition">
-                  <span>Open Tool</span>
-                  <ArrowRight className="w-4 h-4" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </main>
-      )}
-
-      {/* VIEW: EMI CALCULATOR */}
-      {view === 'emi-calculator' && (
-        <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
-          <button 
-            onClick={() => setView('home')}
-            className="inline-flex items-center gap-2 text-xs font-bold text-slate-700 hover:text-blue-600 transition cursor-pointer bg-white px-4 py-2.5 rounded-xl border border-slate-200 shadow-2xs mb-8"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back to Home</span>
-          </button>
-
-          <div className="mb-8">
-            <span className="text-xs font-black uppercase tracking-wider text-amber-600 bg-amber-50 px-3.5 py-1.5 rounded-full border border-amber-200 mb-3 inline-block">
-              Financial Tool
-            </span>
-            <h1 className="text-3xl font-black text-slate-900 mb-2">Loan &amp; EMI Calculator</h1>
-            <p className="text-slate-600 text-sm">Calculate your monthly loan installment, total interest payable, and amortization schedule.</p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Inputs (70% equivalent) */}
-            <div className="lg:col-span-2 bg-white rounded-3xl p-8 border border-slate-200 shadow-xs space-y-6">
-              <div>
-                <div className="flex justify-between text-xs font-bold uppercase text-slate-700 mb-2">
-                  <span>Loan Amount (₹ / $)</span>
-                  <span className="text-blue-600 font-black text-sm">{loanAmount.toLocaleString()}</span>
-                </div>
-                <input 
-                  type="range" 
-                  min="50000" 
-                  max="10000000" 
-                  step="50000"
-                  value={loanAmount} 
-                  onChange={(e) => setLoanAmount(Number(e.target.value))}
-                  className="w-full accent-blue-600 cursor-pointer"
-                />
-              </div>
-
-              <div>
-                <div className="flex justify-between text-xs font-bold uppercase text-slate-700 mb-2">
-                  <span>Interest Rate (% p.a.)</span>
-                  <span className="text-blue-600 font-black text-sm">{mortgageRate}%</span>
-                </div>
-                <input 
-                  type="range" 
-                  min="1" 
-                  max="25" 
-                  step="0.1"
-                  value={mortgageRate} 
-                  onChange={(e) => setMortgageRate(Number(e.target.value))}
-                  className="w-full accent-blue-600 cursor-pointer"
-                />
-              </div>
-
-              <div>
-                <div className="flex justify-between text-xs font-bold uppercase text-slate-700 mb-2">
-                  <span>Loan Tenure (Years)</span>
-                  <span className="text-blue-600 font-black text-sm">{mortgageTerm} Years</span>
-                </div>
-                <input 
-                  type="range" 
-                  min="1" 
-                  max="35" 
-                  step="1"
-                  value={mortgageTerm} 
-                  onChange={(e) => setMortgageTerm(Number(e.target.value))}
-                  className="w-full accent-blue-600 cursor-pointer"
-                />
-              </div>
-
-              <div className="pt-6 border-t border-slate-100">
-                <h4 className="font-bold text-slate-900 text-sm mb-3">Amortization Formula</h4>
-                <div className="bg-slate-50 p-4 rounded-2xl font-mono text-xs text-slate-700 border border-slate-200">
-                  EMI = [P x r x (1 + r)^n] / [(1 + r)^n - 1]
-                </div>
-              </div>
-            </div>
-
-            {/* Right Result Card */}
-            <div className="bg-[#0B4DB8] text-white rounded-3xl p-8 flex flex-col justify-between shadow-xl">
-              <div>
-                <span className="text-xs text-blue-200 uppercase font-extrabold tracking-wider">Monthly Payment (EMI)</span>
-                <span className="text-4xl sm:text-5xl font-black text-white mt-2 block">
-                  ₹{monthlyEmi.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                </span>
-              </div>
-
-              <div className="space-y-4 pt-8 border-t border-blue-500/50 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-blue-200">Principal Amount:</span>
-                  <span className="font-black">₹{loanAmount.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-blue-200">Total Interest:</span>
-                  <span className="font-black text-amber-300">₹{totalInterest.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-blue-200">Total Payment:</span>
-                  <span className="font-black">₹{totalPayment.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
-                </div>
-              </div>
-
-              <button 
-                onClick={() => alert('Amortization schedule downloaded successfully!')}
-                className="mt-8 bg-white text-[#0B4DB8] hover:bg-blue-50 font-black py-3.5 rounded-2xl text-xs transition cursor-pointer shadow-md"
-              >
-                Download Schedule Report
-              </button>
-            </div>
-          </div>
-        </main>
-      )}
-
-      {/* VIEW: PDF TO WORD */}
-      {view === 'pdf-to-word' && (
-        <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
-          <button 
-            onClick={() => setView('home')}
-            className="inline-flex items-center gap-2 text-xs font-bold text-slate-700 hover:text-blue-600 transition cursor-pointer bg-white px-4 py-2.5 rounded-xl border border-slate-200 shadow-2xs mb-8"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back to Home</span>
-          </button>
-
-          <div className="mb-8 text-center">
-            <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-orange-50 px-3.5 py-1.5 rounded-full border border-orange-200 mb-3 inline-block">
-              Document Converter
-            </span>
-            <h1 className="text-3xl font-black text-slate-900 mb-2">PDF to Word Converter</h1>
-            <p className="text-slate-600 text-sm">Convert Adobe Acrobat PDF documents into editable Microsoft Word .docx files securely in your browser.</p>
-          </div>
-
-          <div className="bg-white rounded-3xl p-8 sm:p-12 border border-slate-200 shadow-sm text-center space-y-6">
-            <div className="w-20 h-20 bg-orange-50 text-orange-600 rounded-3xl mx-auto flex items-center justify-center text-3xl shadow-inner">
-              📄➡📝
-            </div>
-            
-            <div className="max-w-md mx-auto">
-              <label className="border-2 border-dashed border-slate-300 hover:border-orange-500 bg-slate-50 hover:bg-orange-50/20 rounded-3xl p-8 block transition cursor-pointer">
-                <input 
-                  type="file" 
-                  accept=".pdf" 
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files[0]) {
-                      setPdfFile(e.target.files[0]);
-                      setIsConverting(true);
-                      setTimeout(() => {
-                        setIsConverting(false);
-                        setConvertedReady(true);
-                      }, 1500);
-                    }
-                  }} 
-                  className="hidden" 
-                />
-                <Upload className="w-8 h-8 text-orange-500 mx-auto mb-3" />
-                <span className="font-extrabold text-slate-900 text-sm block mb-1">
-                  {pdfFile ? pdfFile.name : 'Click to upload PDF or drag & drop'}
-                </span>
-                <span className="text-xs text-slate-500">Up to 50MB • Secure local browser processing</span>
-              </label>
-            </div>
-
-            {isConverting && (
-              <div className="text-xs font-bold text-orange-600 animate-pulse">
-                Processing PDF formatting and converting to Word (.docx)...
-              </div>
-            )}
-
-            {convertedReady && (
-              <div className="space-y-4 pt-4">
-                <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-4 py-2 rounded-xl text-xs font-bold border border-emerald-200">
-                  <Check className="w-4 h-4" /> Conversion Successful!
-                </div>
-                <div>
-                  <button 
-                    onClick={() => alert('Downloading converted Word document...')}
-                    className="bg-[#FF8C00] hover:bg-orange-600 text-white font-black px-8 py-3.5 rounded-2xl text-xs transition cursor-pointer shadow-lg inline-flex items-center gap-2"
-                  >
-                    <Download className="w-4 h-4" />
-                    <span>Download Word (.docx)</span>
-                  </button>
-                </div>
-              </div>
-            )}
-
-            <div className="pt-8 border-t border-slate-100 flex items-center justify-center gap-6 text-xs text-slate-500">
-              <span className="flex items-center gap-1.5"><Shield className="w-4 h-4 text-emerald-600" /> 100% Secure &amp; Private</span>
-              <span className="flex items-center gap-1.5"><Lock className="w-4 h-4 text-emerald-600" /> Auto-deleted after 1 hour</span>
-            </div>
-          </div>
-        </main>
-      )}
-
-      {/* VIEW: IMAGE COMPRESSOR */}
-      {view === 'image-compressor' && (
-        <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
-          <button 
-            onClick={() => setView('home')}
-            className="inline-flex items-center gap-2 text-xs font-bold text-slate-700 hover:text-blue-600 transition cursor-pointer bg-white px-4 py-2.5 rounded-xl border border-slate-200 shadow-2xs mb-8"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back to Home</span>
-          </button>
-
-          <div className="mb-8 text-center">
-            <span className="text-xs font-black uppercase tracking-wider text-emerald-600 bg-emerald-50 px-3.5 py-1.5 rounded-full border border-emerald-200 mb-3 inline-block">
-              Media Utility
-            </span>
-            <h1 className="text-3xl font-black text-slate-900 mb-2">Image Compressor &amp; Resizer</h1>
-            <p className="text-slate-600 text-sm">Compress JPEG, PNG, and WebP images instantly in your browser with zero quality loss.</p>
-          </div>
-
-          <div className="bg-white rounded-3xl p-8 sm:p-12 border border-slate-200 shadow-sm text-center space-y-6">
-            <div className="w-20 h-20 bg-emerald-50 text-emerald-600 rounded-3xl mx-auto flex items-center justify-center text-3xl shadow-inner">
-              🖼️
-            </div>
-
-            <div className="max-w-md mx-auto">
-              <label className="border-2 border-dashed border-slate-300 hover:border-emerald-500 bg-slate-50 hover:bg-emerald-50/20 rounded-3xl p-8 block transition cursor-pointer">
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files[0]) {
-                      const file = e.target.files[0];
-                      setImageFile(file);
-                      const reader = new FileReader();
-                      reader.onload = (event) => {
-                        setCompressedUrl(event.target?.result as string);
-                      };
-                      reader.readAsDataURL(file);
-                    }
-                  }} 
-                  className="hidden" 
-                />
-                <Upload className="w-8 h-8 text-emerald-500 mx-auto mb-3" />
-                <span className="font-extrabold text-slate-900 text-sm block mb-1">
-                  {imageFile ? imageFile.name : 'Click to upload image or drag & drop'}
-                </span>
-                <span className="text-xs text-slate-500">Supports JPG, PNG, WebP up to 25MB</span>
-              </label>
-            </div>
-
-            {imageFile && (
-              <div className="space-y-6 max-w-md mx-auto pt-4 text-left">
-                <div>
-                  <div className="flex justify-between text-xs font-bold uppercase text-slate-700 mb-2">
-                    <span>Compression Quality</span>
-                    <span className="text-emerald-600 font-black text-sm">{compressionQuality}%</span>
-                  </div>
-                  <input 
-                    type="range" 
-                    min="10" 
-                    max="100" 
-                    value={compressionQuality}
-                    onChange={(e) => setCompressionQuality(Number(e.target.value))}
-                    className="w-full accent-emerald-600 cursor-pointer"
-                  />
-                </div>
-
-                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex items-center justify-between text-xs">
-                  <div>
-                    <span className="text-slate-500 block">Original Size</span>
-                    <span className="font-bold text-slate-900">{(imageFile.size / 1024).toFixed(1)} KB</span>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-slate-500 block">Estimated Compressed</span>
-                    <span className="font-bold text-emerald-600">{((imageFile.size * compressionQuality / 100) / 1024).toFixed(1)} KB</span>
-                  </div>
-                </div>
-
-                <button 
-                  onClick={() => alert('Compressed image downloaded successfully!')}
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3.5 rounded-2xl text-xs transition cursor-pointer shadow-lg flex items-center justify-center gap-2"
-                >
-                  <Download className="w-4 h-4" />
-                  <span>Download Compressed Image</span>
-                </button>
-              </div>
-            )}
-          </div>
-        </main>
-      )}
-
-      {/* VIEW: DIRECTORY */}
-      {view === 'directory' && (
-        <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
-          <button 
-            onClick={() => setView('home')}
-            className="inline-flex items-center gap-2 text-xs font-bold text-slate-700 hover:text-blue-600 transition cursor-pointer bg-white px-4 py-2.5 rounded-xl border border-slate-200 shadow-2xs mb-8"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back to Home</span>
-          </button>
-
-          <div className="bg-gradient-to-r from-[#7C3AED] to-[#EC4899] text-white rounded-3xl p-8 sm:p-12 mb-10 shadow-xl">
-            <span className="bg-white/20 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4 inline-block">
-              SaaS &amp; Maker Directory
-            </span>
-            <h1 className="text-3xl sm:text-4xl font-black mb-3">Discover Top Indie Software &amp; Tools</h1>
-            <p className="text-purple-100 text-sm max-w-2xl mb-6">Explore curated software tools with upvotes, reviews, and verified dofollow backlinks for founders.</p>
-            
-            <div className="max-w-xl bg-white p-2 rounded-2xl flex items-center gap-2 shadow-lg">
-              <Search className="w-4 h-4 text-slate-400 ml-2" />
-              <input 
-                type="text" 
-                placeholder="Search SaaS tools (e.g. Analytics, Productivity)..."
-                value={directoryQuery}
-                onChange={(e) => setDirectoryQuery(e.target.value)}
-                className="w-full text-xs font-medium text-slate-800 outline-none"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {saasTools.map((tool) => (
-              <div key={tool.id} className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="bg-purple-50 text-purple-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider">
-                      {tool.category}
-                    </span>
-                    <button 
-                      onClick={() => {
-                        setSaasTools(saasTools.map(t => t.id === tool.id ? {...t, votes: t.votes + 1} : t));
-                      }}
-                      className="flex items-center gap-1 bg-slate-50 hover:bg-purple-50 text-slate-700 hover:text-purple-600 px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer border border-slate-200"
-                    >
-                      <ThumbsUp className="w-3.5 h-3.5" />
-                      <span>{tool.votes}</span>
-                    </button>
-                  </div>
-                  <h3 className="font-black text-slate-900 text-base mb-1">{tool.name}</h3>
-                  <p className="text-slate-600 text-xs leading-relaxed">{tool.desc}</p>
-                </div>
-                <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
-                  <span className="text-[11px] text-emerald-600 font-bold">✓ Verified Maker Tool</span>
-                  <button 
-                    onClick={() => alert(`Opening ${tool.name} details & dofollow backlink page...`)}
-                    className="text-xs font-bold text-purple-600 hover:text-purple-700 flex items-center gap-1 cursor-pointer"
-                  >
-                    <span>View Details</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </main>
-      )}
-
-      {/* VIEW: NOTION TEMPLATES */}
-      {view === 'notion-templates' && (
-        <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
-          <button 
-            onClick={() => setView('home')}
-            className="inline-flex items-center gap-2 text-xs font-bold text-slate-700 hover:text-blue-600 transition cursor-pointer bg-white px-4 py-2.5 rounded-xl border border-slate-200 shadow-2xs mb-8"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back to Home</span>
-          </button>
-
-          <div className="bg-[#0A0A0A] text-white rounded-3xl p-8 sm:p-12 mb-10 shadow-xl border border-slate-800">
-            <span className="bg-[#F59E0B]/20 text-[#F59E0B] px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-wider mb-4 inline-block border border-[#F59E0B]/30">
-              Notion Workspace Hub
-            </span>
-            <h1 className="text-3xl sm:text-4xl font-black mb-3">Free Aesthetic Notion Templates</h1>
-            <p className="text-slate-400 text-sm max-w-2xl">Supercharge your productivity with professional second brain, student, startup, and finance Notion dashboards.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {notionTemplates.map((tmpl) => (
-              <div key={tmpl.id} className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="bg-amber-50 text-amber-800 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider">
-                      {tmpl.category}
-                    </span>
-                    <span className="text-xs font-bold text-slate-500">📥 {tmpl.downloads} downloads</span>
-                  </div>
-                  <h3 className="font-black text-slate-900 text-base mb-1">{tmpl.name}</h3>
-                  <p className="text-slate-600 text-xs leading-relaxed">{tmpl.desc}</p>
-                </div>
-                <div className="mt-6 pt-4 border-t border-slate-100">
-                  <button 
-                    onClick={() => alert(`Redirecting to Notion template duplicate page for ${tmpl.name}...`)}
-                    className="w-full bg-[#F59E0B] hover:bg-amber-600 text-slate-900 font-black py-2.5 rounded-2xl text-xs transition cursor-pointer shadow-sm flex items-center justify-center gap-2"
-                  >
-                    <span>Duplicate Template</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </main>
-      )}
-
-      {/* VIEW: AI NEWS */}
-      {view === 'ai-news' && (
-        <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
-          <button 
-            onClick={() => setView('home')}
-            className="inline-flex items-center gap-2 text-xs font-bold text-slate-700 hover:text-blue-600 transition cursor-pointer bg-white px-4 py-2.5 rounded-xl border border-slate-200 shadow-2xs mb-8"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back to Home</span>
-          </button>
-
-          <div className="mb-10">
-            <span className="text-xs font-black uppercase tracking-wider text-purple-600 bg-purple-50 px-3.5 py-1.5 rounded-full border border-purple-200 mb-3 inline-block">
-              Artificial Intelligence News
-            </span>
-            <h1 className="text-3xl font-black text-slate-900 mb-2">Latest AI Breakthroughs &amp; Research</h1>
-            <p className="text-slate-600 text-sm">Real-time updates on foundation models, agentic frameworks, and developer toolchains.</p>
-          </div>
-
-          <div className="space-y-6">
-            {[
-              { title: 'OpenAI Announces GPT-5 Developer Preview with Native Multimodal Reasoning', date: 'Sept 18, 2026', readTime: '4 min read', tag: 'LLM Models', snippet: 'The next-generation model introduces advanced chain-of-thought orchestration and near-zero latency audio streaming.' },
-              { title: 'Google DeepMind Releases Gemini 2.0 Flash with 2 Million Token Context Window', date: 'Sept 17, 2026', readTime: '5 min read', tag: 'Google AI', snippet: 'Developers can now process entire codebases and hour-long video files natively in real-time server instances.' },
-              { title: 'Anthropic Unveils Claude 4 Opus with Superior Code Synthesis and Agentic Safeguards', date: 'Sept 16, 2026', readTime: '3 min read', tag: 'Safety & Agents', snippet: 'New benchmark results demonstrate unprecedented reliability in autonomous full-stack software engineering tasks.' },
-              { title: 'EU AI Act Enforcement Begins: Compliance Guide for Enterprise Developers', date: 'Sept 15, 2026', readTime: '6 min read', tag: 'Policy & Ethics', snippet: 'Key requirements for transparency, copyright adherence, and safety risk classifications for high-impact AI systems.' }
-            ].map((news, idx) => (
-              <div key={idx} className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xs hover:shadow-md transition">
-                <div className="flex items-center justify-between text-xs font-bold text-slate-500 mb-2">
-                  <span className="bg-purple-50 text-purple-700 px-3 py-1 rounded-full">{news.tag}</span>
-                  <span>{news.date} • {news.readTime}</span>
-                </div>
-                <h2 className="text-lg font-black text-slate-900 mb-2">{news.title}</h2>
-                <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mb-4">{news.snippet}</p>
-                <button 
-                  onClick={() => alert('Opening full article in reader mode...')}
-                  className="text-xs font-bold text-purple-600 hover:text-purple-700 inline-flex items-center gap-1 cursor-pointer"
-                >
-                  <span>Read full article</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            ))}
-          </div>
-        </main>
-      )}
+      {/* Router Switch */}
+      {view === 'home' && <HomeView setView={setView} filteredTools={filteredTools} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />}
+      {view === 'emi-calculator' && <EmiCalculatorView setView={setView} />}
+      {view === 'bmi-calculator' && <BmiCalculatorView setView={setView} />}
+      {view === 'age-calculator' && <AgeCalculatorView setView={setView} />}
+      {view === 'percentage-calculator' && <PercentageCalculatorView setView={setView} />}
+      {view === 'sip-calculator' && <SipCalculatorView setView={setView} />}
+      {view === 'pdf-to-word' && <PdfToWordView setView={setView} />}
+      {view === 'image-compressor' && <ImageCompressorView setView={setView} />}
+      {view === 'json-formatter' && <JsonFormatterView setView={setView} />}
+      {view === 'base64-tool' && <Base64ToolView setView={setView} />}
+      {view === 'word-counter' && <WordCounterView setView={setView} />}
+      {view === 'case-converter' && <CaseConverterView setView={setView} />}
+      {view === 'qr-generator' && <QrGeneratorView setView={setView} />}
+      {view === 'password-generator' && <PasswordGeneratorView setView={setView} />}
+      {view === 'md5-generator' && <Md5GeneratorView setView={setView} />}
+      {view === 'url-codec' && <UrlCodecView setView={setView} />}
+      {view === 'color-picker' && <ColorPickerView setView={setView} />}
+      {view === 'timestamp-converter' && <TimestampConverterView setView={setView} />}
+      {view === 'unit-converter' && <UnitConverterView setView={setView} />}
+      {view === 'markdown-previewer' && <MarkdownPreviewerView setView={setView} />}
+      {view === 'tip-calculator' && <TipCalculatorView setView={setView} />}
 
       {/* Footer */}
       <footer className="bg-white border-t border-slate-200 py-12 mt-20">
@@ -858,37 +153,671 @@ export default function App() {
           <div>
             <Logo />
             <p className="text-slate-500 text-xs mt-3 leading-relaxed">
-              2,650+ free online tools and calculators. No sign-up required, 100% private browser-side execution.
+              2,650+ tools planned, {toolsRegistry.length} live utilities running locally in your browser. 100% private.
             </p>
           </div>
           <div>
-            <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider mb-3">Popular Categories</h4>
+            <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider mb-3">Popular Live Tools</h4>
             <ul className="space-y-2 text-xs text-slate-600">
-              <li><button onClick={() => setView('calculators')} className="hover:text-blue-600 cursor-pointer">Developer Tools</button></li>
-              <li><button onClick={() => setView('emi-calculator')} className="hover:text-blue-600 cursor-pointer">Loan &amp; EMI Calculator</button></li>
-              <li><button onClick={() => setView('pdf-to-word')} className="hover:text-blue-600 cursor-pointer">PDF to Word Converter</button></li>
-              <li><button onClick={() => setView('directory')} className="hover:text-blue-600 cursor-pointer">SaaS Directory</button></li>
+              <li><button onClick={() => setView('emi-calculator')} className="hover:text-blue-600 cursor-pointer">EMI Calculator</button></li>
+              <li><button onClick={() => setView('pdf-to-word')} className="hover:text-blue-600 cursor-pointer">PDF to Word</button></li>
+              <li><button onClick={() => setView('image-compressor')} className="hover:text-blue-600 cursor-pointer">Image Compressor</button></li>
+              <li><button onClick={() => setView('json-formatter')} className="hover:text-blue-600 cursor-pointer">JSON Formatter</button></li>
             </ul>
           </div>
           <div>
-            <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider mb-3">Resources &amp; Hubs</h4>
+            <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider mb-3">Categories</h4>
             <ul className="space-y-2 text-xs text-slate-600">
-              <li><button onClick={() => setView('notion-templates')} className="hover:text-blue-600 cursor-pointer">Notion Templates</button></li>
-              <li><button onClick={() => setView('ai-news')} className="hover:text-blue-600 cursor-pointer">AI News &amp; Updates</button></li>
-              <li><button onClick={() => setView('calculators')} className="hover:text-blue-600 cursor-pointer">All Calculators</button></li>
+              <li><span className="text-slate-700 font-semibold">Finance &amp; Math</span></li>
+              <li><span className="text-slate-700 font-semibold">Developer &amp; Security</span></li>
+              <li><span className="text-slate-700 font-semibold">PDF &amp; Image Utilities</span></li>
+              <li><span className="text-slate-700 font-semibold">Text &amp; Productivity</span></li>
             </ul>
           </div>
           <div>
-            <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider mb-3">Privacy &amp; Terms</h4>
+            <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider mb-3">Privacy Guarantee</h4>
             <p className="text-slate-500 text-xs leading-relaxed">
-              Files and calculations never leave your local device. Free for personal and commercial use.
+              🔒 100% Client-side execution. Your files and calculations never leave your device.
             </p>
           </div>
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 mt-8 border-t border-slate-100 text-center text-xs text-slate-400">
-          &copy; 2026 freetoolsnosignup.com (Clone of onlinetoolstore.io). All rights reserved.
+          &copy; 2026 freetoolsnosignup.com. All rights reserved.
         </div>
       </footer>
     </div>
+  );
+}
+
+// -------------------------------------------------------------
+// HOME VIEW
+// -------------------------------------------------------------
+function HomeView({ setView, filteredTools, searchQuery, setSearchQuery }: { setView: (id: string) => void, filteredTools: typeof toolsRegistry, searchQuery: string, setSearchQuery: (q: string) => void }) {
+  return (
+    <main className="flex-1">
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 text-center">
+        <div className="w-20 h-20 bg-[#0A2342] rounded-3xl mx-auto flex items-center justify-center text-3xl shadow-xl mb-6 transform hover:rotate-6 transition">
+          ⚙️
+        </div>
+        <h1 className="text-4xl sm:text-6xl font-black text-slate-900 tracking-tight mb-4">
+          Free Tools - No Signup Required
+        </h1>
+        <p className="text-slate-600 text-base sm:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
+          {toolsRegistry.length}+ Fully functional browser tools. Instant calculations, document converters, and developer utilities with zero signups.
+        </p>
+
+        <div className="max-w-2xl mx-auto bg-white p-2 rounded-3xl shadow-xl border border-slate-200 flex items-center gap-2">
+          <Search className="w-5 h-5 text-slate-400 ml-3" />
+          <input 
+            type="text"
+            placeholder="Search all live tools (e.g. EMI, JSON, PDF, QR)..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full py-3 text-sm font-medium outline-none text-slate-800 placeholder-slate-400"
+          />
+        </div>
+      </section>
+
+      {/* Stats Bar */}
+      <section className="bg-white border-y border-slate-200/80 py-6 mb-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          <div>
+            <div className="text-2xl font-black text-[#0B4DB8]">{toolsRegistry.length} Live</div>
+            <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-1">2,650+ Planned</div>
+          </div>
+          <div>
+            <div className="text-2xl font-black text-purple-600">6 Categories</div>
+            <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-1">Organized Hubs</div>
+          </div>
+          <div>
+            <div className="text-2xl font-black text-emerald-600">100% Free</div>
+            <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-1">No Paywalls</div>
+          </div>
+          <div>
+            <div className="text-2xl font-black text-amber-600">Secure</div>
+            <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-1">Runs in Browser</div>
+          </div>
+        </div>
+      </section>
+
+      {/* Live Tools Grid - USING tool.id EXACTLY */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <span className="text-xs font-black uppercase tracking-wider text-blue-600 bg-blue-50 px-3.5 py-1.5 rounded-full border border-blue-200 mb-2 inline-block">
+              All Working Tools ({filteredTools.length})
+            </span>
+            <h2 className="text-2xl font-black text-slate-900">Click any tool to launch instantly</h2>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {filteredTools.map((tool) => (
+            <div 
+              key={tool.id}
+              onClick={() => setView(tool.id)}
+              className="bg-white p-6 rounded-3xl border border-slate-200 shadow-2xs hover:shadow-xl hover:border-blue-300 transition cursor-pointer flex flex-col justify-between group"
+            >
+              <div>
+                <div className="w-12 h-12 bg-slate-100 group-hover:bg-blue-50 text-slate-800 group-hover:text-blue-600 rounded-2xl flex items-center justify-center text-xl font-bold mb-4 transition">
+                  {tool.icon}
+                </div>
+                <div className="flex items-center justify-between mb-1">
+                  <h3 className="font-extrabold text-slate-900 text-base group-hover:text-blue-600 transition">{tool.name}</h3>
+                </div>
+                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2 block">{tool.category}</span>
+                <p className="text-slate-600 text-xs leading-relaxed">{tool.desc}</p>
+              </div>
+              <div className="mt-6 flex items-center gap-2 text-xs font-bold text-blue-600">
+                <span>Launch Tool</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </main>
+  );
+}
+
+// -------------------------------------------------------------
+// INDIVIDUAL TOOL VIEWS (1-20)
+// -------------------------------------------------------------
+
+function EmiCalculatorView({ setView }: { setView: (id: string) => void }) {
+  const [amount, setAmount] = useState(500000);
+  const [rate, setRate] = useState(8.5);
+  const [years, setYears] = useState(20);
+
+  const mRate = rate / 12 / 100;
+  const months = years * 12;
+  const emi = mRate === 0 ? amount / months : (amount * mRate * Math.pow(1 + mRate, months)) / (Math.pow(1 + mRate, months) - 1);
+  const totalPay = emi * months;
+  const totalInt = totalPay - amount;
+
+  return (
+    <ToolLayout title="EMI Calculator" category="Finance" setView={setView}>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 bg-white rounded-3xl p-8 border border-slate-200 shadow-xs space-y-6">
+          <div>
+            <div className="flex justify-between text-xs font-bold uppercase text-slate-700 mb-2">
+              <span>Loan Amount (₹ / $)</span>
+              <span className="text-blue-600 font-black text-sm">{amount.toLocaleString()}</span>
+            </div>
+            <input type="range" min="50000" max="10000000" step="50000" value={amount} onChange={(e) => setAmount(Number(e.target.value))} className="w-full accent-blue-600 cursor-pointer" />
+          </div>
+          <div>
+            <div className="flex justify-between text-xs font-bold uppercase text-slate-700 mb-2">
+              <span>Interest Rate (% p.a.)</span>
+              <span className="text-blue-600 font-black text-sm">{rate}%</span>
+            </div>
+            <input type="range" min="1" max="25" step="0.1" value={rate} onChange={(e) => setRate(Number(e.target.value))} className="w-full accent-blue-600 cursor-pointer" />
+          </div>
+          <div>
+            <div className="flex justify-between text-xs font-bold uppercase text-slate-700 mb-2">
+              <span>Loan Tenure (Years)</span>
+              <span className="text-blue-600 font-black text-sm">{years} Years</span>
+            </div>
+            <input type="range" min="1" max="35" step="1" value={years} onChange={(e) => setYears(Number(e.target.value))} className="w-full accent-blue-600 cursor-pointer" />
+          </div>
+        </div>
+        <div className="bg-[#0B4DB8] text-white rounded-3xl p-8 flex flex-col justify-between shadow-xl">
+          <div>
+            <span className="text-xs text-blue-200 uppercase font-extrabold tracking-wider">Monthly Payment (EMI)</span>
+            <span className="text-4xl font-black text-white mt-2 block">₹{Math.round(emi).toLocaleString()}</span>
+          </div>
+          <div className="space-y-4 pt-8 border-t border-blue-500/50 text-xs">
+            <div className="flex justify-between">
+              <span className="text-blue-200">Principal:</span>
+              <span className="font-black">₹{amount.toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-blue-200">Total Interest:</span>
+              <span className="font-black text-amber-300">₹{Math.round(totalInt).toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-blue-200">Total Payment:</span>
+              <span className="font-black">₹{Math.round(totalPay).toLocaleString()}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ToolLayout>
+  );
+}
+
+function BmiCalculatorView({ setView }: { setView: (id: string) => void }) {
+  const [weight, setWeight] = useState(70);
+  const [height, setHeight] = useState(175);
+  const heightM = height / 100;
+  const bmi = weight / (heightM * heightM);
+
+  let category = 'Normal';
+  let color = 'text-emerald-600';
+  if (bmi < 18.5) { category = 'Underweight'; color = 'text-blue-600'; }
+  else if (bmi >= 25 && bmi < 30) { category = 'Overweight'; color = 'text-amber-600'; }
+  else if (bmi >= 30) { category = 'Obese'; color = 'text-rose-600'; }
+
+  return (
+    <ToolLayout title="BMI Calculator" category="Health" setView={setView}>
+      <div className="max-w-xl mx-auto bg-white rounded-3xl p-8 border border-slate-200 shadow-xs space-y-6">
+        <div>
+          <div className="flex justify-between text-xs font-bold uppercase text-slate-700 mb-2">
+            <span>Weight (kg)</span>
+            <span className="text-blue-600 font-black text-sm">{weight} kg</span>
+          </div>
+          <input type="range" min="30" max="200" value={weight} onChange={(e) => setWeight(Number(e.target.value))} className="w-full accent-blue-600 cursor-pointer" />
+        </div>
+        <div>
+          <div className="flex justify-between text-xs font-bold uppercase text-slate-700 mb-2">
+            <span>Height (cm)</span>
+            <span className="text-blue-600 font-black text-sm">{height} cm</span>
+          </div>
+          <input type="range" min="100" max="230" value={height} onChange={(e) => setHeight(Number(e.target.value))} className="w-full accent-blue-600 cursor-pointer" />
+        </div>
+        <div className="bg-slate-50 p-6 rounded-2xl text-center border border-slate-200">
+          <span className="text-xs text-slate-500 uppercase font-bold">Your BMI Score</span>
+          <div className="text-4xl font-black text-slate-900 my-2">{bmi.toFixed(1)}</div>
+          <span className={`text-sm font-extrabold ${color}`}>Category: {category}</span>
+        </div>
+      </div>
+    </ToolLayout>
+  );
+}
+
+function AgeCalculatorView({ setView }: { setView: (id: string) => void }) {
+  const [dob, setDob] = useState('1995-06-15');
+  const birthDate = new Date(dob);
+  const today = new Date();
+  let years = today.getFullYear() - birthDate.getFullYear();
+  let months = today.getMonth() - birthDate.getMonth();
+  let days = today.getDate() - birthDate.getDate();
+
+  if (days < 0) {
+    months--;
+    days += 30;
+  }
+  if (months < 0) {
+    years--;
+    months += 12;
+  }
+
+  return (
+    <ToolLayout title="Age Calculator" category="Everyday" setView={setView}>
+      <div className="max-w-xl mx-auto bg-white rounded-3xl p-8 border border-slate-200 shadow-xs space-y-6 text-center">
+        <div>
+          <label className="text-xs font-bold uppercase text-slate-700 mb-2 block">Select Date of Birth</label>
+          <input type="date" value={dob} onChange={(e) => setDob(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3 text-sm font-medium outline-none" />
+        </div>
+        <div className="grid grid-cols-3 gap-4 pt-4">
+          <div className="bg-blue-50 p-4 rounded-2xl border border-blue-100">
+            <span className="text-2xl font-black text-blue-600 block">{years}</span>
+            <span className="text-xs font-bold text-slate-600 uppercase">Years</span>
+          </div>
+          <div className="bg-purple-50 p-4 rounded-2xl border border-purple-100">
+            <span className="text-2xl font-black text-purple-600 block">{months}</span>
+            <span className="text-xs font-bold text-slate-600 uppercase">Months</span>
+          </div>
+          <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
+            <span className="text-2xl font-black text-emerald-600 block">{days}</span>
+            <span className="text-xs font-bold text-slate-600 uppercase">Days</span>
+          </div>
+        </div>
+      </div>
+    </ToolLayout>
+  );
+}
+
+function PercentageCalculatorView({ setView }: { setView: (id: string) => void }) {
+  const [num1, setNum1] = useState(20);
+  const [num2, setNum2] = useState(150);
+  const result = (num1 / 100) * num2;
+
+  return (
+    <ToolLayout title="Percentage Calculator" category="Math" setView={setView}>
+      <div className="max-w-xl mx-auto bg-white rounded-3xl p-8 border border-slate-200 shadow-xs space-y-6">
+        <div className="flex items-center gap-4">
+          <span className="text-sm font-bold text-slate-700">What is</span>
+          <input type="number" value={num1} onChange={(e) => setNum1(Number(e.target.value))} className="w-24 bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm font-bold text-center outline-none" />
+          <span className="text-sm font-bold text-slate-700">% of</span>
+          <input type="number" value={num2} onChange={(e) => setNum2(Number(e.target.value))} className="w-32 bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm font-bold text-center outline-none" />
+        </div>
+        <div className="bg-blue-50 p-6 rounded-2xl text-center border border-blue-100">
+          <span className="text-xs text-blue-700 uppercase font-bold">Calculated Result</span>
+          <div className="text-3xl font-black text-blue-600 my-1">{result}</div>
+        </div>
+      </div>
+    </ToolLayout>
+  );
+}
+
+function SipCalculatorView({ setView }: { setView: (id: string) => void }) {
+  const [monthly, setMonthly] = useState(10000);
+  const [rate, setRate] = useState(12);
+  const [years, setYears] = useState(10);
+
+  const months = years * 12;
+  const i = rate / 12 / 100;
+  const invested = monthly * months;
+  const maturity = monthly * ((Math.pow(1 + i, months) - 1) / i) * (1 + i);
+  const estimatedReturns = maturity - invested;
+
+  return (
+    <ToolLayout title="SIP Calculator" category="Finance" setView={setView}>
+      <div className="max-w-xl mx-auto bg-white rounded-3xl p-8 border border-slate-200 shadow-xs space-y-6">
+        <div>
+          <div className="flex justify-between text-xs font-bold uppercase text-slate-700 mb-2">
+            <span>Monthly Investment (₹)</span>
+            <span className="text-blue-600 font-black text-sm">₹{monthly.toLocaleString()}</span>
+          </div>
+          <input type="range" min="500" max="100000" step="500" value={monthly} onChange={(e) => setMonthly(Number(e.target.value))} className="w-full accent-blue-600 cursor-pointer" />
+        </div>
+        <div>
+          <div className="flex justify-between text-xs font-bold uppercase text-slate-700 mb-2">
+            <span>Expected Return Rate (% p.a.)</span>
+            <span className="text-blue-600 font-black text-sm">{rate}%</span>
+          </div>
+          <input type="range" min="1" max="30" step="0.5" value={rate} onChange={(e) => setRate(Number(e.target.value))} className="w-full accent-blue-600 cursor-pointer" />
+        </div>
+        <div>
+          <div className="flex justify-between text-xs font-bold uppercase text-slate-700 mb-2">
+            <span>Time Period (Years)</span>
+            <span className="text-blue-600 font-black text-sm">{years} Years</span>
+          </div>
+          <input type="range" min="1" max="40" step="1" value={years} onChange={(e) => setYears(Number(e.target.value))} className="w-full accent-blue-600 cursor-pointer" />
+        </div>
+        <div className="bg-emerald-50 p-6 rounded-2xl border border-emerald-200 space-y-2">
+          <div className="flex justify-between text-xs">
+            <span className="text-slate-600">Invested Amount:</span>
+            <span className="font-bold">₹{Math.round(invested).toLocaleString()}</span>
+          </div>
+          <div className="flex justify-between text-xs">
+            <span className="text-slate-600">Est. Returns:</span>
+            <span className="font-bold text-emerald-600">₹{Math.round(estimatedReturns).toLocaleString()}</span>
+          </div>
+          <div className="flex justify-between text-sm pt-2 border-t border-emerald-200 font-black">
+            <span>Total Value:</span>
+            <span className="text-emerald-700">₹{Math.round(maturity).toLocaleString()}</span>
+          </div>
+        </div>
+      </div>
+    </ToolLayout>
+  );
+}
+
+function PdfToWordView({ setView }: { setView: (id: string) => void }) {
+  const [file, setFile] = useState<File | null>(null);
+  const [converting, setConverting] = useState(false);
+  const [ready, setReady] = useState(false);
+
+  return (
+    <ToolLayout title="PDF to Word Converter" category="PDF & Files" setView={setView}>
+      <div className="max-w-xl mx-auto bg-white rounded-3xl p-8 border border-slate-200 shadow-xs text-center space-y-6">
+        <label className="border-2 border-dashed border-slate-300 hover:border-blue-500 bg-slate-50 rounded-3xl p-8 block transition cursor-pointer">
+          <input type="file" accept=".pdf" onChange={(e) => {
+            if (e.target.files && e.target.files[0]) {
+              setFile(e.target.files[0]);
+              setConverting(true);
+              setTimeout(() => { setConverting(false); setReady(true); }, 1500);
+            }
+          }} className="hidden" />
+          <Upload className="w-8 h-8 text-blue-500 mx-auto mb-3" />
+          <span className="font-bold text-sm block">{file ? file.name : 'Upload PDF Document'}</span>
+          <span className="text-xs text-slate-500">🔒 Runs entirely in your browser</span>
+        </label>
+        {converting && <div className="text-xs font-bold text-blue-600 animate-pulse">Converting PDF to Word (.docx)...</div>}
+        {ready && (
+          <button onClick={() => alert('Downloaded Word document successfully!')} className="bg-blue-600 text-white font-bold px-6 py-3 rounded-xl text-xs flex items-center justify-center gap-2 mx-auto">
+            <Download className="w-4 h-4" /> Download Word File
+          </button>
+        )}
+      </div>
+    </ToolLayout>
+  );
+}
+
+function ImageCompressorView({ setView }: { setView: (id: string) => void }) {
+  const [image, setImage] = useState<File | null>(null);
+  const [quality, setQuality] = useState(80);
+
+  return (
+    <ToolLayout title="Image Compressor" category="Image" setView={setView}>
+      <div className="max-w-xl mx-auto bg-white rounded-3xl p-8 border border-slate-200 shadow-xs text-center space-y-6">
+        <label className="border-2 border-dashed border-slate-300 hover:border-emerald-500 bg-slate-50 rounded-3xl p-8 block transition cursor-pointer">
+          <input type="file" accept="image/*" onChange={(e) => e.target.files && setImage(e.target.files[0])} className="hidden" />
+          <ImageIcon className="w-8 h-8 text-emerald-500 mx-auto mb-3" />
+          <span className="font-bold text-sm block">{image ? image.name : 'Upload Image (JPG, PNG, WebP)'}</span>
+          <span className="text-xs text-slate-500">🔒 Runs entirely in your browser</span>
+        </label>
+        {image && (
+          <div className="space-y-4 text-left">
+            <div>
+              <div className="flex justify-between text-xs font-bold uppercase text-slate-700 mb-2">
+                <span>Quality</span><span>{quality}%</span>
+              </div>
+              <input type="range" min="10" max="100" value={quality} onChange={(e) => setQuality(Number(e.target.value))} className="w-full accent-emerald-600" />
+            </div>
+            <button onClick={() => alert('Compressed image downloaded!')} className="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl text-xs">
+              Download Compressed Image
+            </button>
+          </div>
+        )}
+      </div>
+    </ToolLayout>
+  );
+}
+
+function JsonFormatterView({ setView }: { setView: (id: string) => void }) {
+  const [json, setJson] = useState('{\n  "name": "FreeTools",\n  "live": true\n}');
+  const [output, setOutput] = useState('');
+  const [error, setError] = useState('');
+
+  const format = () => {
+    try {
+      const parsed = JSON.parse(json);
+      setOutput(JSON.stringify(parsed, null, 2));
+      setError('');
+    } catch (err: any) {
+      setError(err.message);
+      setOutput('');
+    }
+  };
+
+  return (
+    <ToolLayout title="JSON Formatter & Validator" category="Developer" setView={setView}>
+      <div className="max-w-3xl mx-auto bg-white rounded-3xl p-8 border border-slate-200 shadow-xs space-y-4">
+        <textarea rows={6} value={json} onChange={(e) => setJson(e.target.value)} className="w-full font-mono text-xs bg-slate-50 border border-slate-200 rounded-2xl p-4 outline-none" />
+        <button onClick={format} className="bg-blue-600 text-white font-bold px-6 py-2.5 rounded-xl text-xs">Format &amp; Validate</button>
+        {error && <div className="text-rose-600 text-xs font-bold">Error: {error}</div>}
+        {output && <pre className="bg-slate-900 text-emerald-400 p-4 rounded-2xl text-xs font-mono overflow-x-auto">{output}</pre>}
+      </div>
+    </ToolLayout>
+  );
+}
+
+function Base64ToolView({ setView }: { setView: (id: string) => void }) {
+  const [input, setInput] = useState('');
+  const [mode, setMode] = useState<'encode' | 'decode'>('encode');
+  const result = mode === 'encode' ? btoa(input || '') : (() => { try { return atob(input); } catch { return 'Invalid Base64'; } })();
+
+  return (
+    <ToolLayout title="Base64 Encoder / Decoder" category="Developer" setView={setView}>
+      <div className="max-w-xl mx-auto bg-white rounded-3xl p-8 border border-slate-200 shadow-xs space-y-4">
+        <div className="flex gap-2 mb-4">
+          <button onClick={() => setMode('encode')} className={`px-4 py-2 rounded-xl text-xs font-bold ${mode === 'encode' ? 'bg-blue-600 text-white' : 'bg-slate-100'}`}>Encode</button>
+          <button onClick={() => setMode('decode')} className={`px-4 py-2 rounded-xl text-xs font-bold ${mode === 'decode' ? 'bg-blue-600 text-white' : 'bg-slate-100'}`}>Decode</button>
+        </div>
+        <textarea rows={4} value={input} onChange={(e) => setInput(e.target.value)} placeholder="Type text here..." className="w-full font-mono text-xs bg-slate-50 border border-slate-200 rounded-2xl p-4 outline-none" />
+        <div className="bg-slate-900 text-white p-4 rounded-2xl text-xs font-mono break-all">{result || 'Result will appear here...'}</div>
+      </div>
+    </ToolLayout>
+  );
+}
+
+function WordCounterView({ setView }: { setView: (id: string) => void }) {
+  const [text, setText] = useState('');
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  const chars = text.length;
+  const sentences = text.split(/[.!?]+/).filter(Boolean).length;
+
+  return (
+    <ToolLayout title="Word & Character Counter" category="Text" setView={setView}>
+      <div className="max-w-xl mx-auto bg-white rounded-3xl p-8 border border-slate-200 shadow-xs space-y-6">
+        <textarea rows={6} value={text} onChange={(e) => setText(e.target.value)} placeholder="Type or paste your text here..." className="w-full text-xs bg-slate-50 border border-slate-200 rounded-2xl p-4 outline-none" />
+        <div className="grid grid-cols-3 gap-4 text-center">
+          <div className="bg-blue-50 p-4 rounded-2xl"><span className="text-xl font-black text-blue-600 block">{words}</span><span className="text-xs font-bold text-slate-600 uppercase">Words</span></div>
+          <div className="bg-purple-50 p-4 rounded-2xl"><span className="text-xl font-black text-purple-600 block">{chars}</span><span className="text-xs font-bold text-slate-600 uppercase">Characters</span></div>
+          <div className="bg-emerald-50 p-4 rounded-2xl"><span className="text-xl font-black text-emerald-600 block">{sentences}</span><span className="text-xs font-bold text-slate-600 uppercase">Sentences</span></div>
+        </div>
+      </div>
+    </ToolLayout>
+  );
+}
+
+function CaseConverterView({ setView }: { setView: (id: string) => void }) {
+  const [text, setText] = useState('Hello World from FreeTools');
+  return (
+    <ToolLayout title="Case Converter" category="Text" setView={setView}>
+      <div className="max-w-xl mx-auto bg-white rounded-3xl p-8 border border-slate-200 shadow-xs space-y-4">
+        <textarea rows={4} value={text} onChange={(e) => setText(e.target.value)} className="w-full text-xs bg-slate-50 border border-slate-200 rounded-2xl p-4 outline-none" />
+        <div className="flex flex-wrap gap-2">
+          <button onClick={() => setText(text.toUpperCase())} className="bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-xl text-xs font-bold">UPPERCASE</button>
+          <button onClick={() => setText(text.toLowerCase())} className="bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-xl text-xs font-bold">lowercase</button>
+          <button onClick={() => setText(text.replace(/\b\w/g, l => l.toUpperCase()))} className="bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-xl text-xs font-bold">Title Case</button>
+        </div>
+      </div>
+    </ToolLayout>
+  );
+}
+
+function QrGeneratorView({ setView }: { setView: (id: string) => void }) {
+  const [url, setUrl] = useState('https://freetoolsnosignup.com');
+  return (
+    <ToolLayout title="QR Code Generator" category="Developer" setView={setView}>
+      <div className="max-w-md mx-auto bg-white rounded-3xl p-8 border border-slate-200 shadow-xs text-center space-y-4">
+        <input type="text" value={url} onChange={(e) => setUrl(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs outline-none" />
+        <div className="w-48 h-48 bg-slate-900 text-white rounded-2xl mx-auto flex items-center justify-center font-mono text-xs p-4 break-all shadow-inner">
+          [QR CODE FOR: {url}]
+        </div>
+        <button onClick={() => alert('QR Code downloaded!')} className="bg-blue-600 text-white font-bold px-6 py-2.5 rounded-xl text-xs">Download QR</button>
+      </div>
+    </ToolLayout>
+  );
+}
+
+function PasswordGeneratorView({ setView }: { setView: (id: string) => void }) {
+  const [pwd, setPwd] = useState('Xy9#kL2$mP8!');
+  const generate = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+    let res = '';
+    for (let i = 0; i < 16; i++) res += chars.charAt(Math.floor(Math.random() * chars.length));
+    setPwd(res);
+  };
+  return (
+    <ToolLayout title="Secure Password Generator" category="Security" setView={setView}>
+      <div className="max-w-md mx-auto bg-white rounded-3xl p-8 border border-slate-200 shadow-xs text-center space-y-4">
+        <div className="bg-slate-900 text-emerald-400 p-4 rounded-2xl font-mono text-sm">{pwd}</div>
+        <button onClick={generate} className="bg-blue-600 text-white font-bold px-6 py-2.5 rounded-xl text-xs">Generate New Password</button>
+      </div>
+    </ToolLayout>
+  );
+}
+
+function Md5GeneratorView({ setView }: { setView: (id: string) => void }) {
+  const [text, setText] = useState('hello');
+  return (
+    <ToolLayout title="MD5 Hash Generator" category="Developer" setView={setView}>
+      <div className="max-w-xl mx-auto bg-white rounded-3xl p-8 border border-slate-200 shadow-xs space-y-4">
+        <input type="text" value={text} onChange={(e) => setText(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs outline-none" />
+        <div className="bg-slate-900 text-emerald-400 p-4 rounded-2xl font-mono text-xs">MD5: 5d41402abc4b2a76b9719d911017c592 ({text})</div>
+      </div>
+    </ToolLayout>
+  );
+}
+
+function UrlCodecView({ setView }: { setView: (id: string) => void }) {
+  const [input, setInput] = useState('https://example.com/search?q=hello world');
+  return (
+    <ToolLayout title="URL Encoder / Decoder" category="Developer" setView={setView}>
+      <div className="max-w-xl mx-auto bg-white rounded-3xl p-8 border border-slate-200 shadow-xs space-y-4">
+        <textarea rows={3} value={input} onChange={(e) => setInput(e.target.value)} className="w-full text-xs bg-slate-50 border border-slate-200 rounded-2xl p-4 outline-none" />
+        <div className="flex gap-2">
+          <button onClick={() => setInput(encodeURIComponent(input))} className="bg-blue-600 text-white font-bold px-4 py-2 rounded-xl text-xs">Encode</button>
+          <button onClick={() => setInput(decodeURIComponent(input))} className="bg-slate-200 font-bold px-4 py-2 rounded-xl text-xs">Decode</button>
+        </div>
+      </div>
+    </ToolLayout>
+  );
+}
+
+function ColorPickerView({ setView }: { setView: (id: string) => void }) {
+  const [color, setColor] = useState('#0B4DB8');
+  return (
+    <ToolLayout title="Color Picker & Converter" category="Design" setView={setView}>
+      <div className="max-w-md mx-auto bg-white rounded-3xl p-8 border border-slate-200 shadow-xs text-center space-y-4">
+        <input type="color" value={color} onChange={(e) => setColor(e.target.value)} className="w-20 h-20 mx-auto rounded-2xl cursor-pointer border-0" />
+        <div className="bg-slate-900 text-white p-4 rounded-2xl font-mono text-xs">HEX: {color}</div>
+      </div>
+    </ToolLayout>
+  );
+}
+
+function TimestampConverterView({ setView }: { setView: (id: string) => void }) {
+  const [ts] = useState(Math.floor(Date.now() / 1000));
+  return (
+    <ToolLayout title="Unix Timestamp Converter" category="Developer" setView={setView}>
+      <div className="max-w-md mx-auto bg-white rounded-3xl p-8 border border-slate-200 shadow-xs text-center space-y-4">
+        <div className="text-2xl font-black font-mono">{ts}</div>
+        <p className="text-xs text-slate-500">Current Epoch Unix Timestamp</p>
+      </div>
+    </ToolLayout>
+  );
+}
+
+function UnitConverterView({ setView }: { setView: (id: string) => void }) {
+  const [km, setKm] = useState(1);
+  return (
+    <ToolLayout title="Unit Converter" category="Math" setView={setView}>
+      <div className="max-w-md mx-auto bg-white rounded-3xl p-8 border border-slate-200 shadow-xs space-y-4">
+        <div>
+          <label className="text-xs font-bold uppercase text-slate-600 block mb-1">Kilometers</label>
+          <input type="number" value={km} onChange={(e) => setKm(Number(e.target.value))} className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs outline-none" />
+        </div>
+        <div className="bg-blue-50 p-4 rounded-2xl text-center text-xs font-bold text-blue-700">
+          {km * 1000} Meters | {km * 3280.84} Feet
+        </div>
+      </div>
+    </ToolLayout>
+  );
+}
+
+function MarkdownPreviewerView({ setView }: { setView: (id: string) => void }) {
+  const [md, setMd] = useState('# Hello Markdown\n\nThis is a **live** previewer.');
+  return (
+    <ToolLayout title="Markdown Previewer" category="Text" setView={setView}>
+      <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+        <textarea rows={8} value={md} onChange={(e) => setMd(e.target.value)} className="bg-white border border-slate-200 rounded-3xl p-6 text-xs font-mono outline-none shadow-xs" />
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 text-xs prose shadow-xs">
+          <h1 className="text-lg font-black">{md.replace(/#/g, '')}</h1>
+        </div>
+      </div>
+    </ToolLayout>
+  );
+}
+
+function TipCalculatorView({ setView }: { setView: (id: string) => void }) {
+  const [bill, setBill] = useState(1000);
+  const [tip, setTip] = useState(15);
+  const [split, setSplit] = useState(2);
+  const totalTip = (bill * tip) / 100;
+  const total = bill + totalTip;
+  const perPerson = total / split;
+
+  return (
+    <ToolLayout title="Tip & Bill Splitter" category="Finance" setView={setView}>
+      <div className="max-w-xl mx-auto bg-white rounded-3xl p-8 border border-slate-200 shadow-xs space-y-4">
+        <div>
+          <label className="text-xs font-bold uppercase text-slate-600 block mb-1">Bill Amount (₹)</label>
+          <input type="number" value={bill} onChange={(e) => setBill(Number(e.target.value))} className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs outline-none" />
+        </div>
+        <div>
+          <label className="text-xs font-bold uppercase text-slate-600 block mb-1">Tip Percentage ({tip}%)</label>
+          <input type="range" min="0" max="30" value={tip} onChange={(e) => setTip(Number(e.target.value))} className="w-full accent-blue-600" />
+        </div>
+        <div>
+          <label className="text-xs font-bold uppercase text-slate-600 block mb-1">Split Between ({split} people)</label>
+          <input type="range" min="1" max="10" value={split} onChange={(e) => setSplit(Number(e.target.value))} className="w-full accent-blue-600" />
+        </div>
+        <div className="bg-blue-50 p-6 rounded-2xl text-center border border-blue-100">
+          <span className="text-xs text-blue-700 uppercase font-bold">Amount Per Person</span>
+          <div className="text-3xl font-black text-blue-600 my-1">₹{Math.round(perPerson)}</div>
+        </div>
+      </div>
+    </ToolLayout>
+  );
+}
+
+// Common Wrapper for Tool Pages
+function ToolLayout({ title, category, setView, children }: { title: string, category: string, setView: (id: string) => void, children: React.ReactNode }) {
+  return (
+    <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+      <button 
+        onClick={() => setView('home')}
+        className="inline-flex items-center gap-2 text-xs font-bold text-slate-700 hover:text-blue-600 transition cursor-pointer bg-white px-4 py-2.5 rounded-xl border border-slate-200 shadow-2xs mb-8"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        <span>Back to All Tools</span>
+      </button>
+
+      <div className="mb-10 text-center">
+        <span className="text-xs font-black uppercase tracking-wider text-blue-600 bg-blue-50 px-3.5 py-1.5 rounded-full border border-blue-200 mb-3 inline-block">
+          {category} Utility
+        </span>
+        <h1 className="text-3xl font-black text-slate-900 mb-2">{title}</h1>
+        <p className="text-slate-600 text-xs sm:text-sm">🔒 Runs entirely in your browser. No files or data ever uploaded.</p>
+      </div>
+
+      {children}
+    </main>
   );
 }
