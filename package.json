@@ -46,7 +46,8 @@
     "pdfjs-dist": "^6.2.108",
     "qrcode": "^1.5.4",
     "react": "^19.0.1",
-    "react-dom": "^19.0.1"
+    "react-dom": "^19.0.1",
+    "react-helmet-async": "^3.0.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
