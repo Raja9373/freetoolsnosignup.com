@@ -39,10 +39,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onNavigateTo }) => {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 text-sm">
           <div className="col-span-2">
             <div className="flex items-center gap-3 mb-3">
-              <img src="/logo.png" alt="FreeToolsNoSignup Logo" className="h-10 w-auto" />
-              <span className="font-extrabold text-white text-lg tracking-tight">
-                FreeTools <span className="text-[#D4AF37]">NoSignup</span>
-              </span>
+              <img src="/logo.svg" alt="FreeToolsNoSignup Logo" className="h-12 w-auto object-contain drop-shadow-[0_2px_8px_rgba(255,255,255,0.1)]" />
             </div>
             <p className="text-xs text-gray-300 leading-relaxed max-w-sm mb-4">
               FreeToolsNoSignup.com is your ultimate destination for 4,753+ free online tools, calculators, and AI updates. 100% free, no signup required, client-side secure.

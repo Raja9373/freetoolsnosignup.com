@@ -56,7 +56,7 @@ export const AINewsDetailPage: React.FC<AINewsDetailPageProps> = ({ slug, onNavi
               <span>Back to AI News</span>
             </button>
             <a href="/" onClick={(e) => { e.preventDefault(); onNavigateHome(); }} className="flex items-center gap-2 cursor-pointer">
-              <img src="/logo.png" alt="FreeToolsNoSignup Logo" className="h-10 w-auto object-contain" />
+              <img src="/logo.svg" alt="FreeToolsNoSignup Logo" className="h-10 w-auto object-contain" />
             </a>
           </div>
 

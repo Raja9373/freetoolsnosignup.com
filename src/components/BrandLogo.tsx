@@ -11,7 +11,6 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
   variant = 'header',
   className = '',
   onClick,
-  showTagline = false
 }) => {
   // Icon-only variant: renders the sharp vector brand mark
   if (variant === 'icon-only') {
@@ -26,7 +25,6 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
           src="/favicon.svg"
           alt="FreeTools NoSignup"
           className="w-10 h-10 object-contain drop-shadow-xs"
-          referrerPolicy="no-referrer"
           loading="eager"
         />
       </div>
@@ -43,10 +41,9 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
         title="FreeToolsNoSignup.com — 100% Free Browser Utilities"
       >
         <img
-          src="/logo.png"
+          src="/logo.svg"
           alt="FreeTools NoSignup - Fast Free Easy"
           className="h-12 md:h-14 w-auto object-contain drop-shadow-[0_2px_8px_rgba(255,255,255,0.15)]"
-          referrerPolicy="no-referrer"
           loading="eager"
         />
       </div>
@@ -63,10 +60,9 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
         title="FreeToolsNoSignup.com"
       >
         <img
-          src="/logo.png"
+          src="/logo.svg"
           alt="FreeTools NoSignup - Fast Free Easy"
-          className="h-14 md:h-16 w-auto object-contain drop-shadow-[0_2px_8px_rgba(255,255,255,0.2)]"
-          referrerPolicy="no-referrer"
+          className="h-14 md:h-16 w-auto object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
           loading="eager"
         />
       </div>
@@ -82,10 +78,9 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
       title="FreeToolsNoSignup.com - Fast Free Easy"
     >
       <img
-        src="/logo.png"
+        src="/logo.svg"
         alt="FreeTools NoSignup - Fast Free Easy"
-        className="h-14 md:h-16 w-auto object-contain drop-shadow-[0_2px_8px_rgba(255,255,255,0.2)]"
-        referrerPolicy="no-referrer"
+        className="h-12 sm:h-14 md:h-15 w-auto object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.06)]"
         loading="eager"
       />
     </div>

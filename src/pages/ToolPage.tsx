@@ -287,7 +287,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
       <header className="sticky top-0 z-30 bg-[#0A1931] border-b border-[#D4AF37]/20 px-4 py-2 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3 overflow-hidden">
           <a href="/" onClick={(e) => { e.preventDefault(); onNavigateHome(); }} className="shrink-0 flex items-center gap-2">
-            <img src="/logo.png" alt="FreeTools NoSignup" className="h-10 sm:h-12 w-auto object-contain drop-shadow-[0_2px_8px_rgba(255,255,255,0.2)]" />
+            <img src="/logo.svg" alt="FreeTools NoSignup" className="h-10 sm:h-12 w-auto object-contain drop-shadow-[0_2px_8px_rgba(255,255,255,0.2)]" />
           </a>
           <div className="hidden sm:flex items-center gap-1.5 text-xs text-gray-300 truncate">
             <button onClick={onNavigateHome} className="hover:text-[#D4AF37] transition-colors cursor-pointer font-medium">
