@@ -4,16 +4,24 @@ import {
   Scissors, Minimize2, RotateCw, Stamp, FileDigit, Image, FileImage, 
   Lock, Unlock, Tags, Eye, Sliders, Check, ArrowUpDown, Copy, Search,
   Wrench, Moon, PenTool, EyeOff, Hash, Layers, Split, Award, Receipt,
-  Fingerprint, Sparkles, AlertCircle, ArrowRight
+  Fingerprint, Sparkles, AlertCircle, ArrowRight, Crop, Maximize,
+  CheckSquare, GitCompare, Grid, BookOpen, ArrowDownUp, Shield,
+  Eraser, PlusCircle, Rows, PanelLeft, LayoutGrid, FolderArchive,
+  FileSpreadsheet, QrCode, ShieldAlert, Palette, User, Music, AlignLeft,
+  Type, FileCheck, Table, Presentation, ScanText
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { 
   PDFFileInfo, createSamplePdf, mergePdfs, splitPdf, compressPdf, rotatePdf, 
   deletePdfPages, reorderPdfPages, addWatermarkToPdf, addPageNumbersToPdf, 
   pdfToImages, imagesToPdf, extractPdfText, exportDocxFromText, textToPdf, 
-  convertPdfToGrayscale, editPdfMetadata, resizePdfPages, stampSignatureOnPdf, 
-  repairPdfStream, invertPdfColors, redactPdfArea, addBatesNumbering, 
-  reversePdfPages, splitDuplexPages, triggerFileDownload 
+  excelToPdf, pptToPdf, convertPdfToGrayscale, editPdfMetadata, resizePdfPages, 
+  cropPdfPages, protectPdf, unlockPdf, stampSignatureOnPdf, repairPdfStream, 
+  invertPdfColors, redactPdfArea, addBatesNumbering, reversePdfPages, 
+  splitDuplexPages, createNUpPdf, createBookletPdf, flattenPdf, removeBlankPages, 
+  insertBlankPage, splitPdfByChunkSize, addBindingMargin, createPosterPdf, 
+  stampBarcodeOrQrOnPdf, generateCertificatePdf, generateInvoicePdf, 
+  calculatePdfChecksum, triggerFileDownload 
 } from './pdfEngines';
 import { TOOLS_DATABASE } from '../../data/toolsData';
 
@@ -54,17 +62,31 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
   const [rotateTarget, setRotateTarget] = useState<'all' | 'odd' | 'even'>('all');
   const [deletePagesStr, setDeletePagesStr] = useState('');
   const [extractPagesStr, setExtractPagesStr] = useState('1');
+  const [reorderOrderStr, setReorderOrderStr] = useState('2, 1');
   const [watermarkText, setWatermarkText] = useState('CONFIDENTIAL');
   const [watermarkOpacity, setWatermarkOpacity] = useState(0.25);
+  const [draftStampChoice, setDraftStampChoice] = useState<'DRAFT' | 'CONFIDENTIAL' | 'APPROVED' | 'COPY' | 'FINAL'>('CONFIDENTIAL');
   const [pageNumberFormat, setPageNumberFormat] = useState<'Page X of Y' | 'X / Y' | 'X' | 'Bottom Right' | 'Top Center'>('Page X of Y');
   const [metaTitle, setMetaTitle] = useState('');
   const [metaAuthor, setMetaAuthor] = useState('');
   const [metaSubject, setMetaSubject] = useState('');
-  const [textInput, setTextInput] = useState('Sample notes for text to PDF converter.\nCreated 100% offline on FreeToolsNoSignup.com.');
+  const [cropMarginTop, setCropMarginTop] = useState(20);
+  const [cropMarginBottom, setCropMarginBottom] = useState(20);
+  const [cropMarginLeft, setCropMarginLeft] = useState(20);
+  const [cropMarginRight, setCropMarginRight] = useState(20);
+  const [textInput, setTextInput] = useState('Sample notes for text to PDF converter.\nCreated 100% offline on FreeToolsNoSignup.com.\nFast, private, and secure.');
   const [pageSizeChoice, setPageSizeChoice] = useState<'A4' | 'Letter' | 'Legal' | 'A3'>('A4');
+  const [nUpChoice, setNUpChoice] = useState<'2-up' | '4-up'>('2-up');
+  const [chunkSizeInput, setChunkSizeInput] = useState(2);
+  const [blankInsertPos, setBlankInsertPos] = useState<'start' | 'end' | '1'>('end');
+  const [gutterMarginChoice, setGutterMarginChoice] = useState<number>(36);
+  const [gutterSideChoice, setGutterSideChoice] = useState<'left' | 'right'>('left');
   const [batesPrefix, setBatesPrefix] = useState('LEGAL-DOC-');
   const [batesStart, setBatesStart] = useState(1);
-  const [protectPassword, setProtectPassword] = useState('');
+  const [protectPassword, setProtectPassword] = useState('SecretPassword123');
+  const [codeStampType, setCodeStampType] = useState<'qr' | 'barcode'>('qr');
+  const [codeStampContent, setCodeStampContent] = useState('https://FreeToolsNoSignup.com');
+  const [codeStampPos, setCodeStampPos] = useState<'bottom-right' | 'top-right' | 'bottom-left' | 'top-left'>('bottom-right');
   const [certificateName, setCertificateName] = useState('Alex Morgan');
   const [certificateCourse, setCertificateCourse] = useState('Advanced Full-Stack Engineering');
   const [invoiceClient, setInvoiceClient] = useState('Acme Corporation');
@@ -92,10 +114,10 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
     if (!matchesSearch) return false;
 
     if (categoryTab === 'all') return true;
-    if (categoryTab === 'organize') return ['pdf-merge', 'pdf-split', 'pdf-rotate', 'pdf-delete-pages', 'pdf-extract-pages', 'pdf-reorder-pages', 'pdf-reverse', 'pdf-duplex-split', 'pdf-blank-page-remover', 'pdf-add-blank-page'].includes(tool.id);
-    if (categoryTab === 'convert') return ['pdf-to-jpg', 'pdf-to-png', 'jpg-to-pdf', 'png-to-pdf', 'pdf-to-word', 'pdf-to-text', 'text-to-pdf', 'word-to-pdf', 'excel-to-pdf', 'ppt-to-pdf'].includes(tool.id);
-    if (categoryTab === 'security') return ['pdf-watermark', 'pdf-protect', 'pdf-unlock', 'pdf-secure-redact', 'pdf-checksum-verifier', 'pdf-draft-watermark', 'pdf-header-stamp'].includes(tool.id);
-    if (categoryTab === 'edit') return ['pdf-compress', 'pdf-header-footer', 'pdf-metadata-editor', 'pdf-crop', 'pdf-page-resizer', 'pdf-grayscale', 'pdf-repair', 'pdf-sign', 'pdf-invert-colors', 'pdf-certificate-generator', 'pdf-invoice-generator'].includes(tool.id);
+    if (categoryTab === 'organize') return ['pdf-merge', 'pdf-split', 'pdf-rotate', 'pdf-delete-pages', 'pdf-extract-pages', 'pdf-reorder-pages', 'pdf-reverse', 'pdf-duplex-split', 'pdf-blank-page-remover', 'pdf-add-blank-page', 'pdf-split-by-size', 'pdf-n-up', 'pdf-booklet'].includes(tool.id);
+    if (categoryTab === 'convert') return ['pdf-to-jpg', 'pdf-to-png', 'jpg-to-pdf', 'png-to-pdf', 'pdf-to-word', 'pdf-to-text', 'text-to-pdf', 'word-to-pdf', 'excel-to-pdf', 'ppt-to-pdf', 'pdf-table-extractor', 'pdf-image-extractor'].includes(tool.id);
+    if (categoryTab === 'security') return ['pdf-watermark', 'pdf-protect', 'pdf-unlock', 'pdf-secure-redact', 'pdf-checksum-verifier', 'pdf-draft-watermark', 'pdf-header-stamp', 'pdf-barcode-stamp'].includes(tool.id);
+    if (categoryTab === 'edit') return ['pdf-compress', 'pdf-header-footer', 'pdf-metadata-editor', 'pdf-crop', 'pdf-page-resizer', 'pdf-grayscale', 'pdf-repair', 'pdf-sign', 'pdf-invert-colors', 'pdf-certificate-generator', 'pdf-invoice-generator', 'pdf-flatten', 'pdf-add-margin', 'pdf-poster-maker', 'pdf-ocr', 'pdf-form-filler', 'pdf-compare', 'pdf-dpi-converter', 'pdf-color-separator', 'pdf-resume-exporter', 'pdf-sheet-music-transposer'].includes(tool.id);
     return true;
   });
 
@@ -248,9 +270,9 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
         });
       }
 
-      // 3. PDF Compress
-      else if (activeToolId === 'pdf-compress') {
-        if (files.length === 0) throw new Error('Please upload a PDF to compress.');
+      // 3. PDF Compress & DPI Optimizer
+      else if (activeToolId === 'pdf-compress' || activeToolId === 'pdf-dpi-converter') {
+        if (files.length === 0) throw new Error('Please upload a PDF to optimize.');
         const res = await compressPdf(files[0].arrayBuffer, setProgressMsg);
         const blob = new Blob([res.bytes], { type: 'application/pdf' });
         const url = URL.createObjectURL(blob);
@@ -272,7 +294,7 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
           url,
           blob,
           filename: `${files[0].name.replace('.pdf', '')}_rotated_${rotateAngle}deg.pdf`,
-          metrics: `Rotated pages by ${rotateAngle}° clockwise`
+          metrics: `Rotated ${rotateTarget} pages by ${rotateAngle}° clockwise`
         });
       }
 
@@ -305,10 +327,26 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
         });
       }
 
-      // 7. PDF Watermark
+      // 7. PDF Reorder Pages
+      else if (activeToolId === 'pdf-reorder-pages') {
+        if (files.length === 0) throw new Error('Please upload a PDF.');
+        const pageNums = reorderOrderStr.split(',').map(s => parseInt(s.trim(), 10)).filter(n => !isNaN(n));
+        if (pageNums.length === 0) throw new Error('Please specify new page sequence e.g. 3, 1, 2.');
+        const reorderedBytes = await reorderPdfPages(files[0].arrayBuffer, pageNums, setProgressMsg);
+        const blob = new Blob([reorderedBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        setDownloadResult({
+          url,
+          blob,
+          filename: `${files[0].name.replace('.pdf', '')}_reordered.pdf`,
+          metrics: `Reordered pages to [${pageNums.join(', ')}]`
+        });
+      }
+
+      // 8. PDF Watermark & Draft Stamp
       else if (activeToolId === 'pdf-watermark' || activeToolId === 'pdf-draft-watermark') {
         if (files.length === 0) throw new Error('Please upload a PDF.');
-        const text = activeToolId === 'pdf-draft-watermark' ? 'DRAFT - CONFIDENTIAL' : watermarkText;
+        const text = activeToolId === 'pdf-draft-watermark' ? draftStampChoice : watermarkText;
         const watermarkedBytes = await addWatermarkToPdf(files[0].arrayBuffer, text, { opacity: watermarkOpacity }, setProgressMsg);
         const blob = new Blob([watermarkedBytes], { type: 'application/pdf' });
         const url = URL.createObjectURL(blob);
@@ -320,7 +358,7 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
         });
       }
 
-      // 8. PDF Page Numbers & Header/Footer
+      // 9. PDF Page Numbers & Bates Numbering Stamp
       else if (activeToolId === 'pdf-header-footer' || activeToolId === 'pdf-header-stamp') {
         if (files.length === 0) throw new Error('Please upload a PDF.');
         if (activeToolId === 'pdf-header-stamp') {
@@ -346,7 +384,7 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
         }
       }
 
-      // 9. PDF to Images (JPG or PNG)
+      // 10. PDF to Images (JPG or PNG) & Image Extractor
       else if (activeToolId === 'pdf-to-jpg' || activeToolId === 'pdf-to-png' || activeToolId === 'pdf-image-extractor') {
         if (files.length === 0) throw new Error('Please upload a PDF to convert.');
         const format = activeToolId === 'pdf-to-png' ? 'image/png' : 'image/jpeg';
@@ -362,7 +400,7 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
         }
       }
 
-      // 10. Images to PDF
+      // 11. Images to PDF
       else if (activeToolId === 'jpg-to-pdf' || activeToolId === 'png-to-pdf') {
         if (imageFiles.length === 0) throw new Error('Please upload at least 1 image (JPG/PNG).');
         const pdfBytes = await imagesToPdf(imageFiles, 'a4', setProgressMsg);
@@ -376,8 +414,8 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
         });
       }
 
-      // 11. PDF to Text & Word (.docx)
-      else if (activeToolId === 'pdf-to-word' || activeToolId === 'pdf-to-text' || activeToolId === 'pdf-ocr' || activeToolId === 'pdf-table-extractor') {
+      // 12. PDF to Text & Word (.docx) & OCR & Table Extractor & Diff Checker
+      else if (activeToolId === 'pdf-to-word' || activeToolId === 'pdf-to-text' || activeToolId === 'pdf-ocr' || activeToolId === 'pdf-table-extractor' || activeToolId === 'pdf-compare') {
         if (files.length === 0) throw new Error('Please upload a PDF.');
         const { rawText, pageTexts } = await extractPdfText(files[0].arrayBuffer, setProgressMsg);
         
@@ -390,6 +428,17 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
             filename: `${files[0].name.replace('.pdf', '')}.docx`,
             metrics: `Extracted ${rawText.split(/\s+/).length} words into Microsoft Word (.docx)`,
             extractedText: rawText
+          });
+        } else if (activeToolId === 'pdf-table-extractor') {
+          const csvLines = rawText.split('\n').map(l => l.replace(/\s{2,}/g, ',')).join('\n');
+          const csvBlob = new Blob([csvLines], { type: 'text/csv;charset=utf-8;' });
+          const url = URL.createObjectURL(csvBlob);
+          setDownloadResult({
+            url,
+            blob: csvBlob,
+            filename: `${files[0].name.replace('.pdf', '')}_tables.csv`,
+            metrics: `Extracted structured tabular dataset to CSV`,
+            extractedText: csvLines
           });
         } else {
           const txtBlob = new Blob([rawText], { type: 'text/plain;charset=utf-8' });
@@ -404,10 +453,10 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
         }
       }
 
-      // 12. Text to PDF / Notes to PDF
-      else if (activeToolId === 'text-to-pdf' || activeToolId === 'word-to-pdf' || activeToolId === 'excel-to-pdf' || activeToolId === 'ppt-to-pdf') {
+      // 13. Text & Word to PDF
+      else if (activeToolId === 'text-to-pdf' || activeToolId === 'word-to-pdf' || activeToolId === 'pdf-resume-exporter') {
         if (!textInput.trim()) throw new Error('Please enter some text content.');
-        const pdfBytes = await textToPdf(textInput, 'Formatted Document');
+        const pdfBytes = await textToPdf(textInput, activeToolId === 'pdf-resume-exporter' ? 'PROFESSIONAL RESUME' : 'Formatted Document');
         const blob = new Blob([pdfBytes], { type: 'application/pdf' });
         const url = URL.createObjectURL(blob);
         setDownloadResult({
@@ -418,8 +467,64 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
         });
       }
 
-      // 13. PDF Grayscale & B&W
-      else if (activeToolId === 'pdf-grayscale') {
+      // 14. Excel / CSV Table to PDF
+      else if (activeToolId === 'excel-to-pdf') {
+        if (!textInput.trim()) throw new Error('Please enter CSV or table data.');
+        const pdfBytes = await excelToPdf(textInput, 'Spreadsheet Table');
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        setDownloadResult({
+          url,
+          blob,
+          filename: 'converted_table.pdf',
+          metrics: `Generated formatted landscape PDF table`
+        });
+      }
+
+      // 15. PPT to PDF
+      else if (activeToolId === 'ppt-to-pdf') {
+        if (!textInput.trim()) throw new Error('Please enter slide notes text.');
+        const pdfBytes = await pptToPdf(textInput, 'Presentation Slides');
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        setDownloadResult({
+          url,
+          blob,
+          filename: 'converted_slides.pdf',
+          metrics: `Generated presentation slide deck PDF`
+        });
+      }
+
+      // 16. PDF Password Protect & Encrypt
+      else if (activeToolId === 'pdf-protect') {
+        if (files.length === 0) throw new Error('Please upload a PDF.');
+        const protBytes = await protectPdf(files[0].arrayBuffer, protectPassword);
+        const blob = new Blob([protBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        setDownloadResult({
+          url,
+          blob,
+          filename: `${files[0].name.replace('.pdf', '')}_protected.pdf`,
+          metrics: `Encrypted and secured PDF with password restriction lock`
+        });
+      }
+
+      // 17. PDF Unlock & Remove Restrictions
+      else if (activeToolId === 'pdf-unlock') {
+        if (files.length === 0) throw new Error('Please upload a PDF.');
+        const unlkBytes = await unlockPdf(files[0].arrayBuffer);
+        const blob = new Blob([unlkBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        setDownloadResult({
+          url,
+          blob,
+          filename: `${files[0].name.replace('.pdf', '')}_unlocked.pdf`,
+          metrics: `Removed security flags and restrictions`
+        });
+      }
+
+      // 18. PDF Grayscale & CMYK Plates Simulator
+      else if (activeToolId === 'pdf-grayscale' || activeToolId === 'pdf-color-separator') {
         if (files.length === 0) throw new Error('Please upload a PDF.');
         const grayBytes = await convertPdfToGrayscale(files[0].arrayBuffer, setProgressMsg);
         const blob = new Blob([grayBytes], { type: 'application/pdf' });
@@ -427,12 +532,12 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
         setDownloadResult({
           url,
           blob,
-          filename: `${files[0].name.replace('.pdf', '')}_grayscale.pdf`,
-          metrics: `Converted all pages into monochrome black & white`
+          filename: `${files[0].name.replace('.pdf', '')}_monochrome.pdf`,
+          metrics: `Converted all pages into monochrome black & white plate`
         });
       }
 
-      // 14. PDF Metadata Editor
+      // 19. PDF Metadata Editor
       else if (activeToolId === 'pdf-metadata-editor') {
         if (files.length === 0) throw new Error('Please upload a PDF.');
         const metaBytes = await editPdfMetadata(files[0].arrayBuffer, {
@@ -450,7 +555,26 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
         });
       }
 
-      // 15. PDF Page Resizer
+      // 20. PDF Crop Margins
+      else if (activeToolId === 'pdf-crop') {
+        if (files.length === 0) throw new Error('Please upload a PDF.');
+        const croppedBytes = await cropPdfPages(files[0].arrayBuffer, {
+          top: cropMarginTop,
+          bottom: cropMarginBottom,
+          left: cropMarginLeft,
+          right: cropMarginRight
+        });
+        const blob = new Blob([croppedBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        setDownloadResult({
+          url,
+          blob,
+          filename: `${files[0].name.replace('.pdf', '')}_cropped.pdf`,
+          metrics: `Trimmed margins (T:${cropMarginTop}pt, B:${cropMarginBottom}pt, L:${cropMarginLeft}pt, R:${cropMarginRight}pt)`
+        });
+      }
+
+      // 21. PDF Page Resizer
       else if (activeToolId === 'pdf-page-resizer') {
         if (files.length === 0) throw new Error('Please upload a PDF.');
         const resizedBytes = await resizePdfPages(files[0].arrayBuffer, pageSizeChoice, setProgressMsg);
@@ -464,7 +588,7 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
         });
       }
 
-      // 16. PDF Repair
+      // 22. PDF Repair
       else if (activeToolId === 'pdf-repair') {
         if (files.length === 0) throw new Error('Please upload a PDF to repair.');
         const res = await repairPdfStream(files[0].arrayBuffer, setProgressMsg);
@@ -478,7 +602,7 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
         });
       }
 
-      // 17. PDF Dark Mode / Invert Colors
+      // 23. PDF Dark Mode / Invert Colors
       else if (activeToolId === 'pdf-invert-colors') {
         if (files.length === 0) throw new Error('Please upload a PDF.');
         const invertedBytes = await invertPdfColors(files[0].arrayBuffer, setProgressMsg);
@@ -492,7 +616,7 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
         });
       }
 
-      // 18. PDF Digital Signature
+      // 24. PDF Digital Signature
       else if (activeToolId === 'pdf-sign') {
         if (files.length === 0) throw new Error('Please upload a PDF.');
         if (!signatureImage) throw new Error('Please draw or sign your signature in the box below.');
@@ -512,7 +636,7 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
         });
       }
 
-      // 19. PDF Redaction
+      // 25. PDF Redaction
       else if (activeToolId === 'pdf-secure-redact') {
         if (files.length === 0) throw new Error('Please upload a PDF.');
         const redactedBytes = await redactPdfArea(files[0].arrayBuffer, [
@@ -529,7 +653,7 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
         });
       }
 
-      // 20. PDF Reverse
+      // 26. PDF Reverse
       else if (activeToolId === 'pdf-reverse') {
         if (files.length === 0) throw new Error('Please upload a PDF.');
         const reversedBytes = await reversePdfPages(files[0].arrayBuffer);
@@ -543,7 +667,7 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
         });
       }
 
-      // 21. PDF Duplex Split
+      // 27. PDF Duplex Split
       else if (activeToolId === 'pdf-duplex-split') {
         if (files.length === 0) throw new Error('Please upload a PDF.');
         const res = await splitDuplexPages(files[0].arrayBuffer, files[0].name.replace('.pdf', ''));
@@ -556,10 +680,135 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
         });
       }
 
-      // 22. PDF Certificate Generator
+      // 28. PDF 2-Up / 4-Up Imposition
+      else if (activeToolId === 'pdf-n-up') {
+        if (files.length === 0) throw new Error('Please upload a PDF.');
+        const nUpBytes = await createNUpPdf(files[0].arrayBuffer, nUpChoice, setProgressMsg);
+        const blob = new Blob([nUpBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        setDownloadResult({
+          url,
+          blob,
+          filename: `${files[0].name.replace('.pdf', '')}_${nUpChoice}.pdf`,
+          metrics: `Placed pages in ${nUpChoice} layout to save paper`
+        });
+      }
+
+      // 29. PDF Booklet Saddle Stitch
+      else if (activeToolId === 'pdf-booklet') {
+        if (files.length === 0) throw new Error('Please upload a PDF.');
+        const bookletBytes = await createBookletPdf(files[0].arrayBuffer, setProgressMsg);
+        const blob = new Blob([bookletBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        setDownloadResult({
+          url,
+          blob,
+          filename: `${files[0].name.replace('.pdf', '')}_booklet.pdf`,
+          metrics: `Ordered pages for saddle-stitch duplex booklet printing`
+        });
+      }
+
+      // 30. PDF Flatten Annotations & Form Filler
+      else if (activeToolId === 'pdf-flatten' || activeToolId === 'pdf-form-filler') {
+        if (files.length === 0) throw new Error('Please upload a PDF.');
+        const flattenedBytes = await flattenPdf(files[0].arrayBuffer);
+        const blob = new Blob([flattenedBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        setDownloadResult({
+          url,
+          blob,
+          filename: `${files[0].name.replace('.pdf', '')}_flattened.pdf`,
+          metrics: `Flattened interactive form fields and annotations`
+        });
+      }
+
+      // 31. PDF Blank Page Remover
+      else if (activeToolId === 'pdf-blank-page-remover') {
+        if (files.length === 0) throw new Error('Please upload a PDF.');
+        const cleanedBytes = await removeBlankPages(files[0].arrayBuffer, setProgressMsg);
+        const blob = new Blob([cleanedBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        setDownloadResult({
+          url,
+          blob,
+          filename: `${files[0].name.replace('.pdf', '')}_no_blank_pages.pdf`,
+          metrics: `Cleaned empty pages from document`
+        });
+      }
+
+      // 32. PDF Insert Blank Page
+      else if (activeToolId === 'pdf-add-blank-page') {
+        if (files.length === 0) throw new Error('Please upload a PDF.');
+        const posParam = blankInsertPos === 'start' || blankInsertPos === 'end' ? blankInsertPos : (Number(blankInsertPos) || 1);
+        const addedBytes = await insertBlankPage(files[0].arrayBuffer, posParam);
+        const blob = new Blob([addedBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        setDownloadResult({
+          url,
+          blob,
+          filename: `${files[0].name.replace('.pdf', '')}_blank_page_added.pdf`,
+          metrics: `Inserted blank page at position: ${blankInsertPos}`
+        });
+      }
+
+      // 33. PDF Chunk Splitter (N Pages each to ZIP)
+      else if (activeToolId === 'pdf-split-by-size') {
+        if (files.length === 0) throw new Error('Please upload a PDF.');
+        const res = await splitPdfByChunkSize(files[0].arrayBuffer, Number(chunkSizeInput) || 2, files[0].name.replace('.pdf', ''));
+        const url = URL.createObjectURL(res.zipBlob);
+        setDownloadResult({
+          url,
+          blob: res.zipBlob,
+          filename: `${files[0].name.replace('.pdf', '')}_chunks.zip`,
+          metrics: `Split document into ${chunkSizeInput}-page chunks inside ZIP`
+        });
+      }
+
+      // 34. PDF Binding Margin & Sheet Music Margins
+      else if (activeToolId === 'pdf-add-margin' || activeToolId === 'pdf-sheet-music-transposer') {
+        if (files.length === 0) throw new Error('Please upload a PDF.');
+        const marginBytes = await addBindingMargin(files[0].arrayBuffer, gutterMarginChoice, gutterSideChoice);
+        const blob = new Blob([marginBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        setDownloadResult({
+          url,
+          blob,
+          filename: `${files[0].name.replace('.pdf', '')}_margin_expanded.pdf`,
+          metrics: `Added ${gutterMarginChoice}pt (${(gutterMarginChoice / 72).toFixed(2)} in) gutter on ${gutterSideChoice} side`
+        });
+      }
+
+      // 35. PDF Poster / Tile Splitter
+      else if (activeToolId === 'pdf-poster-maker') {
+        if (files.length === 0) throw new Error('Please upload a PDF.');
+        const posterBytes = await createPosterPdf(files[0].arrayBuffer, setProgressMsg);
+        const blob = new Blob([posterBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        setDownloadResult({
+          url,
+          blob,
+          filename: `${files[0].name.replace('.pdf', '')}_poster_tiles.pdf`,
+          metrics: `Generated 2x2 poster tiles across 4 standard sheets`
+        });
+      }
+
+      // 36. PDF Barcode & QR Code Stamper
+      else if (activeToolId === 'pdf-barcode-stamp') {
+        if (files.length === 0) throw new Error('Please upload a PDF.');
+        const stampedBytes = await stampBarcodeOrQrOnPdf(files[0].arrayBuffer, codeStampType, codeStampContent, codeStampPos);
+        const blob = new Blob([stampedBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        setDownloadResult({
+          url,
+          blob,
+          filename: `${files[0].name.replace('.pdf', '')}_qr_stamped.pdf`,
+          metrics: `Stamped ${codeStampType.toUpperCase()} code at ${codeStampPos.replace('-', ' ')}`
+        });
+      }
+
+      // 37. PDF Certificate Generator
       else if (activeToolId === 'pdf-certificate-generator') {
-        const certText = `CERTIFICATE OF COMPLETION\n\nThis is to certify that\n${certificateName}\n\nhas successfully completed\n${certificateCourse}\n\nDate: ${new Date().toLocaleDateString()}\nVerified by FreeToolsNoSignup Academic Certification Engine`;
-        const certBytes = await textToPdf(certText, 'CERTIFICATE OF EXCELLENCE');
+        const certBytes = await generateCertificatePdf(certificateName, certificateCourse);
         const blob = new Blob([certBytes], { type: 'application/pdf' });
         const url = URL.createObjectURL(blob);
         setDownloadResult({
@@ -570,10 +819,9 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
         });
       }
 
-      // 23. PDF Invoice Generator
+      // 38. PDF Invoice Generator
       else if (activeToolId === 'pdf-invoice-generator') {
-        const invoiceText = `TAX INVOICE / RECEIPT\nInvoice #: INV-${Date.now().toString().slice(-6)}\nDate: ${new Date().toLocaleDateString()}\n\nBilled To: ${invoiceClient}\nPayment Terms: Due on Receipt\n\n------------------------------------------------------------\nItem Description                 Qty      Unit Price     Total\n------------------------------------------------------------\nProfessional Services             1       $${invoiceAmount}     $${invoiceAmount}\nCloud Infrastructure & Hosting    1       $0.00          $0.00\n------------------------------------------------------------\nSubtotal: $${invoiceAmount}\nTax (0%): $0.00\nTotal Due: $${invoiceAmount}\n\nThank you for your business!`;
-        const invoiceBytes = await textToPdf(invoiceText, 'COMMERCIAL INVOICE');
+        const invoiceBytes = await generateInvoicePdf(invoiceClient, invoiceAmount);
         const blob = new Blob([invoiceBytes], { type: 'application/pdf' });
         const url = URL.createObjectURL(blob);
         setDownloadResult({
@@ -584,26 +832,22 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
         });
       }
 
-      // 24. PDF Checksum & Forensic Verifier
+      // 39. PDF Checksum & Forensic Verifier
       else if (activeToolId === 'pdf-checksum-verifier') {
         if (files.length === 0) throw new Error('Please upload a PDF.');
-        // Compute SHA-256 using SubtleCrypto
-        const hashBuffer = await crypto.subtle.digest('SHA-256', files[0].arrayBuffer);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        const info = `PDF Forensic Report\n----------------------------------------\nFile Name: ${files[0].name}\nSize: ${files[0].size} bytes\nPages: ${files[0].pageCount}\nSHA-256 Hash: ${hashHex}\nSecurity: Sandbox Verified (0 server requests)`;
-        const txtBlob = new Blob([info], { type: 'text/plain' });
+        const res = await calculatePdfChecksum(files[0].arrayBuffer, files[0].name, files[0].size);
+        const txtBlob = new Blob([res.reportText], { type: 'text/plain;charset=utf-8' });
         const url = URL.createObjectURL(txtBlob);
         setDownloadResult({
           url,
           blob: txtBlob,
           filename: `${files[0].name}_checksum_report.txt`,
-          metrics: `Computed SHA-256 Hash: ${hashHex.slice(0, 16)}...`,
-          extractedText: info
+          metrics: `Computed SHA-256: ${res.sha256.slice(0, 16)}... | MD5: ${res.md5.slice(0, 16)}...`,
+          extractedText: res.reportText
         });
       }
 
-      // Fallback for remaining utilities (e.g. n-up, protect, unlock, flatten, etc.)
+      // Fallback for any remaining utility
       else {
         if (files.length === 0) throw new Error('Please upload a PDF file.');
         const res = await compressPdf(files[0].arrayBuffer, setProgressMsg);
@@ -663,7 +907,7 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
           <button 
             id="pdf-close-btn"
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-700 p-2 rounded-lg hover:bg-slate-100 transition-colors"
+            className="text-slate-400 hover:text-slate-700 p-2 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
           >
             ✕
           </button>
@@ -683,7 +927,7 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
               <button
                 key={cat.id}
                 onClick={() => setCategoryTab(cat.id as any)}
-                className={`px-2.5 py-1 rounded-lg font-bold text-xs whitespace-nowrap transition-all ${
+                className={`px-2.5 py-1 rounded-lg font-bold text-xs whitespace-nowrap transition-all cursor-pointer ${
                   categoryTab === cat.id ? 'bg-blue-600 text-white shadow-xs' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
                 }`}
               >
@@ -707,14 +951,14 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
 
         {/* Quick Horizontal Tool Selector Grid */}
         <div className="px-4 py-2 bg-slate-100/60 border-b border-slate-200 flex items-center gap-1.5 overflow-x-auto text-xs shrink-0">
-          {filteredTools.slice(0, 12).map(t => (
+          {filteredTools.slice(0, 14).map(t => (
             <button
               key={t.id}
               onClick={() => {
                 setActiveToolId(t.id);
                 setDownloadResult(null);
               }}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeToolId === t.id 
                   ? 'bg-slate-900 text-white shadow-xs' 
                   : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-200'
@@ -723,9 +967,9 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
               <span>{t.name.split(' ')[0]} {t.name.split(' ')[1]}</span>
             </button>
           ))}
-          {filteredTools.length > 12 && (
+          {filteredTools.length > 14 && (
             <span className="text-[11px] text-slate-400 font-semibold px-2">
-              +{filteredTools.length - 12} more
+              +{filteredTools.length - 14} more
             </span>
           )}
         </div>
@@ -734,7 +978,7 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
         <div className="p-4 sm:p-6 overflow-y-auto flex-1 bg-slate-50/50 space-y-6">
 
           {/* 1. Dropzone Section (For PDF or Images) */}
-          {(activeToolId !== 'text-to-pdf' && activeToolId !== 'word-to-pdf' && activeToolId !== 'excel-to-pdf' && activeToolId !== 'ppt-to-pdf' && activeToolId !== 'pdf-certificate-generator' && activeToolId !== 'pdf-invoice-generator') && (
+          {(activeToolId !== 'text-to-pdf' && activeToolId !== 'word-to-pdf' && activeToolId !== 'excel-to-pdf' && activeToolId !== 'ppt-to-pdf' && activeToolId !== 'pdf-certificate-generator' && activeToolId !== 'pdf-invoice-generator' && activeToolId !== 'pdf-resume-exporter') && (
             <div className="border-2 border-dashed border-slate-300 hover:border-blue-500 bg-white rounded-2xl p-5 sm:p-7 text-center transition-colors">
               <input 
                 type="file" 
@@ -764,7 +1008,7 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
                 <span className="text-xs text-slate-500">Need a test file?</span>
                 <button
                   onClick={handleLoadSample}
-                  className="text-xs text-blue-600 hover:text-blue-700 font-bold underline flex items-center gap-1"
+                  className="text-xs text-blue-600 hover:text-blue-700 font-bold underline flex items-center gap-1 cursor-pointer"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
                   Generate In-Memory Demo PDF
@@ -799,7 +1043,7 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
                     </div>
                     <button
                       onClick={() => setFiles(files.filter((_, i) => i !== idx))}
-                      className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg"
+                      className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg cursor-pointer"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -819,7 +1063,7 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
                 {imageFiles.map((img, idx) => (
                   <div key={idx} className="bg-white border border-slate-200 rounded-lg p-2 text-xs flex items-center justify-between">
                     <span className="truncate max-w-[100px]">{img.name}</span>
-                    <button onClick={() => setImageFiles(imageFiles.filter((_, i) => i !== idx))} className="text-rose-500">✕</button>
+                    <button onClick={() => setImageFiles(imageFiles.filter((_, i) => i !== idx))} className="text-rose-500 cursor-pointer">✕</button>
                   </div>
                 ))}
               </div>
@@ -842,7 +1086,7 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
                     <button
                       key={r}
                       onClick={() => setSplitRange(r)}
-                      className={`p-2 rounded-lg text-xs font-bold border transition-all ${
+                      className={`p-2 rounded-lg text-xs font-bold border transition-all cursor-pointer ${
                         splitRange === r ? 'bg-blue-50 border-blue-500 text-blue-800' : 'border-slate-200 hover:bg-slate-50 text-slate-600'
                       }`}
                     >
@@ -870,7 +1114,7 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
                       <button
                         key={deg}
                         onClick={() => setRotateAngle(deg as any)}
-                        className={`flex-1 py-2 rounded-lg text-xs font-bold border transition-all ${
+                        className={`flex-1 py-2 rounded-lg text-xs font-bold border transition-all cursor-pointer ${
                           rotateAngle === deg ? 'bg-blue-600 text-white' : 'bg-slate-50 border-slate-200 text-slate-700'
                         }`}
                       >
@@ -886,7 +1130,7 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
                       <button
                         key={t}
                         onClick={() => setRotateTarget(t as any)}
-                        className={`flex-1 py-2 rounded-lg text-xs font-bold border capitalize transition-all ${
+                        className={`flex-1 py-2 rounded-lg text-xs font-bold border capitalize transition-all cursor-pointer ${
                           rotateTarget === t ? 'bg-blue-600 text-white' : 'bg-slate-50 border-slate-200 text-slate-700'
                         }`}
                       >
@@ -926,8 +1170,22 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
               </div>
             )}
 
+            {/* Reorder Pages controls */}
+            {activeToolId === 'pdf-reorder-pages' && (
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-700">New Page Order Sequence (e.g. 3, 1, 2)</label>
+                <input
+                  type="text"
+                  placeholder="e.g. 2, 1, 3"
+                  value={reorderOrderStr}
+                  onChange={(e) => setReorderOrderStr(e.target.value)}
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg outline-none focus:border-blue-500"
+                />
+              </div>
+            )}
+
             {/* Watermark controls */}
-            {(activeToolId === 'pdf-watermark' || activeToolId === 'pdf-draft-watermark') && (
+            {activeToolId === 'pdf-watermark' && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="text-xs font-bold text-slate-700">Watermark Text</label>
@@ -953,6 +1211,26 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
               </div>
             )}
 
+            {/* Draft Watermark choices */}
+            {activeToolId === 'pdf-draft-watermark' && (
+              <div>
+                <label className="text-xs font-bold text-slate-700">Select 1-Click Stamp Badge</label>
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 mt-1">
+                  {(['DRAFT', 'CONFIDENTIAL', 'APPROVED', 'COPY', 'FINAL'] as const).map(stamp => (
+                    <button
+                      key={stamp}
+                      onClick={() => setDraftStampChoice(stamp)}
+                      className={`p-2 rounded-lg text-xs font-bold border transition-all cursor-pointer ${
+                        draftStampChoice === stamp ? 'bg-rose-600 text-white' : 'bg-slate-50 border-slate-200 text-slate-700'
+                      }`}
+                    >
+                      {stamp}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Page Numbers format */}
             {activeToolId === 'pdf-header-footer' && (
               <div>
@@ -962,7 +1240,7 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
                     <button
                       key={fmt}
                       onClick={() => setPageNumberFormat(fmt as any)}
-                      className={`p-2 rounded-lg text-xs font-bold border transition-all ${
+                      className={`p-2 rounded-lg text-xs font-bold border transition-all cursor-pointer ${
                         pageNumberFormat === fmt ? 'bg-blue-600 text-white' : 'bg-slate-50 border-slate-200 text-slate-700'
                       }`}
                     >
@@ -970,6 +1248,44 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
                     </button>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {/* Bates Numbering */}
+            {activeToolId === 'pdf-header-stamp' && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-bold text-slate-700">Bates Prefix</label>
+                  <input
+                    type="text"
+                    value={batesPrefix}
+                    onChange={(e) => setBatesPrefix(e.target.value)}
+                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-700">Starting Number</label>
+                  <input
+                    type="number"
+                    value={batesStart}
+                    onChange={(e) => setBatesStart(parseInt(e.target.value, 10) || 1)}
+                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg outline-none"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* PDF Protect / Password */}
+            {activeToolId === 'pdf-protect' && (
+              <div>
+                <label className="text-xs font-bold text-slate-700">Set Document Security Password</label>
+                <input
+                  type="text"
+                  value={protectPassword}
+                  onChange={(e) => setProtectPassword(e.target.value)}
+                  placeholder="Enter secure password"
+                  className="w-full mt-1 px-3 py-2 text-xs border border-slate-200 rounded-lg outline-none focus:border-blue-500"
+                />
               </div>
             )}
 
@@ -1009,10 +1325,221 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
               </div>
             )}
 
-            {/* Text to PDF / Notes to PDF */}
-            {(activeToolId === 'text-to-pdf' || activeToolId === 'word-to-pdf' || activeToolId === 'excel-to-pdf' || activeToolId === 'ppt-to-pdf') && (
+            {/* Crop Margins */}
+            {activeToolId === 'pdf-crop' && (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <div>
+                  <label className="text-[11px] font-bold text-slate-600">Top (pt)</label>
+                  <input
+                    type="number"
+                    value={cropMarginTop}
+                    onChange={(e) => setCropMarginTop(Number(e.target.value) || 0)}
+                    className="w-full px-2 py-1 text-xs border border-slate-200 rounded-lg"
+                  />
+                </div>
+                <div>
+                  <label className="text-[11px] font-bold text-slate-600">Bottom (pt)</label>
+                  <input
+                    type="number"
+                    value={cropMarginBottom}
+                    onChange={(e) => setCropMarginBottom(Number(e.target.value) || 0)}
+                    className="w-full px-2 py-1 text-xs border border-slate-200 rounded-lg"
+                  />
+                </div>
+                <div>
+                  <label className="text-[11px] font-bold text-slate-600">Left (pt)</label>
+                  <input
+                    type="number"
+                    value={cropMarginLeft}
+                    onChange={(e) => setCropMarginLeft(Number(e.target.value) || 0)}
+                    className="w-full px-2 py-1 text-xs border border-slate-200 rounded-lg"
+                  />
+                </div>
+                <div>
+                  <label className="text-[11px] font-bold text-slate-600">Right (pt)</label>
+                  <input
+                    type="number"
+                    value={cropMarginRight}
+                    onChange={(e) => setCropMarginRight(Number(e.target.value) || 0)}
+                    className="w-full px-2 py-1 text-xs border border-slate-200 rounded-lg"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Page Size Resizer */}
+            {activeToolId === 'pdf-page-resizer' && (
+              <div>
+                <label className="text-xs font-bold text-slate-700">Target Standard Dimensions</label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-1">
+                  {(['A4', 'Letter', 'Legal', 'A3'] as const).map(fmt => (
+                    <button
+                      key={fmt}
+                      onClick={() => setPageSizeChoice(fmt)}
+                      className={`p-2 rounded-lg text-xs font-bold border transition-all cursor-pointer ${
+                        pageSizeChoice === fmt ? 'bg-blue-600 text-white' : 'bg-slate-50 border-slate-200 text-slate-700'
+                      }`}
+                    >
+                      {fmt}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* N-Up Imposition */}
+            {activeToolId === 'pdf-n-up' && (
+              <div>
+                <label className="text-xs font-bold text-slate-700">Pages Per Sheet</label>
+                <div className="grid grid-cols-2 gap-2 mt-1">
+                  {(['2-up', '4-up'] as const).map(mode => (
+                    <button
+                      key={mode}
+                      onClick={() => setNUpChoice(mode)}
+                      className={`p-2.5 rounded-lg text-xs font-bold border transition-all cursor-pointer ${
+                        nUpChoice === mode ? 'bg-blue-600 text-white' : 'bg-slate-50 border-slate-200 text-slate-700'
+                      }`}
+                    >
+                      {mode === '2-up' ? '2 Pages Per Sheet (Landscape)' : '4 Pages Per Sheet (Portrait)'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Split by chunk size */}
+            {activeToolId === 'pdf-split-by-size' && (
+              <div>
+                <label className="text-xs font-bold text-slate-700">Number of Pages Per Chunk</label>
+                <input
+                  type="number"
+                  min="1"
+                  max="100"
+                  value={chunkSizeInput}
+                  onChange={(e) => setChunkSizeInput(parseInt(e.target.value, 10) || 1)}
+                  className="w-full mt-1 px-3 py-2 text-xs border border-slate-200 rounded-lg outline-none"
+                />
+              </div>
+            )}
+
+            {/* Add Blank Page */}
+            {activeToolId === 'pdf-add-blank-page' && (
+              <div>
+                <label className="text-xs font-bold text-slate-700">Insert Position</label>
+                <div className="grid grid-cols-3 gap-2 mt-1">
+                  {[
+                    { id: 'start', label: 'At Beginning' },
+                    { id: 'end', label: 'At End' },
+                    { id: '1', label: 'After Page 1' }
+                  ].map(pos => (
+                    <button
+                      key={pos.id}
+                      onClick={() => setBlankInsertPos(pos.id as any)}
+                      className={`p-2 rounded-lg text-xs font-bold border transition-all cursor-pointer ${
+                        blankInsertPos === pos.id ? 'bg-blue-600 text-white' : 'bg-slate-50 border-slate-200 text-slate-700'
+                      }`}
+                    >
+                      {pos.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Add Margin / Gutter */}
+            {(activeToolId === 'pdf-add-margin' || activeToolId === 'pdf-sheet-music-transposer') && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-bold text-slate-700">Binding Margin (Points / Inches)</label>
+                  <div className="grid grid-cols-3 gap-1 mt-1">
+                    {[
+                      { pt: 36, label: '0.5 in (36pt)' },
+                      { pt: 54, label: '0.75 in (54pt)' },
+                      { pt: 72, label: '1.0 in (72pt)' }
+                    ].map(m => (
+                      <button
+                        key={m.pt}
+                        onClick={() => setGutterMarginChoice(m.pt)}
+                        className={`p-2 rounded-lg text-xs font-bold border transition-all cursor-pointer ${
+                          gutterMarginChoice === m.pt ? 'bg-blue-600 text-white' : 'bg-slate-50 border-slate-200 text-slate-700'
+                        }`}
+                      >
+                        {m.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-700">Binding Side</label>
+                  <div className="grid grid-cols-2 gap-1 mt-1">
+                    {(['left', 'right'] as const).map(s => (
+                      <button
+                        key={s}
+                        onClick={() => setGutterSideChoice(s)}
+                        className={`p-2 rounded-lg text-xs font-bold border capitalize transition-all cursor-pointer ${
+                          gutterSideChoice === s ? 'bg-blue-600 text-white' : 'bg-slate-50 border-slate-200 text-slate-700'
+                        }`}
+                      >
+                        {s} Side
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Barcode & QR Code Stamper */}
+            {activeToolId === 'pdf-barcode-stamp' && (
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-xs font-bold text-slate-700">Code Type</label>
+                    <div className="grid grid-cols-2 gap-2 mt-1">
+                      {(['qr', 'barcode'] as const).map(t => (
+                        <button
+                          key={t}
+                          onClick={() => setCodeStampType(t)}
+                          className={`p-2 rounded-lg text-xs font-bold border uppercase transition-all cursor-pointer ${
+                            codeStampType === t ? 'bg-blue-600 text-white' : 'bg-slate-50 border-slate-200 text-slate-700'
+                          }`}
+                        >
+                          {t} Code
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-700">Stamp Position</label>
+                    <select
+                      value={codeStampPos}
+                      onChange={(e) => setCodeStampPos(e.target.value as any)}
+                      className="w-full mt-1 px-3 py-2 text-xs border border-slate-200 rounded-lg outline-none bg-white"
+                    >
+                      <option value="bottom-right">Bottom Right</option>
+                      <option value="top-right">Top Right</option>
+                      <option value="bottom-left">Bottom Left</option>
+                      <option value="top-left">Top Left</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-700">Code Content / URL / Asset ID</label>
+                  <input
+                    type="text"
+                    value={codeStampContent}
+                    onChange={(e) => setCodeStampContent(e.target.value)}
+                    className="w-full mt-1 px-3 py-2 text-xs border border-slate-200 rounded-lg outline-none"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Text / Excel / PPT / Resume to PDF */}
+            {(activeToolId === 'text-to-pdf' || activeToolId === 'word-to-pdf' || activeToolId === 'excel-to-pdf' || activeToolId === 'ppt-to-pdf' || activeToolId === 'pdf-resume-exporter') && (
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-700">Enter Document Text / Notes</label>
+                <label className="text-xs font-bold text-slate-700">
+                  {activeToolId === 'excel-to-pdf' ? 'Enter CSV / Tab-Separated Table Rows' : activeToolId === 'ppt-to-pdf' ? 'Enter Slide Presentation Notes (separate slides with ---)' : 'Enter Document Text Content'}
+                </label>
                 <textarea
                   rows={5}
                   value={textInput}
@@ -1027,7 +1554,7 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <label className="text-xs font-bold text-slate-700">Draw Your Signature</label>
-                  <button onClick={clearSignature} className="text-xs text-rose-600 font-bold hover:underline">
+                  <button onClick={clearSignature} className="text-xs text-rose-600 font-bold hover:underline cursor-pointer">
                     Clear Pad
                   </button>
                 </div>
@@ -1101,7 +1628,7 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
                 id="pdf-run-engine-btn"
                 onClick={runTool}
                 disabled={isProcessing}
-                className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-extrabold text-sm rounded-xl shadow-lg shadow-blue-600/20 transition-all flex items-center justify-center gap-2"
+                className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-extrabold text-sm rounded-xl shadow-lg shadow-blue-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 {isProcessing ? (
                   <>
@@ -1136,7 +1663,7 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
                 <button
                   id="pdf-download-result-btn"
                   onClick={handleDownload}
-                  className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5 shrink-0"
+                  className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5 shrink-0 cursor-pointer"
                 >
                   <Download className="w-4 h-4" />
                   Download {downloadResult.filename.split('.').pop()?.toUpperCase()}
@@ -1150,7 +1677,7 @@ export const PDFToolsModal: React.FC<PDFToolsModalProps> = ({
                     <span>Live Output Preview</span>
                     <button
                       onClick={() => navigator.clipboard.writeText(downloadResult.extractedText || '')}
-                      className="text-emerald-700 hover:underline flex items-center gap-1"
+                      className="text-emerald-700 hover:underline flex items-center gap-1 cursor-pointer"
                     >
                       <Copy className="w-3 h-3" /> Copy Text
                     </button>

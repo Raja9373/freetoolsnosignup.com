@@ -1,92 +1,70 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
-interface SEOHeadProps {
-  title: string;
-  description: string;
+export interface SEOHeadProps {
+  title?: string;
+  description?: string;
+  keywords?: string;
   canonicalUrl?: string;
-  ogImage?: string;
+  ogTitle?: string;
+  ogDescription?: string;
   ogType?: string;
-  jsonLd?: object;
+  jsonLd?: Record<string, any> | Array<Record<string, any>>;
 }
 
-export function SEOHead({
-  title,
-  description,
-  canonicalUrl = 'https://www.freetoolsnosignup.com',
-  ogImage = 'https://www.freetoolsnosignup.com/og-image.png',
+export const SEOHead: React.FC<SEOHeadProps> = ({
+  title = 'FreeToolsNoSignup - 4,753+ Free Online Tools & Calculators (100% Private, No Login)',
+  description = 'Access 4,753+ free online tools and calculators directly in your browser. PDF tools, image compressors, background removers, loan calculators, dev tools, and AI utilities. 100% free, no login or signup.',
+  keywords = 'free tools no signup, pdf tools free, background remover online, free image compressor, loan calculator, ats resume checker, developer tools, free qr generator',
+  canonicalUrl,
+  ogTitle,
+  ogDescription,
   ogType = 'website',
   jsonLd
-}: SEOHeadProps) {
+}) => {
   useEffect(() => {
-    // Update Title
-    document.title = title;
+    if (typeof document !== 'undefined') {
+      document.title = title;
 
-    // Update Meta Description
-    let metaDesc = document.querySelector('meta[name="description"]');
-    if (!metaDesc) {
-      metaDesc = document.createElement('meta');
-      metaDesc.setAttribute('name', 'description');
-      document.head.appendChild(metaDesc);
-    }
-    metaDesc.setAttribute('content', description);
+      const setMeta = (nameOrProperty: string, content: string, isProperty = false) => {
+        const attr = isProperty ? `meta[property="${nameOrProperty}"]` : `meta[name="${nameOrProperty}"]`;
+        let el = document.querySelector(attr) as HTMLMetaElement;
+        if (!el) {
+          el = document.createElement('meta');
+          if (isProperty) el.setAttribute('property', nameOrProperty);
+          else el.setAttribute('name', nameOrProperty);
+          document.head.appendChild(el);
+        }
+        el.setAttribute('content', content);
+      };
 
-    // Update Open Graph Tags
-    const updateOrCreateMeta = (property: string, content: string) => {
-      let tag = document.querySelector(`meta[property="${property}"]`);
-      if (!tag) {
-        tag = document.createElement('meta');
-        tag.setAttribute('property', property);
-        document.head.appendChild(tag);
+      if (description) setMeta('description', description);
+      if (keywords) setMeta('keywords', keywords);
+      setMeta('og:title', ogTitle || title, true);
+      setMeta('og:description', ogDescription || description, true);
+      setMeta('og:type', ogType, true);
+      setMeta('robots', 'index, follow');
+
+      if (canonicalUrl) {
+        let linkEl = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
+        if (!linkEl) {
+          linkEl = document.createElement('link');
+          linkEl.setAttribute('rel', 'canonical');
+          document.head.appendChild(linkEl);
+        }
+        linkEl.setAttribute('href', canonicalUrl);
       }
-      tag.setAttribute('content', content);
-    };
 
-    updateOrCreateMeta('og:title', title);
-    updateOrCreateMeta('og:description', description);
-    updateOrCreateMeta('og:url', canonicalUrl);
-    updateOrCreateMeta('og:type', ogType);
-    updateOrCreateMeta('og:image', ogImage);
-
-    // Update Twitter Tags
-    const updateOrCreateTwitterMeta = (name: string, content: string) => {
-      let tag = document.querySelector(`meta[name="${name}"]`);
-      if (!tag) {
-        tag = document.createElement('meta');
-        tag.setAttribute('name', name);
-        document.head.appendChild(tag);
+      if (jsonLd) {
+        let scriptEl = document.querySelector('script[type="application/ld+json"]') as HTMLScriptElement;
+        if (!scriptEl) {
+          scriptEl = document.createElement('script');
+          scriptEl.setAttribute('type', 'application/ld+json');
+          document.head.appendChild(scriptEl);
+        }
+        scriptEl.textContent = JSON.stringify(jsonLd);
       }
-      tag.setAttribute('content', content);
-    };
-
-    updateOrCreateTwitterMeta('twitter:card', 'summary_large_image');
-    updateOrCreateTwitterMeta('twitter:title', title);
-    updateOrCreateTwitterMeta('twitter:description', description);
-    updateOrCreateTwitterMeta('twitter:image', ogImage);
-
-    // Update Canonical Link
-    let canonicalTag = document.querySelector('link[rel="canonical"]');
-    if (!canonicalTag) {
-      canonicalTag = document.createElement('link');
-      canonicalTag.setAttribute('rel', 'canonical');
-      document.head.appendChild(canonicalTag);
     }
-    canonicalTag.setAttribute('href', canonicalUrl);
-
-    // Update JSON-LD structured data if provided
-    const jsonLdId = 'dynamic-seo-json-ld';
-    let jsonLdScript = document.getElementById(jsonLdId);
-    if (jsonLd) {
-      if (!jsonLdScript) {
-        jsonLdScript = document.createElement('script');
-        jsonLdScript.id = jsonLdId;
-        jsonLdScript.setAttribute('type', 'application/ld+json');
-        document.head.appendChild(jsonLdScript);
-      }
-      jsonLdScript.textContent = JSON.stringify(jsonLd);
-    } else if (jsonLdScript) {
-      jsonLdScript.remove();
-    }
-  }, [title, description, canonicalUrl, ogImage, ogType, jsonLd]);
+  }, [title, description, keywords, canonicalUrl, ogTitle, ogDescription, ogType, jsonLd]);
 
   return null;
-}
+};

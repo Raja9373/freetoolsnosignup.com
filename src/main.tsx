@@ -1,10 +1,9 @@
-import './utils/antiClone';
-
 // Ensure window.fetch has both getter and setter so injected scripts don't throw TypeError
 if (typeof window !== 'undefined') {
   try {
     let activeFetch = window.fetch;
-    const desc = Object.getOwnPropertyDescriptor(window, 'fetch');
+    const desc = Object.getOwnPropertyDescriptor(window, 'fetch') ||
+                 (typeof Window !== 'undefined' && Object.getOwnPropertyDescriptor(Window.prototype, 'fetch'));
     if (!desc || !desc.set || !desc.writable) {
       try {
         Object.defineProperty(window, 'fetch', {
@@ -29,6 +28,7 @@ if (typeof window !== 'undefined') {
   } catch {}
 }
 
+import './utils/antiClone';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
