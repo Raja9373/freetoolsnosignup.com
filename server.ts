@@ -280,6 +280,23 @@ async function startServer() {
     }
   });
 
+  // Server-side 301 Permanent Redirects for legacy tool URLs to canonical /tool/[slug]
+  app.get('/tools/:slug(*)', (req, res, next) => {
+    const slug = req.params.slug;
+    // Allow hub routes to pass through
+    if (!slug || req.path === '/tools' || req.path === '/tools/' || req.path === '/tools-hub' || req.path === '/all-tools') {
+      return next();
+    }
+    const queryString = req.url.includes('?') ? req.url.substring(req.url.indexOf('?')) : '';
+    return res.redirect(301, `/tool/${slug}${queryString}`);
+  });
+
+  app.get('/t/:slug', (req, res) => {
+    const slug = req.params.slug;
+    const queryString = req.url.includes('?') ? req.url.substring(req.url.indexOf('?')) : '';
+    return res.redirect(301, `/tool/${slug}${queryString}`);
+  });
+
   // Vite middleware for development vs static asset serving for production
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({
