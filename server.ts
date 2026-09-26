@@ -297,6 +297,17 @@ async function startServer() {
     return res.redirect(301, `/tool/${slug}${queryString}`);
   });
 
+  // Redirect 2-letter locale paths like /hi to / with locale cookie set
+  const SUPPORTED_LOCALES_SET = new Set(['ja', 'es', 'fr', 'de', 'hi', 'pt', 'ru', 'zh', 'ar', 'it', 'ko', 'nl', 'tr', 'pl', 'vi', 'th', 'id', 'ms', 'bn', 'ur']);
+  app.get('/:lang([a-z]{2})', (req, res, next) => {
+    const lang = req.params.lang.toLowerCase();
+    if (SUPPORTED_LOCALES_SET.has(lang)) {
+      res.setHeader('Set-Cookie', `NEXT_LOCALE=${lang}; Path=/; Max-Age=31536000; SameSite=Lax`);
+      return res.redirect(301, '/');
+    }
+    return next();
+  });
+
   // Vite middleware for development vs static asset serving for production
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({
