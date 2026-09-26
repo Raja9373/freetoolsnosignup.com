@@ -569,11 +569,11 @@ export const DabbaGrid: React.FC<DabbaGridProps> = ({ onOpenCategory, onOpenTool
             <div className="flex flex-col sm:flex-row lg:flex-col gap-3.5 w-full lg:w-64 shrink-0">
               {/* Primary: "Launch Custom Builder →" bg: #C5A059 to #E8C27A gradient, text #0A1931 bold, rounded-full, shadow, hover scale 1.02 */}
               <a
-                href="/tools/custom-notion-template-database-builder"
+                href="/notion-builder"
                 onClick={(e) => {
                   e.preventDefault();
                   if (onNavigateTo) {
-                    onNavigateTo('/tools/custom-notion-template-database-builder');
+                    onNavigateTo('/notion-builder');
                   } else {
                     onOpenTool('notion-template-builder');
                   }
@@ -585,13 +585,13 @@ export const DabbaGrid: React.FC<DabbaGridProps> = ({ onOpenCategory, onOpenTool
 
               {/* Secondary: "View All 25 Presets" - routes to page and scrolls to presets section */}
               <a
-                href="/tools/custom-notion-template-database-builder#presets"
+                href="/notion-templates"
                 onClick={(e) => {
                   e.preventDefault();
                   if (onNavigateTo) {
-                    onNavigateTo('/tools/custom-notion-template-database-builder?section=presets');
+                    onNavigateTo('/notion-templates');
                   } else {
-                    window.location.href = '/tools/custom-notion-template-database-builder#presets';
+                    window.location.href = '/notion-templates';
                   }
                 }}
                 className="w-full py-2.5 px-5 bg-white/[0.08] hover:bg-white/[0.16] text-white font-semibold rounded-full text-xs flex items-center justify-center gap-2 border border-white/20 transition-all cursor-pointer text-center"

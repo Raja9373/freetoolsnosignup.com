@@ -47,7 +47,7 @@ export const BacklinksDirectoryPage: React.FC<BacklinksDirectoryPageProps> = ({
 <div style="width:100%;max-width:800px;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;font-family:sans-serif;">
   <iframe src="https://www.freetoolsnosignup.com/embed/${tool.slug}" width="100%" height="520" frameborder="0" style="border:none;"></iframe>
   <div style="background:#f8fafc;padding:8px 12px;text-align:center;font-size:12px;color:#64748b;border-top:1px solid #e2e8f0;">
-    Free utility provided by <a href="https://www.freetoolsnosignup.com/tools/${tool.slug}" target="_blank" rel="noopener noreferrer" style="color:#2563eb;font-weight:bold;text-decoration:none;">Free ${tool.name} - No Signup</a> on FreeToolsNoSignup (${TOTAL_TOOLS_COUNT} Free Tools).
+    Free utility provided by <a href="https://www.freetoolsnosignup.com/tool/${tool.slug}" target="_blank" rel="noopener noreferrer" style="color:#2563eb;font-weight:bold;text-decoration:none;">Free ${tool.name} - No Signup</a> on FreeToolsNoSignup (${TOTAL_TOOLS_COUNT} Free Tools).
   </div>
 </div>`;
   };
@@ -182,10 +182,10 @@ export const BacklinksDirectoryPage: React.FC<BacklinksDirectoryPageProps> = ({
                         {tool.categoryName || tool.category}
                       </span>
                       <a
-                        href={`/tools/${tool.slug}`}
+                        href={`/tool/${tool.slug}`}
                         onClick={(e) => {
                           e.preventDefault();
-                          onNavigateTo(`/tools/${tool.slug}`);
+                          onNavigateTo(`/tool/${tool.slug}`);
                         }}
                         className="text-xs text-[#126BFF] hover:underline flex items-center gap-1"
                       >

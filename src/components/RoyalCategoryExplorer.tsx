@@ -85,7 +85,7 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
   const openSingleTool = (tool: MasterToolItem) => {
     const slug = tool.slug || tool.id;
     if (onNavigateTo) {
-      onNavigateTo(`/tools/${slug}`);
+      onNavigateTo(`/tool/${slug}`);
     } else if (onSelectTool) {
       onSelectTool(tool.id);
     } else {
@@ -329,7 +329,7 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
             <div className="flex items-center gap-3 shrink-0">
               <button
                 onClick={() => {
-                  if (onNavigateTo) onNavigateTo('/tools/notion-template-builder');
+                  if (onNavigateTo) onNavigateTo('/notion-builder');
                   else if (onSelectTool) onSelectTool('notion-template-builder');
                 }}
                 className="bg-[#D4AF37] hover:bg-[#E5C158] text-[#0A1931] font-bold px-5 py-2.5 rounded-xl text-xs sm:text-sm transition-all shadow-lg flex items-center gap-2 cursor-pointer"
@@ -406,7 +406,7 @@ export const RoyalCategoryExplorer: React.FC<RoyalCategoryExplorerProps> = ({
                 <button
                   key={preset.id}
                   onClick={() => {
-                    if (onNavigateTo) onNavigateTo('/tools/notion-template-builder');
+                    if (onNavigateTo) onNavigateTo('/notion-builder');
                     else if (onSelectTool) onSelectTool(preset.id);
                   }}
                   className="whitespace-nowrap px-3 py-1.5 rounded-lg bg-[#0F2340] border border-[#D4AF37]/25 hover:border-[#D4AF37] hover:bg-[#D4AF37]/10 text-xs text-gray-200 hover:text-white transition-colors cursor-pointer"

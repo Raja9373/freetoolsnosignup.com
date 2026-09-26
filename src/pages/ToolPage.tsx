@@ -128,7 +128,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
       document.head.appendChild(scriptTag);
     }
 
-    const toolUrl = `https://www.freetoolsnosignup.com/tools/${seoData.slug}`;
+    const toolUrl = `https://www.freetoolsnosignup.com/tool/${seoData.slug}`;
     const categoryUrl = `https://www.freetoolsnosignup.com${getCategoryPath(seoData.category)}`;
     const currentDate = new Date().toISOString().split('T')[0];
 
@@ -245,7 +245,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
     .slice(0, 3);
 
   // Social Share Handlers
-  const toolUrl = `https://www.freetoolsnosignup.com/tools/${seoData.slug}`;
+  const toolUrl = `https://www.freetoolsnosignup.com/tool/${seoData.slug}`;
   const shareText = `Check out this 100% free, zero-signup ${seoData.name}! Private in-browser execution with zero watermarks:`;
 
   const handleShare = (platform: 'twitter' | 'reddit' | 'linkedin') => {
@@ -272,7 +272,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
       <SEOHead
         title={seoData.title}
         description={seoData.description}
-        canonicalUrl={`https://www.freetoolsnosignup.com/tools/${seoData.slug}`}
+        canonicalUrl={`https://www.freetoolsnosignup.com/tool/${seoData.slug}`}
       />
       
       {/* Floating Toast Message */}
@@ -469,7 +469,7 @@ export const ToolPage: React.FC<ToolPageProps> = ({
                 {relatedTools.map((rt) => (
                   <div
                     key={rt.id}
-                    onClick={() => onNavigateTo(`/tools/${rt.slug}`)}
+                    onClick={() => onNavigateTo(`/tool/${rt.slug}`)}
                     className="p-4 rounded-2xl bg-[#0A1931] border border-[#D4AF37]/20 hover:border-[#D4AF37] transition-all cursor-pointer flex flex-col justify-between group shadow-md"
                   >
                     <div>

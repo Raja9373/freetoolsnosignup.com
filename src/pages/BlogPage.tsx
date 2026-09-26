@@ -53,16 +53,16 @@ const ARTICLES: Record<string, ArticleData> = {
 
 Managing PDFs without subscription paywalls or privacy leaks is now possible through client-side WebAssembly. Here are 10 verified tools from [FreeToolsNoSignup.com](https://www.freetoolsnosignup.com/):
 
-1. **[PDF Merge & Combine Pro](https://www.freetoolsnosignup.com/tools/pdf-merge)** - Combine multiple PDFs locally in RAM.
-2. **[PDF Page Splitter](https://www.freetoolsnosignup.com/tools/pdf-split)** - Extract page ranges into separate files.
-3. **[PDF Compressor](https://www.freetoolsnosignup.com/tools/pdf-compress)** - Shrink document sizes without quality loss.
-4. **[PDF Page Rotator](https://www.freetoolsnosignup.com/tools/pdf-rotate)** - Rotate landscape scans 90/180 degrees.
-5. **[PDF to Text](https://www.freetoolsnosignup.com/tools/pdf-to-text)** - Extract clean text from digital PDFs.
-6. **[Image to PDF](https://www.freetoolsnosignup.com/tools/image-to-pdf)** - Assemble JPG/PNG images into PDFs.
-7. **[PDF Watermark Clean](https://www.freetoolsnosignup.com/tools/pdf-watermark-remove)** - Clean intrusive stamps.
-8. **[PDF Page Numberer](https://www.freetoolsnosignup.com/tools/pdf-page-numbers)** - Insert header/footer Bates numbers.
-9. **[PDF Password Protector](https://www.freetoolsnosignup.com/tools/pdf-protect)** - 256-bit client-side encryption.
-10. **[PDF Metadata Stripper](https://www.freetoolsnosignup.com/tools/pdf-metadata-cleaner)** - Remove hidden author tags.
+1. **[PDF Merge & Combine Pro](https://www.freetoolsnosignup.com/tool/pdf-merge)** - Combine multiple PDFs locally in RAM.
+2. **[PDF Page Splitter](https://www.freetoolsnosignup.com/tool/pdf-split)** - Extract page ranges into separate files.
+3. **[PDF Compressor](https://www.freetoolsnosignup.com/tool/pdf-compress)** - Shrink document sizes without quality loss.
+4. **[PDF Page Rotator](https://www.freetoolsnosignup.com/tool/pdf-rotate)** - Rotate landscape scans 90/180 degrees.
+5. **[PDF to Text](https://www.freetoolsnosignup.com/tool/pdf-to-text)** - Extract clean text from digital PDFs.
+6. **[Image to PDF](https://www.freetoolsnosignup.com/tool/image-to-pdf)** - Assemble JPG/PNG images into PDFs.
+7. **[PDF Watermark Clean](https://www.freetoolsnosignup.com/tool/pdf-watermark-remove)** - Clean intrusive stamps.
+8. **[PDF Page Numberer](https://www.freetoolsnosignup.com/tool/pdf-page-numbers)** - Insert header/footer Bates numbers.
+9. **[PDF Password Protector](https://www.freetoolsnosignup.com/tool/pdf-protect)** - 256-bit client-side encryption.
+10. **[PDF Metadata Stripper](https://www.freetoolsnosignup.com/tool/pdf-metadata-cleaner)** - Remove hidden author tags.
 
 *Zero signups. Zero cloud uploads. Powered by [FreeToolsNoSignup.com](https://www.freetoolsnosignup.com/).*`
   },
@@ -95,16 +95,16 @@ Managing PDFs without subscription paywalls or privacy leaks is now possible thr
 
 Optimize, convert, and protect images without server uploads using [FreeToolsNoSignup.com](https://www.freetoolsnosignup.com/):
 
-1. **[Image Compressor](https://www.freetoolsnosignup.com/tools/image-compress)** - Lossless compression in RAM.
-2. **[Image Resizer](https://www.freetoolsnosignup.com/tools/image-resizer)** - Pixel-perfect dimensions & ratios.
-3. **[WebP to PNG](https://www.freetoolsnosignup.com/tools/webp-to-png)** - Instant format conversions.
-4. **[EXIF Stripper](https://www.freetoolsnosignup.com/tools/image-exif-stripper)** - Delete GPS and camera tags.
-5. **[Favicon Generator](https://www.freetoolsnosignup.com/tools/favicon-generator)** - Complete multi-size icon packages.
-6. **[SVG to PNG](https://www.freetoolsnosignup.com/tools/svg-to-png)** - High-res vector rasterization.
-7. **[Color Palette Extractor](https://www.freetoolsnosignup.com/tools/color-palette-extractor)** - Dominant HEX codes.
-8. **[Image Filter Studio](https://www.freetoolsnosignup.com/tools/image-filters)** - Canvas duotone & grayscale.
-9. **[Privacy Redactor](https://www.freetoolsnosignup.com/tools/image-redactor)** - Blur faces & sensitive credentials.
-10. **[Base64 Encoder](https://www.freetoolsnosignup.com/tools/image-to-base64)** - Inline Data URI generation.
+1. **[Image Compressor](https://www.freetoolsnosignup.com/tool/image-compress)** - Lossless compression in RAM.
+2. **[Image Resizer](https://www.freetoolsnosignup.com/tool/image-resizer)** - Pixel-perfect dimensions & ratios.
+3. **[WebP to PNG](https://www.freetoolsnosignup.com/tool/webp-to-png)** - Instant format conversions.
+4. **[EXIF Stripper](https://www.freetoolsnosignup.com/tool/image-exif-stripper)** - Delete GPS and camera tags.
+5. **[Favicon Generator](https://www.freetoolsnosignup.com/tool/favicon-generator)** - Complete multi-size icon packages.
+6. **[SVG to PNG](https://www.freetoolsnosignup.com/tool/svg-to-png)** - High-res vector rasterization.
+7. **[Color Palette Extractor](https://www.freetoolsnosignup.com/tool/color-palette-extractor)** - Dominant HEX codes.
+8. **[Image Filter Studio](https://www.freetoolsnosignup.com/tool/image-filters)** - Canvas duotone & grayscale.
+9. **[Privacy Redactor](https://www.freetoolsnosignup.com/tool/image-redactor)** - Blur faces & sensitive credentials.
+10. **[Base64 Encoder](https://www.freetoolsnosignup.com/tool/image-to-base64)** - Inline Data URI generation.
 
 *Free forever with zero signups on [FreeToolsNoSignup.com](https://www.freetoolsnosignup.com/).*`
   },
@@ -137,16 +137,16 @@ Optimize, convert, and protect images without server uploads using [FreeToolsNoS
 
 Run zero-telemetry developer utilities in your browser memory via [FreeToolsNoSignup.com](https://www.freetoolsnosignup.com/):
 
-1. **[JSON Formatter & Validator](https://www.freetoolsnosignup.com/tools/json-formatter)** - Tree visualizer & syntax fixer.
-2. **[Fake Mock Data Generator](https://www.freetoolsnosignup.com/tools/fake-data-generator)** - Generate synthetic QA data.
-3. **[Regex Tester](https://www.freetoolsnosignup.com/tools/regex-tester)** - Live regex pattern matching.
-4. **[JWT Decoder](https://www.freetoolsnosignup.com/tools/jwt-decoder)** - Client-side token header & payload inspection.
-5. **[Base64 Studio](https://www.freetoolsnosignup.com/tools/base64-decoder)** - UTF-8 and URL-safe base64 converter.
-6. **[UUID / NanoID Generator](https://www.freetoolsnosignup.com/tools/uuid-generator)** - Cryptographic bulk ID creation.
-7. **[Markdown Preview](https://www.freetoolsnosignup.com/tools/markdown-preview)** - GitHub-flavored live renderer.
-8. **[URL Encoder](https://www.freetoolsnosignup.com/tools/url-encoder)** - Query parameter parser.
-9. **[Hash Generator](https://www.freetoolsnosignup.com/tools/hash-generator)** - SHA-256 & Web Crypto digests.
-10. **[Cron Schedule Evaluator](https://www.freetoolsnosignup.com/tools/cron-evaluator)** - Human-readable cron schedule translator.
+1. **[JSON Formatter & Validator](https://www.freetoolsnosignup.com/tool/json-formatter)** - Tree visualizer & syntax fixer.
+2. **[Fake Mock Data Generator](https://www.freetoolsnosignup.com/tool/fake-data-generator)** - Generate synthetic QA data.
+3. **[Regex Tester](https://www.freetoolsnosignup.com/tool/regex-tester)** - Live regex pattern matching.
+4. **[JWT Decoder](https://www.freetoolsnosignup.com/tool/jwt-decoder)** - Client-side token header & payload inspection.
+5. **[Base64 Studio](https://www.freetoolsnosignup.com/tool/base64-decoder)** - UTF-8 and URL-safe base64 converter.
+6. **[UUID / NanoID Generator](https://www.freetoolsnosignup.com/tool/uuid-generator)** - Cryptographic bulk ID creation.
+7. **[Markdown Preview](https://www.freetoolsnosignup.com/tool/markdown-preview)** - GitHub-flavored live renderer.
+8. **[URL Encoder](https://www.freetoolsnosignup.com/tool/url-encoder)** - Query parameter parser.
+9. **[Hash Generator](https://www.freetoolsnosignup.com/tool/hash-generator)** - SHA-256 & Web Crypto digests.
+10. **[Cron Schedule Evaluator](https://www.freetoolsnosignup.com/tool/cron-evaluator)** - Human-readable cron schedule translator.
 
 *Explore all ${TOTAL_TOOLS_COUNT} free tools at [FreeToolsNoSignup.com](https://www.freetoolsnosignup.com/).*`
   },
@@ -179,16 +179,16 @@ Run zero-telemetry developer utilities in your browser memory via [FreeToolsNoSi
 
 Calculate loans, investments, and health metrics with complete privacy at [FreeToolsNoSignup.com](https://www.freetoolsnosignup.com/):
 
-1. **[Compound Interest Calculator](https://www.freetoolsnosignup.com/tools/compound-interest-calc)** - Exponential wealth visualizer.
-2. **[Mortgage EMI Calculator](https://www.freetoolsnosignup.com/tools/mortgage-calc)** - Amortization & prepayment models.
-3. **[Salary Take-Home Estimator](https://www.freetoolsnosignup.com/tools/salary-calc)** - Net pay after taxes.
-4. **[BMI & Health Gauge](https://www.freetoolsnosignup.com/tools/bmi-calc)** - WHO-compliant health scores.
-5. **[Auto Loan Calculator](https://www.freetoolsnosignup.com/tools/auto-loan-calc)** - Vehicle financing estimates.
-6. **[Retirement & FIRE Planner](https://www.freetoolsnosignup.com/tools/retirement-calc)** - Financial independence corpus.
-7. **[Debt Payoff Planner](https://www.freetoolsnosignup.com/tools/debt-payoff-calc)** - Snowball vs Avalanche methods.
-8. **[Calorie & BMR Calculator](https://www.freetoolsnosignup.com/tools/calorie-calc)** - Daily caloric maintenance.
-9. **[Tip & Bill Splitter](https://www.freetoolsnosignup.com/tools/tip-calculator)** - Group dining bill splitting.
-10. **[Currency Converter](https://www.freetoolsnosignup.com/tools/currency-converter)** - Fast currency conversions.
+1. **[Compound Interest Calculator](https://www.freetoolsnosignup.com/tool/compound-interest-calc)** - Exponential wealth visualizer.
+2. **[Mortgage EMI Calculator](https://www.freetoolsnosignup.com/tool/mortgage-calc)** - Amortization & prepayment models.
+3. **[Salary Take-Home Estimator](https://www.freetoolsnosignup.com/tool/salary-calc)** - Net pay after taxes.
+4. **[BMI & Health Gauge](https://www.freetoolsnosignup.com/tool/bmi-calc)** - WHO-compliant health scores.
+5. **[Auto Loan Calculator](https://www.freetoolsnosignup.com/tool/auto-loan-calc)** - Vehicle financing estimates.
+6. **[Retirement & FIRE Planner](https://www.freetoolsnosignup.com/tool/retirement-calc)** - Financial independence corpus.
+7. **[Debt Payoff Planner](https://www.freetoolsnosignup.com/tool/debt-payoff-calc)** - Snowball vs Avalanche methods.
+8. **[Calorie & BMR Calculator](https://www.freetoolsnosignup.com/tool/calorie-calc)** - Daily caloric maintenance.
+9. **[Tip & Bill Splitter](https://www.freetoolsnosignup.com/tool/tip-calculator)** - Group dining bill splitting.
+10. **[Currency Converter](https://www.freetoolsnosignup.com/tool/currency-converter)** - Fast currency conversions.
 
 *Zero signups. 100% private calculations on [FreeToolsNoSignup.com](https://www.freetoolsnosignup.com/).*`
   }
@@ -306,10 +306,10 @@ export const BlogPage: React.FC<BlogPageProps> = ({
                         <span>{tool.name}</span>
                       </h3>
                       <a
-                        href={`/tools/${tool.slug}`}
+                        href={`/tool/${tool.slug}`}
                         onClick={(e) => {
                           e.preventDefault();
-                          onNavigateTo(`/tools/${tool.slug}`);
+                          onNavigateTo(`/tool/${tool.slug}`);
                         }}
                         className="text-xs text-[#126BFF] font-bold hover:underline flex items-center gap-1 shrink-0"
                       >

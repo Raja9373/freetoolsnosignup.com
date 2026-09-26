@@ -287,7 +287,7 @@ export const NotionBuilderPage: React.FC<NotionBuilderPageProps> = ({
                       setIsHeaderSearchOpen(false);
                       setHeaderSearchQuery('');
                       if (onNavigateTo) {
-                        onNavigateTo(`/tools/${tool.slug || tool.id}`);
+                        onNavigateTo(`/tool/${tool.slug || tool.id}`);
                       }
                     }}
                     className="flex items-center justify-between p-2 rounded-xl hover:bg-[#F8FAFC] cursor-pointer text-xs"

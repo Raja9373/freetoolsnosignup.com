@@ -11,12 +11,12 @@ const keyPages = [
   { loc: `${domain}/image-tools`, priority: '0.9', changefreq: 'weekly' },
   { loc: `${domain}/calculators`, priority: '0.9', changefreq: 'weekly' },
   { loc: `${domain}/job-ats`, priority: '0.9', changefreq: 'weekly' },
-  { loc: `${domain}/tools/custom-notion-template-database-builder`, priority: '0.9', changefreq: 'weekly' },
+  { loc: `${domain}/tool/custom-notion-template-database-builder`, priority: '0.9', changefreq: 'weekly' },
 ];
 
-// Tool URLs (2753 tools)
+// Tool URLs (4753 tools)
 const toolUrls = tools.map((tool) => ({
-  loc: `${domain}/tools/${tool.slug || tool.id}`,
+  loc: `${domain}/tool/${tool.slug || tool.id}`,
   priority: '0.8',
   changefreq: 'weekly'
 }));

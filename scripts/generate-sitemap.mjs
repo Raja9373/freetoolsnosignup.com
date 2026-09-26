@@ -56,7 +56,7 @@ const realToolSlugs = [
 const urls = [
   ...corePages,
   ...realToolSlugs.map(slug => ({
-    loc: `${BASE_URL}/tools/${slug}`,
+    loc: `${BASE_URL}/tool/${slug}`,
     priority: '0.8',
     changefreq: 'weekly'
   }))

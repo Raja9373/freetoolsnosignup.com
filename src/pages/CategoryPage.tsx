@@ -182,7 +182,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({ categoryKey, onNavig
                   </div>
                 )}
                 <a
-                  href={`/tools/${tool.slug}`}
+                  href={`/tool/${tool.slug}`}
                   onClick={(e) => {
                     // Allow normal navigation or modal
                     const flagshipMatch = flagshipTools.find(f => f.id === tool.id);
@@ -216,7 +216,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({ categoryKey, onNavig
 
                   <div className="flex items-center gap-2 shrink-0">
                     <span className="hidden sm:inline-block text-xs font-semibold text-slate-400 group-hover:text-[#126BFF]">
-                      /tools/{tool.slug}
+                      /tool/{tool.slug}
                     </span>
                     <div className="p-1.5 rounded-lg bg-slate-100 text-slate-600 group-hover:bg-[#126BFF] group-hover:text-white transition-colors">
                       <ArrowRight className="w-4 h-4" />

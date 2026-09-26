@@ -75,15 +75,15 @@ export const ChromeExtensionPage: React.FC<ChromeExtensionPageProps> = ({
 </html>`;
 
   const popupJs = `const POPULAR = [
-  { name: "PDF Merge & Combine Pro", url: "https://www.freetoolsnosignup.com/tools/pdf-merge", cat: "PDF" },
-  { name: "PDF Split & Extract", url: "https://www.freetoolsnosignup.com/tools/pdf-split", cat: "PDF" },
-  { name: "PDF Compressor & Optimizer", url: "https://www.freetoolsnosignup.com/tools/pdf-compress", cat: "PDF" },
-  { name: "ATS Resume Scanner", url: "https://www.freetoolsnosignup.com/tools/ats-resume-scanner", cat: "Career" },
-  { name: "Custom Notion Template Builder", url: "https://www.freetoolsnosignup.com/tools/custom-notion-template-database-builder", cat: "Notion" },
-  { name: "Background Remover", url: "https://www.freetoolsnosignup.com/tools/bg-remover", cat: "Image" },
-  { name: "JSON Formatter & Tree", url: "https://www.freetoolsnosignup.com/tools/json-formatter", cat: "Dev" },
-  { name: "QR Code Generator", url: "https://www.freetoolsnosignup.com/tools/qr-generator", cat: "Dev" },
-  { name: "Fake Data & Luhn Cards", url: "https://www.freetoolsnosignup.com/tools/fake-data-generator", cat: "Dev" }
+  { name: "PDF Merge & Combine Pro", url: "https://www.freetoolsnosignup.com/tool/pdf-merge", cat: "PDF" },
+  { name: "PDF Split & Extract", url: "https://www.freetoolsnosignup.com/tool/pdf-split", cat: "PDF" },
+  { name: "PDF Compressor & Optimizer", url: "https://www.freetoolsnosignup.com/tool/pdf-compress", cat: "PDF" },
+  { name: "ATS Resume Scanner", url: "https://www.freetoolsnosignup.com/tool/ats-resume-scanner", cat: "Career" },
+  { name: "Custom Notion Template Builder", url: "https://www.freetoolsnosignup.com/tool/custom-notion-template-database-builder", cat: "Notion" },
+  { name: "Background Remover", url: "https://www.freetoolsnosignup.com/tool/bg-remover", cat: "Image" },
+  { name: "JSON Formatter & Tree", url: "https://www.freetoolsnosignup.com/tool/json-formatter", cat: "Dev" },
+  { name: "QR Code Generator", url: "https://www.freetoolsnosignup.com/tool/qr-generator", cat: "Dev" },
+  { name: "Fake Data & Luhn Cards", url: "https://www.freetoolsnosignup.com/tool/fake-data-generator", cat: "Dev" }
 ];
 
 function render(items) {

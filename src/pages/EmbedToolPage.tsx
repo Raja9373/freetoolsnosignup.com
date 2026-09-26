@@ -51,7 +51,7 @@ export const EmbedToolPage: React.FC<EmbedToolPageProps> = ({ toolSlug }) => {
         </div>
 
         <a
-          href={`https://www.freetoolsnosignup.com/tools/${seoData.slug}`}
+          href={`https://www.freetoolsnosignup.com/tool/${seoData.slug}`}
           target="_blank"
           rel="noopener noreferrer"
           className="text-xs text-blue-600 hover:text-blue-700 font-bold flex items-center gap-1 transition-colors shrink-0"
@@ -142,7 +142,7 @@ export const EmbedToolPage: React.FC<EmbedToolPageProps> = ({ toolSlug }) => {
               <h2 className="text-lg font-bold text-slate-800">{seoData.name}</h2>
               <p className="text-xs text-slate-600 max-w-md mx-auto">{seoData.description}</p>
               <a
-                href={`https://www.freetoolsnosignup.com/tools/${seoData.slug}`}
+                href={`https://www.freetoolsnosignup.com/tool/${seoData.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition-colors"
@@ -158,7 +158,7 @@ export const EmbedToolPage: React.FC<EmbedToolPageProps> = ({ toolSlug }) => {
       {/* Discrete Backlink Attribution Footer */}
       <footer className="w-full bg-slate-100 border-t border-slate-200 px-4 py-2 text-center">
         <a
-          href={`https://www.freetoolsnosignup.com/tools/${seoData.slug}`}
+          href={`https://www.freetoolsnosignup.com/tool/${seoData.slug}`}
           target="_blank"
           rel="noopener noreferrer"
           className="text-[11px] text-slate-500 hover:text-blue-600 font-medium transition-colors"

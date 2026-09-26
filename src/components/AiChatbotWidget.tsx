@@ -135,7 +135,12 @@ export default function AiChatbotWidget({ onOpenTool, favorites, onToggleFavorit
                       <button
                         key={tool.id}
                         onClick={() => {
-                          window.location.hash = `/tools/${tool.slug || tool.id}`;
+                          if (onOpenTool) {
+                            onOpenTool(tool.slug || tool.id);
+                          } else if (typeof window !== 'undefined') {
+                            window.history.pushState({}, '', `/tool/${tool.slug || tool.id}`);
+                            window.dispatchEvent(new PopStateEvent('popstate'));
+                          }
                           setIsOpen(false);
                         }}
                         className="w-full text-left p-2.5 bg-[#141C2E] hover:bg-[#1E293B] border border-[#C5A059]/30 rounded-xl transition flex items-center justify-between group"

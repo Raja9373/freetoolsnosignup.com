@@ -276,13 +276,13 @@ export function App() {
     }
 
     // Direct Flagship SEO Pages
-    if (p === '/pdf-to-word' || p === '/tools/pdf-to-word') {
+    if (p === '/pdf-to-word' || p === '/tool/pdf-to-word' || p === '/tools/pdf-to-word') {
       return <PDFToWordPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
     }
-    if (p === '/qr-code-generator' || p === '/tools/qr-code-generator') {
+    if (p === '/qr-code-generator' || p === '/tool/qr-code-generator' || p === '/tools/qr-code-generator') {
       return <QRCodeGeneratorPage onNavigateHome={() => navigateTo('/')} />;
     }
-    if (p === '/emi-calculator' || p === '/calculators/emi-calculator') {
+    if (p === '/emi-calculator' || p === '/calculators/emi-calculator' || p === '/tool/emi-calculator' || p === '/tools/emi-calculator') {
       return <EMICalculatorPage onNavigateHome={() => navigateTo('/')} onNavigateTo={navigateTo} />;
     }
 
@@ -312,17 +312,24 @@ export function App() {
       return <CategoryPage categoryKey={catKey} onNavigateHome={() => navigateTo('/')} onOpenTool={handleOpenTool} />;
     }
 
-    // Tool Detail Pages
-    if (p.startsWith('/tool/') || p.startsWith('/t/')) {
-      const toolSlug = p.replace(/^\/(tool|t)\//, '');
-      return (
-        <ToolPage 
-          toolSlug={toolSlug} 
-          onNavigateHome={() => navigateTo('/')} 
-          onNavigateTo={navigateTo}
-          onOpenToolModal={handleOpenTool}
-        />
-      );
+    // Canonical Dynamic Tool Detail Pages (/tool/[slug]) & Compatibility Redirects (/tools/[slug], /t/[slug])
+    if (p.startsWith('/tool/') || p.startsWith('/tools/') || p.startsWith('/t/')) {
+      const toolSlug = p.replace(/^\/(tools|tool|t)\//, '').trim();
+      if (toolSlug) {
+        if (typeof window !== 'undefined' && (p.startsWith('/tools/') || p.startsWith('/t/'))) {
+          try {
+            window.history.replaceState(null, '', `/tool/${toolSlug}`);
+          } catch {}
+        }
+        return (
+          <ToolPage 
+            toolSlug={toolSlug} 
+            onNavigateHome={() => navigateTo('/')} 
+            onNavigateTo={navigateTo}
+            onOpenToolModal={handleOpenTool}
+          />
+        );
+      }
     }
 
     // Product Directory & Product Detail
