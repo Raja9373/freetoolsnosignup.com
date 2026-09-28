@@ -235,6 +235,54 @@ async function startServer() {
     res.send(adsContent);
   });
 
+  // Agentic browsing / LLM discovery endpoints (llms.txt & ai-catalog.json)
+  app.get('/llms.txt', (_req, res) => {
+    const llmsContent = `# FreeToolsNoSignup
+
+> 4,753+ free online tools and calculators. 100% free, private browser-native processing. No signup, no account, no email required.
+
+## Core Tool Categories & Hubs
+- [Tools Hub](https://www.freetoolsnosignup.com/tools): Access all 4,753+ free PDF utilities, image processors, background removers, and developer tools.
+- [Calculators Hub](https://www.freetoolsnosignup.com/calculators): Access financial, mathematical, health, and scientific calculators.
+- [PDF Tools](https://www.freetoolsnosignup.com/tool/pdf-to-word): Free browser-native PDF converter, compressor, merger, and signers.
+- [AI Study Suite](https://www.freetoolsnosignup.com/tools): Academic writing assistant, paraphrase tool, citation formatter, and essay outline architects.
+- [Developer Tools](https://www.freetoolsnosignup.com/tools): JSON formatters, base64 encoders, UUID v4/v7 generators, regex capture extractors, and SQL linters.
+
+## Privacy & Operation
+All file conversions and calculations execute entirely client-side within the user's browser via WebAssembly and modern JavaScript APIs. Zero data is uploaded to external servers.
+`;
+    res.setHeader('Content-Type', 'text/markdown; charset=utf-8');
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+    res.send(llmsContent);
+  });
+
+  app.get('/ai-catalog.json', (_req, res) => {
+    const catalog = {
+      "@context": "https://schema.org",
+      "@type": "DataCatalog",
+      "name": "FreeToolsNoSignup AI & Developer Tools Catalog",
+      "url": "https://www.freetoolsnosignup.com/",
+      "description": "Catalog of 4,753+ free online tools and calculators with zero signup requirements.",
+      "provider": {
+        "@type": "Organization",
+        "name": "FreeToolsNoSignup",
+        "url": "https://www.freetoolsnosignup.com/"
+      },
+      "totalTools": 4753,
+      "categories": [
+        "PDF Tools",
+        "Image Processors",
+        "Financial Calculators",
+        "Developer Utilities",
+        "AI Study Assistants",
+        "ATS Resume Checkers"
+      ]
+    };
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+    res.json(catalog);
+  });
+
   // Explicit handler for manifest.json (PWA)
   app.get('/manifest.json', (_req, res) => {
     const manifestPath = process.env.NODE_ENV === 'production'
