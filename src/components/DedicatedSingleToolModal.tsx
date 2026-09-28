@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { 
   X, ArrowLeft, CheckCircle2, ShieldCheck, Zap, Download, 
   Upload, FileText, Settings, RefreshCw, Layers, Sparkles, 
   ExternalLink, Copy, Check, Table, HelpCircle, ArrowRight
 } from 'lucide-react';
 import { MasterToolItem } from '../data/masterCategoryData';
-import { NotionTemplateBuilder } from './tools/NotionTemplateBuilder';
-import { PDFToolsModal } from './tools/PDFToolsModal';
-import { ImageToolsModal } from './tools/ImageToolsModal';
-import { CalculatorModal } from './tools/CalculatorModal';
-import { ATSToolsSuite } from './tools/ATSToolsSuite';
-import { AIStudySuite } from './tools/AIStudySuite';
-import { DevToolsSuite } from './tools/DevToolsSuite';
+
+const NotionTemplateBuilder = lazy(() => import('./tools/NotionTemplateBuilder').then(m => ({ default: m.NotionTemplateBuilder })));
+const PDFToolsModal = lazy(() => import('./tools/PDFToolsModal').then(m => ({ default: m.PDFToolsModal })));
+const ImageToolsModal = lazy(() => import('./tools/ImageToolsModal').then(m => ({ default: m.ImageToolsModal })));
+const CalculatorModal = lazy(() => import('./tools/CalculatorModal').then(m => ({ default: m.CalculatorModal })));
+const ATSToolsSuite = lazy(() => import('./tools/ATSToolsSuite').then(m => ({ default: m.ATSToolsSuite })));
+const AIStudySuite = lazy(() => import('./tools/AIStudySuite').then(m => ({ default: m.AIStudySuite })));
+const DevToolsSuite = lazy(() => import('./tools/DevToolsSuite').then(m => ({ default: m.DevToolsSuite })));
 
 interface DedicatedSingleToolModalProps {
   tool: MasterToolItem;
@@ -574,24 +575,21 @@ export const DedicatedSingleToolModal: React.FC<DedicatedSingleToolModalProps> =
     }
 
     // 7. General Fallback for other tools (PDF Suite, Image, Calculator, ATS, Dev)
-    if (tool.category === 'pdf') {
-      return <PDFToolsModal initialToolId={tool.id} onClose={onClose} onRecordUse={() => {}} />;
-    }
-    if (tool.category === 'image') {
-      return <ImageToolsModal initialToolId={tool.id} onClose={onClose} onRecordUse={() => {}} />;
-    }
-    if (tool.category === 'calculator') {
-      return <CalculatorModal initialToolId={tool.id} onClose={onClose} onRecordUse={() => {}} />;
-    }
-    if (tool.category === 'job-ats') {
-      return <ATSToolsSuite initialToolId={tool.id} onClose={onClose} onRecordUse={() => {}} />;
-    }
-    if (tool.category === 'ai-study') {
-      return <AIStudySuite initialToolId={tool.id} onClose={onClose} onRecordUse={() => {}} />;
-    }
-    if (tool.category === 'dev-pro') {
-      return <DevToolsSuite initialToolId={tool.id} onClose={onClose} onRecordUse={() => {}} />;
-    }
+    return (
+      <Suspense fallback={
+        <div className="p-12 text-center text-slate-500 flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          <span>Loading Tool Suite...</span>
+        </div>
+      }>
+        {tool.category === 'pdf' && <PDFToolsModal initialToolId={tool.id} onClose={onClose} onRecordUse={() => {}} />}
+        {tool.category === 'image' && <ImageToolsModal initialToolId={tool.id} onClose={onClose} onRecordUse={() => {}} />}
+        {tool.category === 'calculator' && <CalculatorModal initialToolId={tool.id} onClose={onClose} onRecordUse={() => {}} />}
+        {tool.category === 'job-ats' && <ATSToolsSuite initialToolId={tool.id} onClose={onClose} onRecordUse={() => {}} />}
+        {tool.category === 'ai-study' && <AIStudySuite initialToolId={tool.id} onClose={onClose} onRecordUse={() => {}} />}
+        {tool.category === 'dev-pro' && <DevToolsSuite initialToolId={tool.id} onClose={onClose} onRecordUse={() => {}} />}
+      </Suspense>
+    );
 
     // Ultimate fallback
     return (

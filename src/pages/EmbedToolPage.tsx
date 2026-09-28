@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
 import { ShieldCheck, Zap, ExternalLink, Sparkles } from 'lucide-react';
 import { getToolSEOData } from '../data/toolSEOContent';
 import { ALL_DIRECTORY_TOOLS } from '../data/allToolsDirectory';
 import { TOTAL_TOOLS_COUNT } from '../data/toolCounts';
 
-// Interactive Components
-import { PDFToolsModal } from '../components/tools/PDFToolsModal';
-import { ImageToolsModal } from '../components/tools/ImageToolsModal';
-import { CalculatorModal } from '../components/tools/CalculatorModal';
-import { ATSToolsSuite } from '../components/tools/ATSToolsSuite';
-import { AIStudySuite } from '../components/tools/AIStudySuite';
-import { DevToolsSuite } from '../components/tools/DevToolsSuite';
-import { NotionTemplateBuilder } from '../components/tools/NotionTemplateBuilder';
+const PDFToolsModal = lazy(() => import('../components/tools/PDFToolsModal').then(m => ({ default: m.PDFToolsModal })));
+const ImageToolsModal = lazy(() => import('../components/tools/ImageToolsModal').then(m => ({ default: m.ImageToolsModal })));
+const CalculatorModal = lazy(() => import('../components/tools/CalculatorModal').then(m => ({ default: m.CalculatorModal })));
+const ATSToolsSuite = lazy(() => import('../components/tools/ATSToolsSuite').then(m => ({ default: m.ATSToolsSuite })));
+const AIStudySuite = lazy(() => import('../components/tools/AIStudySuite').then(m => ({ default: m.AIStudySuite })));
+const DevToolsSuite = lazy(() => import('../components/tools/DevToolsSuite').then(m => ({ default: m.DevToolsSuite })));
+const NotionTemplateBuilder = lazy(() => import('../components/tools/NotionTemplateBuilder').then(m => ({ default: m.NotionTemplateBuilder })));
 
 interface EmbedToolPageProps {
   toolSlug: string;
@@ -64,76 +63,82 @@ export const EmbedToolPage: React.FC<EmbedToolPageProps> = ({ toolSlug }) => {
       {/* Main Interactive Tool Body (Clean White-Label Frame) */}
       <main className="flex-1 w-full p-2 sm:p-4 flex flex-col items-center justify-center">
         <div className="w-full max-w-5xl bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-          
-          {seoData.category === 'pdf' && (
-            <div className="p-4 sm:p-6">
-              <PDFToolsModal
-                initialToolId={seoData.id}
-                onClose={() => {}}
-                onRecordUse={() => {}}
-              />
+          <Suspense fallback={
+            <div className="p-12 text-center text-slate-500 flex flex-col items-center gap-3">
+              <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+              <span>Loading Embed Tool...</span>
             </div>
-          )}
+          }>
+            {seoData.category === 'pdf' && (
+              <div className="p-4 sm:p-6">
+                <PDFToolsModal
+                  initialToolId={seoData.id}
+                  onClose={() => {}}
+                  onRecordUse={() => {}}
+                />
+              </div>
+            )}
 
-          {seoData.category === 'image' && (
-            <div className="p-4 sm:p-6">
-              <ImageToolsModal
-                initialToolId={seoData.id}
-                onClose={() => {}}
-                onRecordUse={() => {}}
-              />
-            </div>
-          )}
+            {seoData.category === 'image' && (
+              <div className="p-4 sm:p-6">
+                <ImageToolsModal
+                  initialToolId={seoData.id}
+                  onClose={() => {}}
+                  onRecordUse={() => {}}
+                />
+              </div>
+            )}
 
-          {seoData.category === 'calculator' && (
-            <div className="p-4 sm:p-6">
-              <CalculatorModal
-                initialToolId={seoData.id}
-                onClose={() => {}}
-                onRecordUse={() => {}}
-              />
-            </div>
-          )}
+            {seoData.category === 'calculator' && (
+              <div className="p-4 sm:p-6">
+                <CalculatorModal
+                  initialToolId={seoData.id}
+                  onClose={() => {}}
+                  onRecordUse={() => {}}
+                />
+              </div>
+            )}
 
-          {seoData.category === 'job-ats' && (
-            <div className="p-4 sm:p-6">
-              <ATSToolsSuite
-                initialToolId={seoData.id}
-                onClose={() => {}}
-                onRecordUse={() => {}}
-              />
-            </div>
-          )}
+            {seoData.category === 'job-ats' && (
+              <div className="p-4 sm:p-6">
+                <ATSToolsSuite
+                  initialToolId={seoData.id}
+                  onClose={() => {}}
+                  onRecordUse={() => {}}
+                />
+              </div>
+            )}
 
-          {seoData.category === 'ai-study' && (
-            <div className="p-4 sm:p-6">
-              <AIStudySuite
-                initialToolId={seoData.id}
-                onClose={() => {}}
-                onRecordUse={() => {}}
-              />
-            </div>
-          )}
+            {seoData.category === 'ai-study' && (
+              <div className="p-4 sm:p-6">
+                <AIStudySuite
+                  initialToolId={seoData.id}
+                  onClose={() => {}}
+                  onRecordUse={() => {}}
+                />
+              </div>
+            )}
 
-          {seoData.category === 'dev-pro' && (
-            <div className="p-4 sm:p-6">
-              <DevToolsSuite
-                initialToolId={seoData.id}
-                onClose={() => {}}
-                onRecordUse={() => {}}
-              />
-            </div>
-          )}
+            {seoData.category === 'dev-pro' && (
+              <div className="p-4 sm:p-6">
+                <DevToolsSuite
+                  initialToolId={seoData.id}
+                  onClose={() => {}}
+                  onRecordUse={() => {}}
+                />
+              </div>
+            )}
 
-          {seoData.category === 'notion' && (
-            <div className="p-4 sm:p-6">
-              <NotionTemplateBuilder
-                initialPresetId={seoData.id}
-                onClose={() => {}}
-                onRecordUse={() => {}}
-              />
-            </div>
-          )}
+            {seoData.category === 'notion' && (
+              <div className="p-4 sm:p-6">
+                <NotionTemplateBuilder
+                  initialPresetId={seoData.id}
+                  onClose={() => {}}
+                  onRecordUse={() => {}}
+                />
+              </div>
+            )}
+          </Suspense>
 
           {/* Fallback for tools from broader directory */}
           {!['pdf', 'image', 'calculator', 'job-ats', 'ai-study', 'dev-pro', 'notion'].includes(seoData.category) && (

@@ -23,20 +23,29 @@ export default defineConfig(() => {
     build: {
       outDir: 'dist',
       emptyOutDir: true,
-      sourcemap: false,
+      sourcemap: true,
       minify: 'esbuild',
-      chunkSizeWarningLimit: 2000,
+      chunkSizeWarningLimit: 3000,
       rollupOptions: {
         output: {
           manualChunks(id) {
             if (id.includes('node_modules')) {
-              if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) {
+              if (id.includes('react') || id.includes('react-dom')) {
                 return 'vendor';
               }
               if (id.includes('lucide-react')) {
                 return 'ui';
               }
-              return 'deps';
+              if (id.includes('pdfjs-dist') || id.includes('pdf-lib') || id.includes('@pdf-lib')) {
+                return 'pdf-deps';
+              }
+              if (id.includes('@imgly')) {
+                return 'bg-removal-deps';
+              }
+              if (id.includes('docx') || id.includes('mammoth') || id.includes('jszip')) {
+                return 'doc-deps';
+              }
+              return 'vendor-deps';
             }
           }
         }
