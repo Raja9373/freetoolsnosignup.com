@@ -24,19 +24,6 @@ async function startServer() {
       res.setHeader('X-Frame-Options', 'SAMEORIGIN');
     }
     res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-
-    // Canonical redirect from http to https or apex to www for general traffic
-    const isApex = host === 'freetoolsnosignup.com';
-    const isHttp = req.headers['x-forwarded-proto'] === 'http';
-
-    // Allow crawlers to directly fetch ads.txt, robots.txt, and sitemap.xml on both apex and www
-    const isCrawlerFile = req.path === '/ads.txt' || req.path === '/robots.txt' || req.path === '/sitemap.xml' || req.path === '/sitemap-index.xml';
-
-    if (!isCrawlerFile && (isApex || (isHttp && process.env.NODE_ENV === 'production'))) {
-      const targetHost = isApex ? 'www.freetoolsnosignup.com' : host;
-      return res.redirect(301, `https://${targetHost}${req.url}`);
-    }
-
     next();
   });
 
