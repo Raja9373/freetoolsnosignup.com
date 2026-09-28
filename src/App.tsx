@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
 import { SEOHead } from './components/SEOHead';
 import { 
   Search, Shield, Zap, Sparkles, Star, ArrowRight, Heart,
@@ -25,48 +25,48 @@ import { AdSenseBanner } from './components/AdSenseBanner';
 import { AllCategoryModal } from './components/AllCategoryModal';
 import { DedicatedSingleToolModal } from './components/DedicatedSingleToolModal';
 
-// Modals for Tools
-import { PDFToolsModal } from './components/tools/PDFToolsModal';
-import { ImageToolsModal } from './components/tools/ImageToolsModal';
-import { CalculatorModal } from './components/tools/CalculatorModal';
-import { ATSToolsSuite } from './components/tools/ATSToolsSuite';
-import { AIStudySuite } from './components/tools/AIStudySuite';
-import { DevToolsSuite } from './components/tools/DevToolsSuite';
-import { NotionTemplateBuilder } from './components/tools/NotionTemplateBuilder';
-import { AIDetectorModal } from './components/tools/AIDetectorModal';
-import { ImageCompressorModal } from './components/tools/ImageCompressorModal';
-import { JSONFormatterModal } from './components/tools/JSONFormatterModal';
-import { QRGeneratorModal } from './components/tools/QRGeneratorModal';
-import { FakeDataModal } from './components/tools/FakeDataModal';
+// Lazy-loaded Modals for Tools
+const PDFToolsModal = lazy(() => import('./components/tools/PDFToolsModal').then(m => ({ default: m.PDFToolsModal })));
+const ImageToolsModal = lazy(() => import('./components/tools/ImageToolsModal').then(m => ({ default: m.ImageToolsModal })));
+const CalculatorModal = lazy(() => import('./components/tools/CalculatorModal').then(m => ({ default: m.CalculatorModal })));
+const ATSToolsSuite = lazy(() => import('./components/tools/ATSToolsSuite').then(m => ({ default: m.ATSToolsSuite })));
+const AIStudySuite = lazy(() => import('./components/tools/AIStudySuite').then(m => ({ default: m.AIStudySuite })));
+const DevToolsSuite = lazy(() => import('./components/tools/DevToolsSuite').then(m => ({ default: m.DevToolsSuite })));
+const NotionTemplateBuilder = lazy(() => import('./components/tools/NotionTemplateBuilder').then(m => ({ default: m.NotionTemplateBuilder })));
+const AIDetectorModal = lazy(() => import('./components/tools/AIDetectorModal').then(m => ({ default: m.AIDetectorModal })));
+const ImageCompressorModal = lazy(() => import('./components/tools/ImageCompressorModal').then(m => ({ default: m.ImageCompressorModal })));
+const JSONFormatterModal = lazy(() => import('./components/tools/JSONFormatterModal').then(m => ({ default: m.JSONFormatterModal })));
+const QRGeneratorModal = lazy(() => import('./components/tools/QRGeneratorModal').then(m => ({ default: m.QRGeneratorModal })));
+const FakeDataModal = lazy(() => import('./components/tools/FakeDataModal').then(m => ({ default: m.FakeDataModal })));
 
-// Pages
-import { ToolsHubPage } from './pages/ToolsHubPage';
-import { CalculatorsHubPage } from './pages/CalculatorsHubPage';
-import { CategoryPage } from './pages/CategoryPage';
-import { ToolPage } from './pages/ToolPage';
-import { PDFToWordPage } from './pages/PDFToWordPage';
-import { QRCodeGeneratorPage } from './pages/QRCodeGeneratorPage';
-import { EMICalculatorPage } from './pages/EMICalculatorPage';
-import { NotionBuilderPage } from './pages/NotionBuilderPage';
-import { NotionTemplatesPage } from './pages/NotionTemplatesPage';
-import { AINewsPage } from './pages/AINewsPage';
-import { AINewsDetailPage } from './pages/AINewsDetailPage';
-import { AIUpdatesHubPage } from './pages/AIUpdatesHubPage';
-import { AboutPage } from './pages/AboutPage';
-import { ContactPage } from './pages/ContactPage';
-import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
-import { TermsPage } from './pages/TermsPage';
-import { DisclaimerPage } from './pages/DisclaimerPage';
-import { AuditPage } from './pages/AuditPage';
-import { BacklinksDirectoryPage } from './pages/BacklinksDirectoryPage';
-import { StatsPage } from './pages/StatsPage';
-import { PartnersPage } from './pages/PartnersPage';
-import { ProductDirectoryPage } from './pages/ProductDirectoryPage';
-import { ProductDetailPage } from './pages/ProductDetailPage';
-import { EmbedToolPage } from './pages/EmbedToolPage';
-import { ChromeExtensionPage } from './pages/ChromeExtensionPage';
-import { LaunchPage } from './pages/LaunchPage';
-import { BlogPage } from './pages/BlogPage';
+// Lazy-loaded Pages
+const ToolsHubPage = lazy(() => import('./pages/ToolsHubPage').then(m => ({ default: m.ToolsHubPage })));
+const CalculatorsHubPage = lazy(() => import('./pages/CalculatorsHubPage').then(m => ({ default: m.CalculatorsHubPage })));
+const CategoryPage = lazy(() => import('./pages/CategoryPage').then(m => ({ default: m.CategoryPage })));
+const ToolPage = lazy(() => import('./pages/ToolPage').then(m => ({ default: m.ToolPage })));
+const PDFToWordPage = lazy(() => import('./pages/PDFToWordPage').then(m => ({ default: m.PDFToWordPage })));
+const QRCodeGeneratorPage = lazy(() => import('./pages/QRCodeGeneratorPage').then(m => ({ default: m.QRCodeGeneratorPage })));
+const EMICalculatorPage = lazy(() => import('./pages/EMICalculatorPage').then(m => ({ default: m.EMICalculatorPage })));
+const NotionBuilderPage = lazy(() => import('./pages/NotionBuilderPage').then(m => ({ default: m.NotionBuilderPage })));
+const NotionTemplatesPage = lazy(() => import('./pages/NotionTemplatesPage').then(m => ({ default: m.NotionTemplatesPage })));
+const AINewsPage = lazy(() => import('./pages/AINewsPage').then(m => ({ default: m.AINewsPage })));
+const AINewsDetailPage = lazy(() => import('./pages/AINewsDetailPage').then(m => ({ default: m.AINewsDetailPage })));
+const AIUpdatesHubPage = lazy(() => import('./pages/AIUpdatesHubPage').then(m => ({ default: m.AIUpdatesHubPage })));
+const AboutPage = lazy(() => import('./pages/AboutPage').then(m => ({ default: m.AboutPage })));
+const ContactPage = lazy(() => import('./pages/ContactPage').then(m => ({ default: m.ContactPage })));
+const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage').then(m => ({ default: m.PrivacyPolicyPage })));
+const TermsPage = lazy(() => import('./pages/TermsPage').then(m => ({ default: m.TermsPage })));
+const DisclaimerPage = lazy(() => import('./pages/DisclaimerPage').then(m => ({ default: m.DisclaimerPage })));
+const AuditPage = lazy(() => import('./pages/AuditPage').then(m => ({ default: m.AuditPage })));
+const BacklinksDirectoryPage = lazy(() => import('./pages/BacklinksDirectoryPage').then(m => ({ default: m.BacklinksDirectoryPage })));
+const StatsPage = lazy(() => import('./pages/StatsPage').then(m => ({ default: m.StatsPage })));
+const PartnersPage = lazy(() => import('./pages/PartnersPage').then(m => ({ default: m.PartnersPage })));
+const ProductDirectoryPage = lazy(() => import('./pages/ProductDirectoryPage').then(m => ({ default: m.ProductDirectoryPage })));
+const ProductDetailPage = lazy(() => import('./pages/ProductDetailPage').then(m => ({ default: m.ProductDetailPage })));
+const EmbedToolPage = lazy(() => import('./pages/EmbedToolPage').then(m => ({ default: m.EmbedToolPage })));
+const ChromeExtensionPage = lazy(() => import('./pages/ChromeExtensionPage').then(m => ({ default: m.ChromeExtensionPage })));
+const LaunchPage = lazy(() => import('./pages/LaunchPage').then(m => ({ default: m.LaunchPage })));
+const BlogPage = lazy(() => import('./pages/BlogPage').then(m => ({ default: m.BlogPage })));
 
 // Data & Types
 import { ToolCategory, RecentTool } from './types';
@@ -626,7 +626,14 @@ export function App() {
   };
 
   return (
-    <>
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 border-4 border-[#126BFF] border-t-transparent rounded-full animate-spin"></div>
+          <span className="text-sm font-semibold text-slate-600">Loading FreeToolsNoSignup...</span>
+        </div>
+      </div>
+    }>
       {/* Dynamic Page Render */}
       {renderPage()}
 
@@ -759,7 +766,7 @@ export function App() {
           onNavigateTo={navigateTo}
         />
       )}
-    </>
+    </Suspense>
   );
 }
 
