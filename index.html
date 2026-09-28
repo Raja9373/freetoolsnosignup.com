@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     <title>FreeToolsNoSignup - 4,753+ Free Online Tools & Calculators (100% Private, No Login)</title>
     <meta name="description" content="4,753+ free online tools and calculators. 100% free, private browser-native processing. No signup, no account, no email required." />
     <meta property="og:title" content="FreeToolsNoSignup - 4,753+ Free Online Tools & Calculators" />
@@ -13,6 +13,74 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    <style>
+      /* Critical Initial Styles to guarantee instant FCP & LCP */
+      body {
+        margin: 0;
+        background-color: #F8FAFC;
+        color: #0F172A;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .app-skeleton {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      .skeleton-header {
+        height: 72px;
+        background: #ffffff;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+      }
+      .skeleton-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .skeleton-logo {
+        width: 40px;
+        height: 40px;
+        background: #2563eb;
+        border-radius: 10px;
+      }
+      .skeleton-title {
+        width: 180px;
+        height: 20px;
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      .skeleton-hero {
+        padding: 48px 24px;
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      .skeleton-heading {
+        height: 40px;
+        background: #94a3b8;
+        border-radius: 6px;
+        margin-bottom: 16px;
+      }
+      .skeleton-sub {
+        height: 20px;
+        background: #cbd5e1;
+        border-radius: 4px;
+        max-width: 600px;
+        margin: 0 auto 32px auto;
+      }
+      .skeleton-search {
+        height: 54px;
+        background: #ffffff;
+        border: 2px solid #e2e8f0;
+        border-radius: 16px;
+        max-width: 640px;
+        margin: 0 auto;
+      }
+    </style>
     <script>
       (function() {
         try {
@@ -28,25 +96,28 @@
                 configurable: true,
                 enumerable: true
               });
-            } catch(e) {
-              try {
-                if (typeof Window !== 'undefined' && Window.prototype) {
-                  Object.defineProperty(Window.prototype, 'fetch', {
-                    get: function() { return _fetch; },
-                    set: function(val) { _fetch = val; },
-                    configurable: true,
-                    enumerable: true
-                  });
-                }
-              } catch(e2) {}
-            }
+            } catch(e) {}
           }
         } catch(err) {}
       })();
     </script>
   </head>
   <body class="bg-[#F8FAFC] text-[#0F172A] antialiased">
-    <div id="root"></div>
+    <div id="root">
+      <div class="app-skeleton">
+        <header class="skeleton-header">
+          <div class="skeleton-brand">
+            <div class="skeleton-logo"></div>
+            <div class="skeleton-title"></div>
+          </div>
+        </header>
+        <main class="skeleton-hero">
+          <div class="skeleton-heading"></div>
+          <div class="skeleton-sub"></div>
+          <div class="skeleton-search"></div>
+        </main>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
